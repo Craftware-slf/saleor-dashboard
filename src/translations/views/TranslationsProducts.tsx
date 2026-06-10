@@ -10,6 +10,7 @@ import { useNotifier } from "@dashboard/hooks/useNotifier";
 import useShop from "@dashboard/hooks/useShop";
 import { getMultipleUrlValues, stringifyQs } from "@dashboard/utils/urls";
 import { type OutputData } from "@editorjs/editorjs";
+import { useState } from "react";
 import { useIntl } from "react-intl";
 
 import { extractMutationErrors, maybe } from "../../misc";
@@ -135,6 +136,60 @@ const TranslationsProducts = ({ id, languageCode, params }: TranslationsProducts
     );
   const translation = productTranslations?.data?.translation;
 
+  // Craftware: translate EVERY field into the selected language in one go and
+  // generate the SEO title/description, via the Claude backend (key server-side).
+  // Then write it all with a single productTranslate mutation.
+  const [translatingAll, setTranslatingAll] = useState(false);
+  const handleTranslateAll = async () => {
+    const base = translation?.__typename === "ProductTranslatableContent" ? translation.product : null;
+
+    if (!base) {
+      return;
+    }
+
+    const languageName =
+      maybe(() => shop.languages, []).find(l => l.code === languageCode)?.language ?? languageCode;
+
+    setTranslatingAll(true);
+
+    try {
+      const res = await fetch("http://localhost:4002/api/translate-all", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          name: base.name,
+          description: base.description,
+          languageName,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+
+        throw new Error(err.error || `translate-all failed (${res.status})`);
+      }
+
+      const fields = await res.json();
+
+      await updateTranslations({
+        variables: {
+          id,
+          input: {
+            name: fields.name,
+            description: fields.description,
+            seoTitle: fields.seoTitle,
+            seoDescription: fields.seoDescription,
+          },
+          language: languageCode,
+        },
+      });
+    } catch (e) {
+      notify({ status: "error", text: e instanceof Error ? e.message : String(e) });
+    } finally {
+      setTranslatingAll(false);
+    }
+  };
+
   return (
     <TranslationsProductsPage
       translationId={id}
@@ -148,6 +203,8 @@ const TranslationsProducts = ({ id, languageCode, params }: TranslationsProducts
       onDiscard={onDiscard}
       onSubmit={handleSubmit}
       onAttributeValueSubmit={handleAttributeValueSubmit}
+      onTranslateAll={handleTranslateAll}
+      translateAllLoading={translatingAll}
       data={translation?.__typename === "ProductTranslatableContent" ? translation : null}
     />
   );

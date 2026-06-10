@@ -24,7 +24,7 @@ import {
   TranslatableEntities,
 } from "@dashboard/translations/urls";
 import { mapAttributeValuesToTranslationFields } from "@dashboard/translations/utils";
-import { Box } from "@saleor/macaw-ui-next";
+import { Box, Button } from "@saleor/macaw-ui-next";
 import { useEffect } from "react";
 import { useIntl } from "react-intl";
 
@@ -37,6 +37,8 @@ interface TranslationsProductsPageProps extends TranslationsEntitiesPageProps {
   data: ProductTranslationFragment;
   productId: string;
   onAttributeValueSubmit: TranslationsEntitiesPageProps["onSubmit"];
+  onTranslateAll?: () => void;
+  translateAllLoading?: boolean;
 }
 
 export const TranslationsProductsPage = ({
@@ -52,6 +54,8 @@ export const TranslationsProductsPage = ({
   onEdit,
   onSubmit,
   onAttributeValueSubmit,
+  onTranslateAll,
+  translateAllLoading,
 }: TranslationsProductsPageProps) => {
   const intl = useIntl();
   const navigate = useNavigator();
@@ -141,7 +145,16 @@ export const TranslationsProductsPage = ({
           },
         )}
       >
-        <Box display="flex" gap={3}>
+        <Box display="flex" gap={3} alignItems="center">
+          {onTranslateAll && (
+            <Button
+              variant="primary"
+              onClick={onTranslateAll}
+              disabled={disabled || translateAllLoading}
+            >
+              {translateAllLoading ? "Translating all…" : `✨ Translate all → ${languageCode}`}
+            </Button>
+          )}
           {menuItems.length > 0 && (
             <ExtensionsButtonSelector
               extensions={menuItems}
