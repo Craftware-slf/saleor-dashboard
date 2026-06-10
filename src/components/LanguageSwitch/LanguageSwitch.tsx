@@ -8,6 +8,11 @@ type BaseComboboxProps = ComboboxProps<
 >;
 type CutProps = Omit<BaseComboboxProps, "options" | "value">;
 
+// Craftware: Saleor exposes ~779 locales (Afrikaans, Aghem, …). Örninn only
+// uses Icelandic, plus Danish (DK brands) and English (base), so we filter the
+// language picker down to these. Edit this list to change which are selectable.
+const ALLOWED_LANGUAGE_CODES = new Set<string>(["IS", "DA", "EN"]);
+
 interface LanguageSwitchProps extends CutProps {
   currentLanguage: LanguageCodeEnum;
   languages: LanguageFragment[];
@@ -17,6 +22,11 @@ interface LanguageSwitchProps extends CutProps {
 const LanguageSwitch = (props: LanguageSwitchProps) => {
   const { currentLanguage, languages, onLanguageChange, ...rest } = props;
 
+  // Only the languages we use — but never hide the one currently selected.
+  const visibleLanguages = languages.filter(
+    l => ALLOWED_LANGUAGE_CODES.has(l.code) || l.code === currentLanguage,
+  );
+
   return (
     <Combobox
       // Hacky, because minWidth was not applied properly. We set min width to ensure it's not cut
@@ -24,7 +34,7 @@ const LanguageSwitch = (props: LanguageSwitchProps) => {
       {...rest}
       value={currentLanguage}
       label="Choose language"
-      options={languages.map(l => ({
+      options={visibleLanguages.map(l => ({
         // Adding code to label, so search works. TODO: Macaw should allow 3rd value for search only
         label: `${l.language} (${l.code})`,
         value: l.code,
