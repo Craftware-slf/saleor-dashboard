@@ -7,7 +7,8 @@ import { commonMessages } from "@dashboard/intl";
 import { getFormErrors, getProductErrorMessage } from "@dashboard/utils/errors";
 import { useRichTextContext } from "@dashboard/utils/richText/context";
 import { type OutputData } from "@editorjs/editorjs";
-import { Box, Input } from "@saleor/macaw-ui-next";
+import { Box, Button, Input } from "@saleor/macaw-ui-next";
+import { useState } from "react";
 import { useIntl } from "react-intl";
 
 interface ProductDetailsFormProps {
@@ -32,6 +33,49 @@ export const ProductDetailsForm = ({
   const intl = useIntl();
   const formErrors = getFormErrors(["name", "description", "rating"], errors);
   const { editorRef, defaultValue, isReadyForMount, handleChange } = useRichTextContext();
+  const [reformatting, setReformatting] = useState(false);
+
+  // The Claude key lives server-side; the dashboard only POSTs the description
+  // text to the backend and renders the structured result it returns.
+  const reformatWithAI = async () => {
+    const editor = editorRef.current;
+
+    if (!editor) {
+      return;
+    }
+
+    setReformatting(true);
+
+    try {
+      const current = await editor.save();
+      const res = await fetch("http://localhost:4002/api/reformat", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ description: current }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+
+        throw new Error(err.error || `reformat failed (${res.status})`);
+      }
+
+      const { description } = await res.json();
+
+      await editor.render(description);
+
+      if (onDescriptionChange) {
+        onDescriptionChange(description);
+      }
+
+      handleChange();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error("Fix formatting with AI failed", e);
+    } finally {
+      setReformatting(false);
+    }
+  };
 
   return (
     <DashboardCard>
@@ -55,6 +99,19 @@ export const ProductDetailsForm = ({
           disabled={disabled}
           helperText={getProductErrorMessage(formErrors.name, intl)}
         />
+
+        {/* Craftware: AI description formatting — fixes flat "word soup" descriptions. */}
+        <Box display="flex" justifyContent="flex-end" marginTop={2}>
+          <Button
+            type="button"
+            variant="secondary"
+            size="small"
+            disabled={disabled || reformatting}
+            onClick={reformatWithAI}
+          >
+            {reformatting ? "Reformatting…" : "✨ Fix formatting with AI"}
+          </Button>
+        </Box>
 
         {isReadyForMount ? (
           <RichTextEditor
