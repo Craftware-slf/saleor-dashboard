@@ -39,6 +39,10 @@ export const getExtensionsConfig = () => ({
   extensionsApiUri: window.__SALEOR_CONFIG__.EXTENSIONS_API_URL,
 });
 
+// Craftware: base URL of the Örninn saleor-app-bc service (carrier label proxy, etc.).
+export const getSaleorAppBcUrl = (): string =>
+  (window?.__SALEOR_CONFIG__ as Record<string, string | undefined> | undefined)?.SALEOR_APP_BC_URL || "";
+
 export const DEFAULT_INITIAL_SEARCH_DATA: SearchVariables = {
   after: null,
   first: 20,

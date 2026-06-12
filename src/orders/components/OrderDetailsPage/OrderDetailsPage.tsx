@@ -23,6 +23,9 @@ import {
 import { useBackLinkWithState } from "@dashboard/hooks/useBackLinkWithState";
 import { type SubmitPromise } from "@dashboard/hooks/useForm";
 import useNavigator from "@dashboard/hooks/useNavigator";
+import { useNotifier } from "@dashboard/hooks/useNotifier";
+import { getSaleorAppBcUrl } from "@dashboard/config";
+import { storage } from "@dashboard/legacy-sdk/core/storage";
 import { defaultGraphiQLQuery } from "@dashboard/orders/queries";
 import { rippleOrderMetadata } from "@dashboard/orders/ripples/orderMetadata";
 import { orderShouldUseTransactions } from "@dashboard/orders/types";
@@ -136,6 +139,7 @@ const OrderDetailsPage = (props: OrderDetailsPageProps) => {
   } = props;
   const navigate = useNavigator();
   const intl = useIntl();
+  const notify = useNotifier();
   const orderDiscountContext = useContext(OrderDiscountContext);
   const [pricingLineId, setPricingLineId] = useState<string | null>(null);
   const pricingWaterfall = useOrderLinePriceWaterfall({ order, lineId: pricingLineId });
@@ -164,6 +168,48 @@ const OrderDetailsPage = (props: OrderDetailsPageProps) => {
 
     return loading;
   };
+  // Craftware: "Print Dropp label" — fetch the carrier label PDF from
+  // saleor-app-bc (which holds the Dropp key + verifies the staff token) and
+  // print it. Only shown when the order carries a carrier reference / tracking.
+  const hasDroppLabel = !!order?.metadata?.some(
+    m => m.key === "carrier_reference" || m.key === "tracking_number",
+  );
+  const handlePrintDroppLabel = async () => {
+    const token = storage.getAccessToken();
+    const base = getSaleorAppBcUrl().replace(/\/+$/, "");
+    if (!token || !order?.id) {
+      notify({ status: "error", text: "Vantar auðkenni eða pöntun." });
+      return;
+    }
+    if (!base) {
+      notify({ status: "error", text: "SALEOR_APP_BC_URL er ekki stillt." });
+      return;
+    }
+    try {
+      const res = await fetch(`${base}/api/label?orderId=${encodeURIComponent(order.id)}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const url = URL.createObjectURL(await res.blob());
+      const iframe = document.createElement("iframe");
+      iframe.style.display = "none";
+      iframe.src = url;
+      iframe.onload = () => {
+        iframe.contentWindow?.focus();
+        iframe.contentWindow?.print();
+        window.setTimeout(() => {
+          URL.revokeObjectURL(url);
+          iframe.remove();
+        }, 60_000);
+      };
+      document.body.appendChild(iframe);
+    } catch (e) {
+      notify({
+        status: "error",
+        text: `Tókst ekki að sækja miða: ${e instanceof Error ? e.message : String(e)}`,
+      });
+    }
+  };
   const selectCardMenuItems = filteredConditionalItems([
     {
       item: {
@@ -179,6 +225,14 @@ const OrderDetailsPage = (props: OrderDetailsPageProps) => {
         onSelect: onOrderReturn,
       },
       shouldExist: hasAnyItemsReplaceable(order),
+    },
+    {
+      // Craftware: print the Dropp shipping label.
+      item: {
+        label: intl.formatMessage(messages.printDroppLabel),
+        onSelect: handlePrintDroppLabel,
+      },
+      shouldExist: hasDroppLabel,
     },
   ]);
   const { ORDER_DETAILS_MORE_ACTIONS, ORDER_DETAILS_WIDGETS } = useExtensions(

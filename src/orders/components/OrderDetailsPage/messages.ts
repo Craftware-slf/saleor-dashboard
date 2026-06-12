@@ -26,4 +26,10 @@ export const messages = defineMessages({
     defaultMessage: "Edit order metadata",
     description: "order detail page, top-bar metadata button tooltip",
   },
+  // Craftware: print the carrier (Dropp) shipping label via saleor-app-bc.
+  printDroppLabel: {
+    id: "orninnPrintDroppLabel",
+    defaultMessage: "Prenta Dropp miða",
+    description: "order detail page, more-actions menu: print Dropp shipping label",
+  },
 });
