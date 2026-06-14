@@ -16,4 +16,9 @@ export const actionButtonsMessages = defineMessages({
     defaultMessage: "Add tracking",
     description: "add tracking button",
   },
+  printLabel: {
+    id: "wPlabel",
+    defaultMessage: "Print Label",
+    description: "print shipping label button",
+  },
 });

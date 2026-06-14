@@ -18,6 +18,9 @@ interface OrderFulfillmentCardProps {
   onOrderFulfillmentApprove: () => void;
   onOrderFulfillmentCancel: () => void;
   onTrackingCodeAdd: () => void;
+  // Craftware: carrier label print, surfaced next to the tracking button.
+  hasLabel?: boolean;
+  onPrintLabel?: () => void;
   dataTestId?: string;
   onOrderLineShowMetadata: (id: string) => void;
   onShowLinePriceBreakdown?: (lineId: string) => void;
@@ -49,6 +52,8 @@ export const OrderFulfillmentCard = (props: OrderFulfillmentCardProps) => {
     onOrderFulfillmentApprove,
     onOrderFulfillmentCancel,
     onTrackingCodeAdd,
+    hasLabel,
+    onPrintLabel,
     onOrderLineShowMetadata,
     onShowLinePriceBreakdown,
     onFulfillmentShowMetadata,
@@ -98,6 +103,8 @@ export const OrderFulfillmentCard = (props: OrderFulfillmentCardProps) => {
               onTrackingCodeAdd={onTrackingCodeAdd}
               onApprove={onOrderFulfillmentApprove}
               hasTransactions={orderHasTransactions(order)}
+              hasLabel={hasLabel}
+              onPrintLabel={onPrintLabel}
             />
             {cancelableStatuses.includes(fulfillment?.status) && (
               <Dropdown>

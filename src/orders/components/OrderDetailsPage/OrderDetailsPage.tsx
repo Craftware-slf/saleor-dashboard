@@ -318,6 +318,8 @@ const OrderDetailsPage = (props: OrderDetailsPageProps) => {
                   onOrderFulfillmentCancel={() => onFulfillmentCancel(fulfillment.id)}
                   onTrackingCodeAdd={() => onFulfillmentTrackingNumberUpdate(fulfillment.id)}
                   onOrderFulfillmentApprove={() => onFulfillmentApprove(fulfillment.id)}
+                  hasLabel={hasDroppLabel}
+                  onPrintLabel={handlePrintDroppLabel}
                 />
               ))}
 
