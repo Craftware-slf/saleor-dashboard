@@ -1,4 +1,5 @@
 import { type LanguageCodeEnum, type LanguageFragment } from "@dashboard/graphql";
+import { filterEnabledLanguages } from "@dashboard/translations/enabledLanguages";
 import { useCachedLocales } from "@dashboard/translations/useCachedLocales";
 import { Combobox, type ComboboxProps } from "@saleor/macaw-ui-next";
 
@@ -7,11 +8,6 @@ type BaseComboboxProps = ComboboxProps<
   LanguageCodeEnum
 >;
 type CutProps = Omit<BaseComboboxProps, "options" | "value">;
-
-// Craftware: Saleor exposes ~779 locales (Afrikaans, Aghem, …). Örninn only
-// uses Icelandic, plus Danish (DK brands) and English (base), so we filter the
-// language picker down to these. Edit this list to change which are selectable.
-const ALLOWED_LANGUAGE_CODES = new Set<string>(["IS", "DA", "EN"]);
 
 interface LanguageSwitchProps extends CutProps {
   currentLanguage: LanguageCodeEnum;
@@ -23,9 +19,7 @@ const LanguageSwitch = (props: LanguageSwitchProps) => {
   const { currentLanguage, languages, onLanguageChange, ...rest } = props;
 
   // Only the languages we use — but never hide the one currently selected.
-  const visibleLanguages = languages.filter(
-    l => ALLOWED_LANGUAGE_CODES.has(l.code) || l.code === currentLanguage,
-  );
+  const visibleLanguages = filterEnabledLanguages(languages, currentLanguage);
 
   return (
     <Combobox
