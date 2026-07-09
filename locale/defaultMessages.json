@@ -8599,6 +8599,10 @@
     "context": "btn label",
     "string": "Mark all as done"
   },
+  "iqa9C/": {
+    "context": "product SKU",
+    "string": "SKU"
+  },
   "isM94c": {
     "context": "create service token, button",
     "string": "Create"
@@ -9725,6 +9729,10 @@
   "oiuwOl": {
     "context": "button",
     "string": "Assign"
+  },
+  "orninnPrintDroppLabel": {
+    "context": "order detail page, more-actions menu: print Dropp shipping label",
+    "string": "Prenta Dropp miða"
   },
   "orvpWh": {
     "string": "Go back"
@@ -11266,6 +11274,10 @@
   "wOaLvi": {
     "context": "relative time",
     "string": "just now"
+  },
+  "wPlabel": {
+    "context": "print shipping label button",
+    "string": "Print Label"
   },
   "wQdR8M": {
     "string": "Add search engine title and description to make this category easier to find"

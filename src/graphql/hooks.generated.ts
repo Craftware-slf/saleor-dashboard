@@ -15766,6 +15766,9 @@ export const ProductListDocument = gql`
         updatedAt
         created
         description
+        variants {
+          sku
+        }
         attributes {
           ...ProductListAttribute
         }

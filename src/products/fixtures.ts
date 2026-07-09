@@ -1213,6 +1213,7 @@ export const product: (
 export const products = (placeholderImage: string): RelayToFlat<ProductListQuery["products"]> => [
   {
     __typename: "Product",
+    variants: [],
     description:
       "Fell straight from the tree, on to Newton's head, then into the bottle. The autumn taste of English apples. Brought to you by gravity.",
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
@@ -1313,6 +1314,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     attributes: [],
@@ -1413,6 +1415,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     attributes: [],
@@ -1513,6 +1516,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -1635,6 +1639,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -1757,6 +1762,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -1880,6 +1886,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -2002,6 +2009,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -2124,6 +2132,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -2246,6 +2255,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     description:
       "Fell straight from the tree, on to Newton's head, then into the bottle. The autumn taste of English apples. Brought to you by gravity.",
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
@@ -2368,6 +2378,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -2490,6 +2501,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -2612,6 +2624,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -2734,6 +2747,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -2856,6 +2870,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -2978,6 +2993,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -3100,6 +3116,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -3222,6 +3239,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -3344,6 +3362,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:
@@ -3466,6 +3485,7 @@ export const products = (placeholderImage: string): RelayToFlat<ProductListQuery
   },
   {
     __typename: "Product",
+    variants: [],
     updatedAt: "2020-06-22T13:52:05.094636+00:00",
     created: "2020-06-22T13:52:05.094636+00:00",
     description:

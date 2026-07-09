@@ -32,6 +32,9 @@ export const productListQuery = gql`
           updatedAt
           created
           description
+          variants {
+            sku
+          }
           attributes {
             ...ProductListAttribute
           }

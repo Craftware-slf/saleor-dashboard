@@ -41,7 +41,8 @@ export const getExtensionsConfig = () => ({
 
 // Craftware: base URL of the Örninn saleor-app-bc service (carrier label proxy, etc.).
 export const getSaleorAppBcUrl = (): string =>
-  (window?.__SALEOR_CONFIG__ as Record<string, string | undefined> | undefined)?.SALEOR_APP_BC_URL || "";
+  (window?.__SALEOR_CONFIG__ as Record<string, string | undefined> | undefined)
+    ?.SALEOR_APP_BC_URL || "";
 
 export const DEFAULT_INITIAL_SEARCH_DATA: SearchVariables = {
   after: null,
@@ -59,6 +60,7 @@ export const VALUES_PAGINATE_BY = 10;
 
 export type ProductListColumns =
   | "name"
+  | "sku"
   | "productType"
   | "description"
   | "availability"
@@ -143,7 +145,16 @@ export const defaultListSettings: AppListViewSettings = {
     rowNumber: PAGINATE_BY,
   },
   [ListViews.PRODUCT_LIST]: {
-    columns: ["name", "availability", "description", "price", "productType", "date", "created"],
+    columns: [
+      "name",
+      "sku",
+      "availability",
+      "description",
+      "price",
+      "productType",
+      "date",
+      "created",
+    ],
     rowNumber: PAGINATE_BY,
   },
   [ListViews.SALES_LIST]: {
