@@ -61,6 +61,11 @@ export const productListStaticColumnAdapter = ({
       width: 300,
     },
     {
+      id: "sku",
+      title: intl.formatMessage(columnsMessages.sku),
+      width: 200,
+    },
+    {
       id: "productType",
       title: intl.formatMessage(columnsMessages.type),
       width: 200,
@@ -207,6 +212,8 @@ export function createGetCellContent({
     );
 
     switch (columnId) {
+      case "sku":
+        return getSkuCellContent(rowData);
       case "productType":
         return getProductTypeCellContent(theme, rowData);
       case "availability":
@@ -245,6 +252,46 @@ function getDateCellContent(rowData: RelayToFlat<ProductListQuery["products"]>[n
 
 function getCreatedCellContent(rowData: RelayToFlat<ProductListQuery["products"]>[number]) {
   return dateCell(rowData?.created, COMMON_CELL_PROPS);
+}
+
+// Longest shared prefix across the variant SKUs, trimmed of a trailing
+// delimiter — e.g. ["0100619559/48/8", "0100619559/51/8"] -> "0100619559".
+// Products in this catalogue encode variants as `<base>/<size>/<colour>`, so
+// the shared base is the most useful single value to show for a multi-variant
+// product. Falls back to the first SKU when there's no common prefix.
+function commonSkuPrefix(skus: string[]): string {
+  const [first, ...rest] = skus;
+
+  if (!first) return "";
+
+  let prefix = first;
+
+  for (const sku of rest) {
+    while (prefix && !sku.startsWith(prefix)) prefix = prefix.slice(0, -1);
+
+    if (!prefix) break;
+  }
+
+  return prefix.replace(/[-_/\s]+$/, "") || first;
+}
+
+// Derive the value shown in the SKU column from a product's variant SKUs.
+// A product has no single SKU (SKUs live on variants), so: one variant → its
+// SKU; many → the shared base SKU plus a count; none → "-". Exported for tests.
+export function getSkuValue(skus: string[]): string {
+  if (skus.length === 0) return "-";
+
+  if (skus.length === 1) return skus[0];
+
+  return `${commonSkuPrefix(skus)} (+${skus.length})`;
+}
+
+function getSkuCellContent(rowData: RelayToFlat<ProductListQuery["products"]>[number]) {
+  const skus = (rowData?.variants ?? [])
+    .map(variant => variant.sku)
+    .filter((sku): sku is string => Boolean(sku));
+
+  return readonlyTextCell(getSkuValue(skus), skus.length === 0);
 }
 
 function getProductTypeCellContent(

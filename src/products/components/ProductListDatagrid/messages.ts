@@ -55,6 +55,11 @@ export const columnsMessages = defineMessages({
     defaultMessage: "Collections",
     description: "Product collections",
   },
+  sku: {
+    id: "iqa9C/",
+    defaultMessage: "SKU",
+    description: "product SKU",
+  },
 });
 
 export const categoryMetaGroups = defineMessages({

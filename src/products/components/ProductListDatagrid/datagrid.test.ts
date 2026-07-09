@@ -1,4 +1,4 @@
-import { getDescriptionValue } from "./datagrid";
+import { getDescriptionValue, getSkuValue } from "./datagrid";
 
 describe("getDescriptionValue", () => {
   it("should return description value", () => {
@@ -45,5 +45,25 @@ describe("getDescriptionValue", () => {
     ).toBe(
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In tempus, nisi sed dapibus eleifend, nisl ...",
     );
+  });
+});
+
+describe("getSkuValue", () => {
+  it("should show a dash when the product has no variant SKUs", () => {
+    expect(getSkuValue([])).toBe("-");
+  });
+
+  it("should show the SKU for a single-variant product", () => {
+    expect(getSkuValue(["0100645087"])).toBe("0100645087");
+  });
+
+  it("should show the shared base SKU and a count for a multi-variant product", () => {
+    expect(getSkuValue(["0100619559/48/8", "0100619559/51/8", "0100619559/54/8"])).toBe(
+      "0100619559 (+3)",
+    );
+  });
+
+  it("should fall back to the first SKU when variants share no common prefix", () => {
+    expect(getSkuValue(["ABC-1", "XYZ-2"])).toBe("ABC-1 (+2)");
   });
 });
