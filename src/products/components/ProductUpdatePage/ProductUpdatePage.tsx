@@ -77,6 +77,7 @@ import { ProductShipping } from "../ProductShipping";
 import { ProductTaxes } from "../ProductTaxes/ProductTaxes";
 import { type BulkCreateResult } from "../ProductVariantGenerator/types";
 import { ProductVariants } from "../ProductVariants/ProductVariants";
+import { ReformatSpecsButton } from "../ReformatSpecsButton";
 import ProductUpdateForm from "./form";
 import { messages } from "./messages";
 import ProductChannelsListingsDialog from "./ProductChannelsListingsDialog";
@@ -500,6 +501,17 @@ const ProductUpdatePage = ({
                   openMediaUrlModal={() => setMediaUrlModalStatus(true)}
                   getImageEditUrl={imageId => productImageUrl(productId, imageId)}
                 />
+                {!!productId &&
+                  product?.attributes?.some(a => a.attribute.slug === "specifications") && (
+                    <ReformatSpecsButton
+                      productId={productId}
+                      specifications={
+                        product.attributes.find(a => a.attribute.slug === "specifications")
+                          ?.values?.[0]?.richText ?? null
+                      }
+                      onDone={refetch}
+                    />
+                  )}
                 {data.attributes.length > 0 && (
                   <Attributes
                     attributes={data.attributes}
