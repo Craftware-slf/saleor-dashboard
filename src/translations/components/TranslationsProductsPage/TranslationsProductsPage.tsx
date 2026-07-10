@@ -146,13 +146,18 @@ export const TranslationsProductsPage = ({
         )}
       >
         <Box display="flex" gap={3} alignItems="center">
-          {onTranslateAll && (
+          {/* Hidden on the English base locale — translating EN→EN is a no-op. The
+              label names the target language (no bare arrow), and the tooltip is
+              explicit about scope: this button does name/description/SEO only, NOT
+              specifications (those go through the AI translations tool). */}
+          {onTranslateAll && languageCode !== LanguageCodeEnum.EN && (
             <Button
               variant="primary"
               onClick={onTranslateAll}
               disabled={disabled || translateAllLoading}
+              title="Uses AI to translate the name, description and SEO fields to the selected language. Product specifications are translated in the AI translations tool."
             >
-              {translateAllLoading ? "Translating all…" : `✨ Translate all → ${languageCode}`}
+              {translateAllLoading ? "Translating…" : `✨ AI-translate ${languageCode}`}
             </Button>
           )}
           {menuItems.length > 0 && (
