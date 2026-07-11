@@ -509,6 +509,7 @@ const ProductUpdatePage = ({
                         product.attributes.find(a => a.attribute.slug === "specifications")
                           ?.values?.[0]?.richText ?? null
                       }
+                      description={product.description ?? null}
                       onDone={refetch}
                     />
                   )}
