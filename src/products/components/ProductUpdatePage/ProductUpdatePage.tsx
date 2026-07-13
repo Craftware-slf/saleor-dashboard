@@ -505,6 +505,7 @@ const ProductUpdatePage = ({
                   product?.attributes?.some(a => a.attribute.slug === "specifications") && (
                     <ReformatSpecsButton
                       productId={productId}
+                      name={product.name}
                       specifications={
                         product.attributes.find(a => a.attribute.slug === "specifications")
                           ?.values?.[0]?.richText ?? null

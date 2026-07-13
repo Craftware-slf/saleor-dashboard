@@ -5,6 +5,9 @@ import { ReformatSpecsModal } from "./ReformatSpecsModal";
 
 interface ReformatSpecsButtonProps {
   productId: string;
+  // Product name — passed to the model as context (helps it understand what the
+  // product is when normalising the spec); never written back.
+  name: string;
   // Current saved editor.js values.
   specifications: string | null;
   description: string | null;
@@ -19,6 +22,7 @@ interface ReformatSpecsButtonProps {
  */
 export const ReformatSpecsButton: React.FC<ReformatSpecsButtonProps> = ({
   productId,
+  name,
   specifications,
   description,
   onDone,
@@ -34,6 +38,7 @@ export const ReformatSpecsButton: React.FC<ReformatSpecsButtonProps> = ({
         open={open}
         onClose={() => setOpen(false)}
         productId={productId}
+        name={name}
         specifications={specifications}
         description={description}
         onDone={onDone}

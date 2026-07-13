@@ -37,6 +37,7 @@ interface Props {
   open: boolean;
   onClose: () => void;
   productId: string;
+  name: string;
   specifications: string | null;
   description: string | null;
   onDone: () => Promise<unknown>;
@@ -46,6 +47,7 @@ export const ReformatSpecsModal: React.FC<Props> = ({
   open,
   onClose,
   productId,
+  name,
   specifications,
   description,
   onDone,
@@ -124,6 +126,7 @@ export const ReformatSpecsModal: React.FC<Props> = ({
         headers,
         body: JSON.stringify({
           mode: m,
+          name,
           specifications,
           ...(m === "both" ? { description: description ?? "" } : {}),
         }),
