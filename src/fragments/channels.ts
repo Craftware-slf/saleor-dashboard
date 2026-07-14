@@ -29,6 +29,10 @@ export const channelDetailsFragment = gql`
   fragment ChannelDetails on Channel {
     ...Channel
     hasOrders
+    metadata {
+      key
+      value
+    }
     warehouses {
       ...Warehouse
     }

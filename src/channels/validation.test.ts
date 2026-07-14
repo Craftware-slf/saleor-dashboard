@@ -24,6 +24,7 @@ describe("validateChannelFormData", () => {
     warehousesToDisplay: [],
     markAsPaidStrategy: MarkAsPaidStrategyEnum.TRANSACTION_FLOW,
     deleteExpiredOrdersAfter: 30,
+    newBadgeWindowDays: 30,
     allowUnpaidOrders: false,
     defaultTransactionFlowStrategy: TransactionFlowStrategyEnum.AUTHORIZATION,
     automaticallyCompleteCheckouts: false,

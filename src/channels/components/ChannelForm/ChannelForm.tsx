@@ -42,6 +42,9 @@ export interface FormData extends StockSettingsInput {
   defaultCountry: CountryCode;
   markAsPaidStrategy: MarkAsPaidStrategyEnum;
   deleteExpiredOrdersAfter: number;
+  // Örninn (FEAT-051): "New" badge window in days, persisted to the channel's
+  // `new_badge_window_days` metadata and read by the new-arrivals reconcile job.
+  newBadgeWindowDays: number | string | null;
   allowUnpaidOrders: boolean;
   defaultTransactionFlowStrategy: TransactionFlowStrategyEnum;
   automaticallyCompleteCheckouts: boolean;
@@ -225,6 +228,19 @@ export const ChannelForm = ({
             max={120}
             // TODO: Should be removed after single autocomplete
             // select is migrated to macaw inputs
+            __height={12.5}
+          />
+        </Box>
+        <Box paddingX={6}>
+          {/* Örninn (FEAT-051): drives the storefront "New" badge window. */}
+          <Input
+            name="newBadgeWindowDays"
+            data-test-id="new-badge-window-days-input"
+            value={data.newBadgeWindowDays ?? ""}
+            type="number"
+            label="New badge window (days)"
+            onChange={onChange}
+            min={0}
             __height={12.5}
           />
         </Box>

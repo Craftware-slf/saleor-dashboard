@@ -134,6 +134,9 @@ const ChannelDetailsPage = function <TErrors extends ChannelErrorFragment[]>({
     markAsPaidStrategy:
       orderSettings?.markAsPaidStrategy ?? MarkAsPaidStrategyEnum.TRANSACTION_FLOW,
     deleteExpiredOrdersAfter: orderSettings?.deleteExpiredOrdersAfter,
+    // Örninn (FEAT-051): seed from the channel's new_badge_window_days metadata.
+    newBadgeWindowDays:
+      channel?.metadata?.find(m => m.key === "new_badge_window_days")?.value ?? "",
     allowUnpaidOrders: orderSettings?.allowUnpaidOrders,
     defaultTransactionFlowStrategy: paymentSettings?.defaultTransactionFlowStrategy,
     allowLegacyGiftCardUse: checkoutSettings?.allowLegacyGiftCardUse,
