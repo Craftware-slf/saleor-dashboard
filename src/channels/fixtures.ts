@@ -8,6 +8,7 @@ import {
 export const channelsList: ChannelDetailsFragment[] = [
   {
     __typename: "Channel",
+    metadata: [],
     currencyCode: "EUR",
     hasOrders: false,
     id: "Q2hhbm5lcDoy",
@@ -55,6 +56,7 @@ export const channelsList: ChannelDetailsFragment[] = [
   },
   {
     __typename: "Channel",
+    metadata: [],
     currencyCode: "EUR",
     hasOrders: false,
     id: "Q2hhbm7lbDoy213",
@@ -102,6 +104,7 @@ export const channelsList: ChannelDetailsFragment[] = [
   },
   {
     __typename: "Channel",
+    metadata: [],
     currencyCode: "EUR",
     hasOrders: false,
     id: "Q2hhbn5lbDoytr",
@@ -149,6 +152,7 @@ export const channelsList: ChannelDetailsFragment[] = [
   },
   {
     __typename: "Channel",
+    metadata: [],
     currencyCode: "EUR",
     hasOrders: false,
     id: "Q2hhbm5lbDo5bot",
@@ -196,6 +200,7 @@ export const channelsList: ChannelDetailsFragment[] = [
   },
   {
     __typename: "Channel",
+    metadata: [],
     currencyCode: "EUR",
     hasOrders: false,
     id: "Q2hhbm7lbDoyr0tr",
@@ -243,6 +248,7 @@ export const channelsList: ChannelDetailsFragment[] = [
   },
   {
     __typename: "Channel",
+    metadata: [],
     currencyCode: "EUR",
     hasOrders: false,
     id: "Q2hhbn5lbDoyya",
@@ -290,6 +296,7 @@ export const channelsList: ChannelDetailsFragment[] = [
   },
   {
     __typename: "Channel",
+    metadata: [],
     currencyCode: "EUR",
     hasOrders: false,
     id: "Q2hhbm5lbDo5w0z",
@@ -339,6 +346,7 @@ export const channelsList: ChannelDetailsFragment[] = [
 
 export const channel: ChannelDetailsFragment = {
   __typename: "Channel",
+  metadata: [],
   currencyCode: "zl",
   hasOrders: false,
   id: "Q2hhbm5lbDov78",

@@ -100,6 +100,7 @@ const ChannelDetails = ({ id, params }: ChannelDetailsProps) => {
     defaultCountry,
     defaultTransactionFlowStrategy,
     deleteExpiredOrdersAfter,
+    newBadgeWindowDays,
     markAsPaidStrategy,
     name,
     shippingZonesIdsToAdd,
@@ -156,6 +157,14 @@ const ChannelDetails = ({ id, params }: ChannelDetailsProps) => {
             allowLegacyGiftCardUse,
           },
           slug,
+          // Örninn (FEAT-051): persist the "New" badge window to channel metadata
+          // (upsert — other keys are preserved). Read by the reconcile job.
+          metadata: [
+            {
+              key: "new_badge_window_days",
+              value: String(newBadgeWindowDays ?? ""),
+            },
+          ],
           defaultCountry,
           addShippingZones: shippingZonesIdsToAdd,
           removeShippingZones: shippingZonesIdsToRemove,
