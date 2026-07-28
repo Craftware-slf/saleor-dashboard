@@ -1,4 +1,3 @@
-import { getStorefrontPreviewUrl } from "@dashboard/config";
 import { useNotifier } from "@dashboard/hooks/useNotifier";
 import { storage } from "@dashboard/legacy-sdk/core/storage";
 import { type OutputData } from "@editorjs/editorjs";
@@ -17,6 +16,10 @@ const LIVE_PUSH_INTERVAL_MS = 1000;
 
 export interface PreviewOnStorefrontButtonProps {
   slug: string;
+  /** Storefront serving this product's channel — one button per channel it's listed in. */
+  previewUrl: string;
+  /** Channel name for the label, so a multi-channel product's buttons are tellable apart. */
+  channelName: string;
   /** Live form value, read at click time — NOT the saved product name. */
   getName: () => string;
   /**
@@ -32,6 +35,8 @@ export interface PreviewOnStorefrontButtonProps {
 
 export const PreviewOnStorefrontButton: FC<PreviewOnStorefrontButtonProps> = ({
   slug,
+  previewUrl,
+  channelName,
   getName,
   getDescription,
   getSpecifications,
@@ -90,7 +95,7 @@ export const PreviewOnStorefrontButton: FC<PreviewOnStorefrontButtonProps> = ({
         return;
       }
 
-      const base = getStorefrontPreviewUrl().replace(/\/+$/, "");
+      const base = previewUrl.replace(/\/+$/, "");
       const timer = setInterval((): void => {
         void (async (): Promise<void> => {
           const token = storage.getAccessToken();
@@ -130,11 +135,11 @@ export const PreviewOnStorefrontButton: FC<PreviewOnStorefrontButtonProps> = ({
         clearInterval(timer);
       };
     },
-    [live, collectFields],
+    [live, collectFields, previewUrl],
   );
 
   const onClick = async (): Promise<void> => {
-    const base = getStorefrontPreviewUrl().replace(/\/+$/, "");
+    const base = previewUrl.replace(/\/+$/, "");
 
     if (!base) {
       notify({ status: "error", text: "Storefront preview URL is not configured." });
@@ -198,7 +203,11 @@ export const PreviewOnStorefrontButton: FC<PreviewOnStorefrontButtonProps> = ({
         disabled={busy}
         data-test-id="preview-on-storefront"
       >
-        {busy ? "Opening preview…" : live ? "Reopen preview tab" : "Preview on storefront"}
+        {busy
+          ? "Opening preview…"
+          : live
+            ? `Reopen ${channelName} preview`
+            : `Preview on ${channelName}`}
       </Button>
       <Text size={2} color="default2">
         {live

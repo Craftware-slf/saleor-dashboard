@@ -19,7 +19,7 @@ import { type InitialPageConstraints } from "@dashboard/components/ModalFilters/
 import { type InitialConstraints } from "@dashboard/components/ModalFilters/entityConfigs/ModalProductFilterProvider";
 import { Savebar } from "@dashboard/components/Savebar";
 import { SeoForm } from "@dashboard/components/SeoForm";
-import { getStorefrontPreviewChannel } from "@dashboard/config";
+import { getStorefrontPreviewUrls } from "@dashboard/config";
 import { useActiveAppExtension } from "@dashboard/extensions/components/AppExtensionContext/AppExtensionContextProvider";
 import { AppWidgets } from "@dashboard/extensions/components/AppWidgets/AppWidgets";
 import { extensionMountPoints } from "@dashboard/extensions/extensionMountPoints";
@@ -214,11 +214,14 @@ const ProductUpdatePage = ({
   // Store richText ref to allow updating description from outside render prop
   const richTextRef = useRef<UseRichTextResult | null>(null);
 
-  // Craftware: the channel served by the storefront-preview button (FEAT-069). Resolved to
-  // an id here so the button can be gated on the product actually being listed there.
-  const previewChannelId = channels?.find(
-    channel => channel.slug === getStorefrontPreviewChannel(),
-  )?.id;
+  // Craftware: storefront-preview targets (FEAT-069) — one per channel that both has a
+  // configured storefront AND this product is listed in. A product sold in two brands gets
+  // two buttons; a channel with no configured URL gets none.
+  const previewTargets = (channels ?? []).flatMap(channel => {
+    const url = getStorefrontPreviewUrls()[channel.slug];
+
+    return url ? [{ id: channel.id, name: channel.name, slug: channel.slug, url }] : [];
+  });
 
   const intl = useIntl();
   const { user } = useUser();
@@ -536,32 +539,38 @@ const ProductUpdatePage = ({
                     preview storefront serves — otherwise Saleor's channel-scoped PDP query would
                     just 404. */}
                 {!!product?.slug &&
-                  previewChannelId !== undefined &&
-                  (data.channels.updateChannels ?? []).some(
-                    listing => listing.channelId === previewChannelId,
-                  ) && (
-                    <PreviewOnStorefrontButton
-                      slug={product.slug}
-                      getName={() => dataCache.current?.name ?? product.name}
-                      // descriptionCache, NOT richText.getValue() — the latter clears isDirty
-                      // and would make the next Save drop the editor's description edits.
-                      getDescription={() => descriptionCache.current}
-                      getSpecifications={async () => {
-                        const specAttributeId = product.attributes?.find(
-                          a => a.attribute.slug === "specifications",
-                        )?.attribute.id;
+                  previewTargets
+                    .filter(target =>
+                      (data.channels.updateChannels ?? []).some(
+                        listing => listing.channelId === target.id,
+                      ),
+                    )
+                    .map(target => (
+                      <PreviewOnStorefrontButton
+                        key={target.slug}
+                        slug={product.slug}
+                        previewUrl={target.url}
+                        channelName={target.name}
+                        getName={() => dataCache.current?.name ?? product.name}
+                        // descriptionCache, NOT richText.getValue() — the latter clears isDirty
+                        // and would make the next Save drop the editor's description edits.
+                        getDescription={() => descriptionCache.current}
+                        getSpecifications={async () => {
+                          const specAttributeId = product.attributes?.find(
+                            a => a.attribute.slug === "specifications",
+                          )?.attribute.id;
 
-                        if (!specAttributeId) {
-                          return null;
-                        }
+                          if (!specAttributeId) {
+                            return null;
+                          }
 
-                        const values = await getAttributeRichTextValues();
-                        const value = values[specAttributeId];
+                          const values = await getAttributeRichTextValues();
+                          const value = values[specAttributeId];
 
-                        return value ? JSON.stringify(value) : null;
-                      }}
-                    />
-                  )}
+                          return value ? JSON.stringify(value) : null;
+                        }}
+                      />
+                    ))}
                 {data.attributes.length > 0 && (
                   <Attributes
                     attributes={data.attributes}
