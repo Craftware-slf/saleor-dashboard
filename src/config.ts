@@ -44,6 +44,26 @@ export const getSaleorAppBcUrl = (): string =>
   (window?.__SALEOR_CONFIG__ as Record<string, string | undefined> | undefined)
     ?.SALEOR_APP_BC_URL || "";
 
+// Craftware: storefronts that serve product preview, one per Saleor channel (FEAT-069).
+// Keyed by channel slug because each brand has its own storefront, and Saleor's PDP query
+// is channel-scoped — previewing a golf product on the hjol storefront would 404.
+//
+// A channel with no URL simply gets no button, so an unconfigured (or partly configured)
+// deploy degrades to "no feature" rather than a broken button. Mirrors the
+// SANITY_STUDIO_PREVIEW_URL_* convention used for the Studio's preview origins.
+export const getStorefrontPreviewUrls = (): Record<string, string> => {
+  const cfg = window?.__SALEOR_CONFIG__ as Record<string, string | undefined> | undefined;
+
+  return {
+    hjol: cfg?.STOREFRONT_PREVIEW_URL_HJOL || "",
+    golf: cfg?.STOREFRONT_PREVIEW_URL_GOLF || "",
+    fifa: cfg?.STOREFRONT_PREVIEW_URL_FIFA || "",
+  };
+};
+
+export const getStorefrontPreviewUrl = (channelSlug: string): string =>
+  getStorefrontPreviewUrls()[channelSlug] || "";
+
 export const DEFAULT_INITIAL_SEARCH_DATA: SearchVariables = {
   after: null,
   first: 20,

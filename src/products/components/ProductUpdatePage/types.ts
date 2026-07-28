@@ -28,6 +28,7 @@ import {
 import { type AttributeValuesMetadata } from "@dashboard/products/utils/data";
 import { type UseProductUpdateHandlerError } from "@dashboard/products/views/ProductUpdate/handlers/useProductUpdateHandler";
 import { type FetchMoreProps, type RelayToFlat, type ReorderEvent } from "@dashboard/types";
+import { type GetRichTextValues } from "@dashboard/utils/richText/useMultipleRichText";
 import { type OutputData } from "@editorjs/editorjs";
 import { type Option } from "@saleor/macaw-ui-next";
 
@@ -86,6 +87,9 @@ export interface UseProductUpdateFormOutput
   datagrid: UseDatagridChangeState;
   formErrors: FormErrors<ProductUpdateSubmitData>;
   touchedChannels: string[];
+  // Craftware: current (unsaved) rich-text attribute values, keyed by attribute id.
+  // Needed outside submit by the storefront-preview button (FEAT-069).
+  getAttributeRichTextValues: () => Promise<GetRichTextValues>;
 }
 
 type UseProductUpdateFormRenderProps = Omit<UseProductUpdateFormOutput, "datagrid">;
