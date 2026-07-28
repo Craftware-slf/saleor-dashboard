@@ -19,6 +19,7 @@ import { type InitialPageConstraints } from "@dashboard/components/ModalFilters/
 import { type InitialConstraints } from "@dashboard/components/ModalFilters/entityConfigs/ModalProductFilterProvider";
 import { Savebar } from "@dashboard/components/Savebar";
 import { SeoForm } from "@dashboard/components/SeoForm";
+import { getStorefrontPreviewChannel } from "@dashboard/config";
 import { useActiveAppExtension } from "@dashboard/extensions/components/AppExtensionContext/AppExtensionContextProvider";
 import { AppWidgets } from "@dashboard/extensions/components/AppWidgets/AppWidgets";
 import { extensionMountPoints } from "@dashboard/extensions/extensionMountPoints";
@@ -68,6 +69,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useIntl } from "react-intl";
 
 import { type AttributeValuesMetadata, getChoices } from "../../utils/data";
+import { PreviewOnStorefrontButton } from "../PreviewOnStorefrontButton";
 import { ProductDetailsForm } from "../ProductDetailsForm";
 import { AvailabilityCard } from "../ProductDoctor/AvailabilityCard";
 import { useProductAvailabilityDiagnostics } from "../ProductDoctor/hooks/useProductAvailabilityDiagnostics";
@@ -211,6 +213,12 @@ const ProductUpdatePage = ({
   const changeHandlerRef = useRef<FormChange | null>(null);
   // Store richText ref to allow updating description from outside render prop
   const richTextRef = useRef<UseRichTextResult | null>(null);
+
+  // Craftware: the channel served by the storefront-preview button (FEAT-069). Resolved to
+  // an id here so the button can be gated on the product actually being listed there.
+  const previewChannelId = channels?.find(
+    channel => channel.slug === getStorefrontPreviewChannel(),
+  )?.id;
 
   const intl = useIntl();
   const { user } = useUser();
@@ -428,7 +436,16 @@ const ProductUpdatePage = ({
       disabled={disabled}
       refetch={refetch}
     >
-      {({ change, data, handlers, submit, isSaveDisabled, attributeRichTextGetters, richText }) => {
+      {({
+        change,
+        data,
+        handlers,
+        submit,
+        isSaveDisabled,
+        attributeRichTextGetters,
+        getAttributeRichTextValues,
+        richText,
+      }) => {
         // Store change handler so it can be accessed from useEffect
         changeHandlerRef.current = change;
         // Store richText so it can be accessed from useEffect
@@ -512,6 +529,37 @@ const ProductUpdatePage = ({
                       }
                       description={product.description ?? null}
                       onDone={refetch}
+                    />
+                  )}
+                {/* Craftware: preview this product on the storefront, unsaved edits included
+                    (FEAT-069). Shown only for a saved product that is listed in the channel the
+                    preview storefront serves — otherwise Saleor's channel-scoped PDP query would
+                    just 404. */}
+                {!!product?.slug &&
+                  previewChannelId !== undefined &&
+                  (data.channels.updateChannels ?? []).some(
+                    listing => listing.channelId === previewChannelId,
+                  ) && (
+                    <PreviewOnStorefrontButton
+                      slug={product.slug}
+                      getName={() => dataCache.current?.name ?? product.name}
+                      // descriptionCache, NOT richText.getValue() — the latter clears isDirty
+                      // and would make the next Save drop the editor's description edits.
+                      getDescription={() => descriptionCache.current}
+                      getSpecifications={async () => {
+                        const specAttributeId = product.attributes?.find(
+                          a => a.attribute.slug === "specifications",
+                        )?.attribute.id;
+
+                        if (!specAttributeId) {
+                          return null;
+                        }
+
+                        const values = await getAttributeRichTextValues();
+                        const value = values[specAttributeId];
+
+                        return value ? JSON.stringify(value) : null;
+                      }}
                     />
                   )}
                 {data.attributes.length > 0 && (

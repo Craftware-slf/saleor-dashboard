@@ -44,6 +44,20 @@ export const getSaleorAppBcUrl = (): string =>
   (window?.__SALEOR_CONFIG__ as Record<string, string | undefined> | undefined)
     ?.SALEOR_APP_BC_URL || "";
 
+// Craftware: storefront that serves product preview (FEAT-069). Empty hides the
+// "Preview on storefront" button, so an unconfigured deploy degrades to no feature
+// rather than a broken button.
+export const getStorefrontPreviewUrl = (): string =>
+  (window?.__SALEOR_CONFIG__ as Record<string, string | undefined> | undefined)
+    ?.STOREFRONT_PREVIEW_URL || "";
+
+// Craftware: the Saleor channel that storefront serves. The button only appears for
+// products listed in this channel — previewing a golf-only product on the hjol
+// storefront would 404, since Saleor scopes the PDP query by channel.
+export const getStorefrontPreviewChannel = (): string =>
+  (window?.__SALEOR_CONFIG__ as Record<string, string | undefined> | undefined)
+    ?.STOREFRONT_PREVIEW_CHANNEL || "hjol";
+
 export const DEFAULT_INITIAL_SEARCH_DATA: SearchVariables = {
   after: null,
   first: 20,

@@ -27,5 +27,7 @@ replace_env_var "IS_CLOUD_INSTANCE"
 replace_env_var "LOCALE_CODE"
 # Craftware: base URL of the Örninn saleor-app-bc service (carrier label proxy).
 replace_env_var "SALEOR_APP_BC_URL"
+replace_env_var "STOREFRONT_PREVIEW_URL"
+replace_env_var "STOREFRONT_PREVIEW_CHANNEL"
 
 echo "Environment variable replacement complete."

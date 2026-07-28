@@ -290,6 +290,11 @@ export function useProductUpdateForm(
     isSaveDisabled,
     richText,
     attributeRichTextGetters,
+    // Craftware: read the CURRENT (unsaved) rich-text attribute values, e.g. specifications.
+    // Only getSubmitData used this before; the storefront-preview button needs it too.
+    // Safe to call outside submit: unlike richText.getValue(), this has no isDirty side
+    // effect — it just calls save() on each mounted editor.
+    getAttributeRichTextValues,
     touchedChannels: touchedChannels.current,
   };
 }
