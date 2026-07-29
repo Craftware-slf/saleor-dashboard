@@ -8421,6 +8421,10 @@
     "context": "button",
     "string": "Send"
   },
+  "hrga6y": {
+    "context": "print shipping label button",
+    "string": "Print Label"
+  },
   "hrhqju": {
     "string": "You are currently logged in using an external identity provider. Logging in through email and password may result in loss of permissions and may render you incapable of managing the store. If you experience trouble authenticating, go back and contact your organization's administrator for assistance."
   },
@@ -9730,10 +9734,6 @@
     "context": "button",
     "string": "Assign"
   },
-  "orninnPrintDroppLabel": {
-    "context": "order detail page, more-actions menu: print Dropp shipping label",
-    "string": "Prenta Dropp miða"
-  },
   "orvpWh": {
     "string": "Go back"
   },
@@ -10581,6 +10581,10 @@
     "context": "radio option for capturing order total",
     "string": "Order total"
   },
+  "tS3aVA": {
+    "context": "order detail page, more-actions menu: print Dropp shipping label",
+    "string": "Prenta Dropp miða"
+  },
   "tSmJPv": {
     "context": "Tooltip explanation for direct stock-availability mode",
     "string": "Stock is considered available whenever the warehouse is assigned to this channel. Shipping zones only affect order fulfillment, not availability."
@@ -11274,10 +11278,6 @@
   "wOaLvi": {
     "context": "relative time",
     "string": "just now"
-  },
-  "wPlabel": {
-    "context": "print shipping label button",
-    "string": "Print Label"
   },
   "wQdR8M": {
     "string": "Add search engine title and description to make this category easier to find"

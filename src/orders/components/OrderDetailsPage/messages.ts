@@ -28,7 +28,7 @@ export const messages = defineMessages({
   },
   // Craftware: print the carrier (Dropp) shipping label via saleor-app-bc.
   printDroppLabel: {
-    id: "orninnPrintDroppLabel",
+    id: "tS3aVA",
     defaultMessage: "Prenta Dropp miða",
     description: "order detail page, more-actions menu: print Dropp shipping label",
   },

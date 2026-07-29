@@ -141,7 +141,8 @@ const TranslationsProducts = ({ id, languageCode, params }: TranslationsProducts
   // Then write it all with a single productTranslate mutation.
   const [translatingAll, setTranslatingAll] = useState(false);
   const handleTranslateAll = async () => {
-    const base = translation?.__typename === "ProductTranslatableContent" ? translation.product : null;
+    const base =
+      translation?.__typename === "ProductTranslatableContent" ? translation.product : null;
 
     if (!base) {
       return;
