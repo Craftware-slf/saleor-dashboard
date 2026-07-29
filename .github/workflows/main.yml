@@ -13,20 +13,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check-lock:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          persist-credentials: false
-      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version-file: "package.json"
-          # Don't cache in this job as we don't install dependencies
-
-      - name: Audit dependencies
-        run: pnpm audit --audit-level moderate
+  # Craftware: `check-lock` (pnpm audit --audit-level moderate) removed — it fails
+  # on advisories in upstream Saleor's dependency tree, which this fork does not
+  # control, so it was permanently red and made the whole QA job meaningless.
+  # Dependency advisories are handled by Dependabot/`dependency-check.yaml`, not here.
+  # See FEAT-075.
 
   tsc-and-linters:
     runs-on: ubuntu-22.04
@@ -137,27 +128,9 @@ jobs:
           directory: coverage/storybook
           flags: storybook
 
-  chromatic:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-      - uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
-        with:
-          node-version-file: "package.json"
-          cache: "pnpm"
-
-      - name: Install deps
-        run: pnpm install
-
-      - name: Run Chromatic
-        uses: chromaui/action@c93e0bc3a63aa176e14a75b61a31847cbfdd341c # v11.27.0
-        with:
-          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          exitZeroOnChanges: true
-          autoAcceptChanges: main
-          onlyChanged: true
-          zip: true
+  # Craftware: `chromatic` removed — it needs a CHROMATIC_PROJECT_TOKEN secret this
+  # fork does not have, so it errored out on every PR. There is no visual-approval
+  # workflow here to justify obtaining one. Storybook itself still runs (see
+  # `storybook-tests` above); only the hosted visual-diff upload is gone, and the
+  # `src/storybook/chromatic.ts` helpers are left in place for upstream merges.
+  # Restore by re-adding this job plus the secret. See FEAT-075.

@@ -8,6 +8,7 @@ import Form from "@dashboard/components/Form";
 import { DetailPageLayout } from "@dashboard/components/Layouts";
 import { type MetadataIdSchema } from "@dashboard/components/Metadata";
 import { Savebar } from "@dashboard/components/Savebar";
+import { getSaleorAppBcUrl } from "@dashboard/config";
 import { AppWidgets } from "@dashboard/extensions/components/AppWidgets/AppWidgets";
 import { extensionMountPoints } from "@dashboard/extensions/extensionMountPoints";
 import { getExtensionsItemsForOrderDetails } from "@dashboard/extensions/getExtensionsItems";
@@ -24,7 +25,6 @@ import { useBackLinkWithState } from "@dashboard/hooks/useBackLinkWithState";
 import { type SubmitPromise } from "@dashboard/hooks/useForm";
 import useNavigator from "@dashboard/hooks/useNavigator";
 import { useNotifier } from "@dashboard/hooks/useNotifier";
-import { getSaleorAppBcUrl } from "@dashboard/config";
 import { storage } from "@dashboard/legacy-sdk/core/storage";
 import { defaultGraphiQLQuery } from "@dashboard/orders/queries";
 import { rippleOrderMetadata } from "@dashboard/orders/ripples/orderMetadata";
@@ -177,21 +177,29 @@ const OrderDetailsPage = (props: OrderDetailsPageProps) => {
   const handlePrintDroppLabel = async () => {
     const token = storage.getAccessToken();
     const base = getSaleorAppBcUrl().replace(/\/+$/, "");
+
     if (!token || !order?.id) {
       notify({ status: "error", text: "Vantar auðkenni eða pöntun." });
+
       return;
     }
+
     if (!base) {
       notify({ status: "error", text: "SALEOR_APP_BC_URL er ekki stillt." });
+
       return;
     }
+
     try {
       const res = await fetch(`${base}/api/label?orderId=${encodeURIComponent(order.id)}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
       const url = URL.createObjectURL(await res.blob());
       const iframe = document.createElement("iframe");
+
       iframe.style.display = "none";
       iframe.src = url;
       iframe.onload = () => {
