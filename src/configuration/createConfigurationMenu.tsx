@@ -20,12 +20,27 @@ import { siteSettingsUrl } from "@dashboard/siteSettings/urls";
 import { staffListUrl } from "@dashboard/staff/urls";
 import { taxConfigurationListUrl } from "@dashboard/taxes/urls";
 import { warehouseSection } from "@dashboard/warehouses/urls";
-import { CreditCard } from "lucide-react";
+import { CreditCard, Mail } from "lucide-react";
 import { type IntlShape } from "react-intl";
 
 import { type MenuSection } from "./types";
 
-export function createConfigurationMenu(intl: IntlShape): MenuSection[] {
+/**
+ * Craftware (FEAT-091): the customer-email editor is a page of the BC Sync app, so
+ * its URL is only known at runtime (the app id differs per environment). It is
+ * resolved by the caller via `useOrninnEmailEditorUrl` and passed in; `null` while
+ * loading or when the app is not installed, in which case the section is omitted
+ * entirely rather than rendering a dead card.
+ *
+ * Configuration is the right home for it — beside Shipping, Taxes and Site
+ * settings, all "how the store behaves". Saleor's own app-extension mounts cannot
+ * reach this page (none of its 51 mount points is Configuration-related), which is
+ * why this is a fork patch rather than a manifest entry.
+ */
+export function createConfigurationMenu(
+  intl: IntlShape,
+  emailEditorUrl?: string | null,
+): MenuSection[] {
   return [
     {
       label: intl.formatMessage({
@@ -188,5 +203,33 @@ export function createConfigurationMenu(intl: IntlShape): MenuSection[] {
         },
       ],
     },
+    // Craftware (FEAT-091). Spread-in so the section disappears cleanly when the
+    // app is not installed, rather than leaving an empty heading.
+    ...(emailEditorUrl
+      ? [
+          {
+            label: intl.formatMessage({
+              id: "AdAi3x",
+              defaultMessage: "Emails",
+            }),
+            menuItems: [
+              {
+                description: intl.formatMessage({
+                  id: "ZmLikp",
+                  defaultMessage: "Edit the emails customers receive about their orders",
+                }),
+                icon: <Mail />,
+                permissions: [PermissionEnum.MANAGE_PLUGINS],
+                title: intl.formatMessage({
+                  id: "bskfef",
+                  defaultMessage: "Customer emails",
+                }),
+                url: emailEditorUrl,
+                testId: "configuration-menu-customer-emails",
+              },
+            ],
+          },
+        ]
+      : []),
   ];
 }
