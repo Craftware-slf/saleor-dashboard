@@ -2275,6 +2275,9 @@
   "Ad9EZ1": {
     "string": "Product updated"
   },
+  "AdAi3x": {
+    "string": "Emails"
+  },
   "AdmPca": {
     "context": "error message",
     "string": "Max value cannot be less than min value"
@@ -6985,6 +6988,9 @@
     "context": "details title",
     "string": "Details"
   },
+  "ZmLikp": {
+    "string": "Edit the emails customers receive about their orders"
+  },
   "ZpVtCa": {
     "string": "Shipping address"
   },
@@ -7425,6 +7431,9 @@
   },
   "bsP4f3": {
     "string": "No tokens found"
+  },
+  "bskfef": {
+    "string": "Customer emails"
   },
   "bu/fC1": {
     "context": "button",

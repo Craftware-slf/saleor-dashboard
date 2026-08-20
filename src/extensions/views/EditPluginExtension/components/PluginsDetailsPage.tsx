@@ -23,6 +23,8 @@ import { PluginAuthorization } from "./PluginAuthorization";
 import { PluginDetailsChannelsCard } from "./PluginDetailsChannelsCard";
 import { PluginInfo } from "./PluginInfo";
 import { PluginSettings } from "./PluginSettings/PluginSettings";
+// Craftware (FEAT-091): link to the Örninn customer-email editor.
+import { USER_EMAIL_PLUGIN_ID, UserEmailsEditorCallout } from "./UserEmailsEditorCallout";
 
 export interface PluginDetailsPageFormData {
   active: boolean;
@@ -116,6 +118,10 @@ export const PluginsDetailsPage = ({
                   />
                 </div>
                 <Box paddingBottom={2}>
+                  {/* Craftware (FEAT-091): the User emails templates are edited in a
+                      purpose-built app page; this points there. Renders nothing for
+                      every other plugin. */}
+                  {plugin?.id === USER_EMAIL_PLUGIN_ID && <UserEmailsEditorCallout />}
                   <PluginInfo
                     data={data}
                     description={plugin?.description || ""}

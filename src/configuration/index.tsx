@@ -2,6 +2,8 @@
 import { useUser } from "@dashboard/auth/useUser";
 import { WindowTitle } from "@dashboard/components/WindowTitle";
 import { APP_VERSION as dashboardVersion } from "@dashboard/config";
+// Craftware (FEAT-091): resolves the customer-email editor's dashboard URL.
+import { useOrninnEmailEditorUrl } from "@dashboard/extensions/hooks/useOrninnEmailEditorUrl";
 import useShop from "@dashboard/hooks/useShop";
 import { sectionNames } from "@dashboard/intl";
 import { maybe } from "@dashboard/misc";
@@ -18,12 +20,13 @@ const ConfigurationSection = () => {
   };
   const user = useUser();
   const intl = useIntl();
+  const emailEditorUrl = useOrninnEmailEditorUrl();
 
   return (
     <>
       <WindowTitle title={intl.formatMessage(sectionNames.configuration)} />
       <ConfigurationPage
-        menu={createConfigurationMenu(intl)}
+        menu={createConfigurationMenu(intl, emailEditorUrl)}
         user={maybe(() => user.user)}
         versionInfo={versions}
       />
