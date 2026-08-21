@@ -157,7 +157,7 @@ export const dynamicOperandsQueries = gql`
   }
 
   query _GetCategoriesChoices($first: Int!, $query: String!) {
-    categories(first: $first, filter: { search: $query }) {
+    categories(first: $first, filter: { search: $query }, sortBy: { field: NAME, direction: ASC }) {
       edges {
         node {
           id

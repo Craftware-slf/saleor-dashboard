@@ -6007,7 +6007,11 @@ export type _GetCollectionsChoicesLazyQueryHookResult = ReturnType<typeof use_Ge
 export type _GetCollectionsChoicesQueryResult = Apollo.QueryResult<Types._GetCollectionsChoicesQuery, Types._GetCollectionsChoicesQueryVariables>;
 export const _GetCategoriesChoicesDocument = gql`
     query _GetCategoriesChoices($first: Int!, $query: String!) {
-  categories(first: $first, filter: {search: $query}) {
+  categories(
+    first: $first
+    filter: {search: $query}
+    sortBy: {field: NAME, direction: ASC}
+  ) {
     edges {
       node {
         id
