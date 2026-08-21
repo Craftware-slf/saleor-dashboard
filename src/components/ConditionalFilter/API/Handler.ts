@@ -213,12 +213,25 @@ export class CategoryHandler implements Handler {
     >({
       query: _GetCategoriesChoicesDocument,
       variables: {
-        first: 5,
+        // Saleor caps this connection at 100 and errors above it, so 100 is the
+        // most the dropdown can ever show. With ~370 categories across three
+        // brands, 5 meant the list was unbrowsable: you always got the same
+        // arbitrary five and had to already know what you were looking for.
+        first: 100,
         query: this.query,
       },
     });
 
-    return createOptionsFromAPI(data.categories?.edges ?? []);
+    // Not createOptionsFromAPI: that helper is shared with the collection,
+    // product-type and product handlers, and only categories need the slug in the
+    // label. Category names repeat across brands — three "Fatnaður", five "Kids" —
+    // and the slug (`golf-fatnadur`) is the only thing that tells them apart.
+    // Sorting by name makes those duplicates adjacent, so this has to ship with it.
+    return (data.categories?.edges ?? []).map(({ node }) => ({
+      label: node.name ? `${node.name} · ${node.slug}` : node.slug,
+      value: node.id,
+      slug: node.slug,
+    }));
   };
 }
 
