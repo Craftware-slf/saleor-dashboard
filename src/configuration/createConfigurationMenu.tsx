@@ -214,15 +214,20 @@ export function createConfigurationMenu(
             }),
             menuItems: [
               {
+                // Both halves changed with FEAT-118: the app page behind this is now
+                // "Emails" with two tabs — the customer templates, and the packing
+                // alerts sent to staff — so a card titled "Customer emails" described
+                // only half of what it opens.
                 description: intl.formatMessage({
-                  id: "ZmLikp",
-                  defaultMessage: "Edit the emails customers receive about their orders",
+                  id: "iMu4+B",
+                  defaultMessage:
+                    "Order emails sent to customers, and packing alerts sent to staff",
                 }),
                 icon: <Mail />,
                 permissions: [PermissionEnum.MANAGE_PLUGINS],
                 title: intl.formatMessage({
-                  id: "bskfef",
-                  defaultMessage: "Customer emails",
+                  id: "AdAi3x",
+                  defaultMessage: "Emails",
                 }),
                 url: emailEditorUrl,
                 testId: "configuration-menu-customer-emails",

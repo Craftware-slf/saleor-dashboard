@@ -6988,9 +6988,6 @@
     "context": "details title",
     "string": "Details"
   },
-  "ZmLikp": {
-    "string": "Edit the emails customers receive about their orders"
-  },
   "ZpVtCa": {
     "string": "Shipping address"
   },
@@ -7431,9 +7428,6 @@
   },
   "bsP4f3": {
     "string": "No tokens found"
-  },
-  "bskfef": {
-    "string": "Customer emails"
   },
   "bu/fC1": {
     "context": "button",
@@ -8536,6 +8530,9 @@
   "iLNRJL": {
     "context": "product type a11y label prefix",
     "string": "Product type"
+  },
+  "iMu4+B": {
+    "string": "Order emails sent to customers, and packing alerts sent to staff"
   },
   "iPg/Z+": {
     "context": "Pagination info showing current range",
