@@ -12,4 +12,28 @@ describe("Filters: preapreQS", () => {
       },
     });
   });
+
+  it("should remove the pagination cursors so a preset cannot be saved mid-list", () => {
+    const qs = prepareQs(
+      "?0[s0.channel]=hjol&sort=name&asc=true&after=WyJBY2N1IExFRCBSZW1vdGUiXQ==",
+    );
+
+    expect(qs).toEqual({
+      activeTab: undefined,
+      parsedQs: {
+        "0": { "s0.channel": "hjol" },
+      },
+    });
+  });
+
+  it("should remove a `before` cursor as well", () => {
+    const qs = prepareQs("?0[s0.channel]=hjol&before=WyJBY2N1IExFRCBSZW1vdGUiXQ==");
+
+    expect(qs).toEqual({
+      activeTab: undefined,
+      parsedQs: {
+        "0": { "s0.channel": "hjol" },
+      },
+    });
+  });
 });
