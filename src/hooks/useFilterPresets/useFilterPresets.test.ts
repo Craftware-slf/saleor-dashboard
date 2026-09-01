@@ -96,6 +96,39 @@ describe("useFilterPresets", () => {
     // Assert
     expect(mockNavigate).toHaveBeenCalledWith(`${baseUrl}?${savedPreset.data}&activeTab=1`);
   });
+  it("should drop a pagination cursor stored by an older preset", () => {
+    // Arrange
+    const savedPreset = {
+      name: "preset1",
+      data: "0[s0.channel]=hjol&after=WyJBY2N1IExFRCBSZW1vdGUiXQ==&before=WyJab29tIl0=",
+    };
+    const { result } = renderHook(() =>
+      useFilterPresets({
+        getUrl: jest.fn(() => baseUrl),
+        params: {},
+        reset: jest.fn(),
+        storageUtils: {
+          deleteFilterTab: jest.fn(),
+          getFilterTabs: jest.fn(() => [savedPreset]),
+          saveFilterTab: jest.fn(),
+          updateFilterTab: jest.fn(),
+        },
+      }),
+    );
+
+    // Act
+    act(() => {
+      result.current.onPresetChange(1);
+    });
+
+    // Assert
+    const navigatedTo = mockNavigate.mock.calls[0][0] as string;
+
+    expect(navigatedTo).not.toContain("after=");
+    expect(navigatedTo).not.toContain("before=");
+    expect(decodeURIComponent(navigatedTo)).toContain("0[s0.channel]=hjol");
+    expect(navigatedTo).toContain("activeTab=1");
+  });
   it("should handle preset delete and navigate to base url when active preset is equal deleting preset", () => {
     // Arrange
     const mockDeleteStorage = jest.fn();

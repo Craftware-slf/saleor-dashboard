@@ -18,3 +18,7 @@ Saving from page 1, or from page 2 under the default sort, worked, which is why 
 
 `before`/`after` now join the list of params a preset drops, so a preset always reopens at the start of the
 list. Sorting is unchanged: it was already excluded from presets on purpose.
+
+Cursors are dropped on read as well as on write. A preset saved before this change still holds its cursor, and
+restoring it would reopen the same empty list — so `onPresetChange` strips `before`/`after` too, and an
+already-broken preset heals itself the next time it is selected. Nothing has to be deleted and re-saved.
