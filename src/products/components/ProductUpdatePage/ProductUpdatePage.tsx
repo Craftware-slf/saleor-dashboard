@@ -79,8 +79,10 @@ import { ProductShipping } from "../ProductShipping";
 import { ProductTaxes } from "../ProductTaxes/ProductTaxes";
 import { type BulkCreateResult } from "../ProductVariantGenerator/types";
 import { ProductVariants } from "../ProductVariants/ProductVariants";
+import { PublishOnChannelButton } from "../PublishOnChannelButton";
 import { ReformatSpecsButton } from "../ReformatSpecsButton";
 import ProductUpdateForm from "./form";
+import { areChannelFieldsDifferent } from "./formChannels";
 import { messages } from "./messages";
 import ProductChannelsListingsDialog from "./ProductChannelsListingsDialog";
 import { ProductDetailsTitle } from "./Title";
@@ -670,6 +672,40 @@ const ProductUpdatePage = ({
                   errors={channelsErrors}
                   productId={product?.id}
                 />
+                {/* Craftware: one-click publish, one button per channel this product is
+                    listed in (FEAT-144). The card above can do the same thing, but only by
+                    expanding the channel and setting three controls — and setting
+                    isPublished alone leaves a product that reads as published and cannot be
+                    bought. Driven by the SAVED listing, never by form state, because that is
+                    what the mutation writes against. */}
+                {!!productId &&
+                  (product?.channelListings ?? []).map(listing => {
+                    const formListing = (data.channels.updateChannels ?? []).find(
+                      c => c.channelId === listing.channel.id,
+                    );
+
+                    return (
+                      <PublishOnChannelButton
+                        key={listing.channel.id}
+                        productId={productId}
+                        channelId={listing.channel.id}
+                        channelName={listing.channel.name}
+                        listing={{
+                          isPublished: listing.isPublished,
+                          visibleInListings: listing.visibleInListings,
+                          // Nullable on the schema; absent means "not available".
+                          isAvailableForPurchase: !!listing.isAvailableForPurchase,
+                        }}
+                        hasCategory={!!product?.category}
+                        hasUnsavedChanges={
+                          data.channels.removeChannels.includes(listing.channel.id) ||
+                          (!!formListing && areChannelFieldsDifferent(formListing, listing))
+                        }
+                        disabled={disabled}
+                        onPublished={refetch}
+                      />
+                    );
+                  })}
                 {showProductDetailsWidgets ? (
                   <>
                     {productTaxes}
