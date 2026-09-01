@@ -47,6 +47,14 @@ export const useFilterPresets = <T extends { activeTab?: string; action?: string
     const currentPresets = storageUtils.getFilterTabs();
     const qs = new URLSearchParams(currentPresets[index - 1]?.data ?? "");
 
+    // Presets saved before pagination cursors were excluded still carry before/after, and a
+    // Saleor cursor is only valid for the sort order it was captured under — which presets do
+    // not store. Restoring one as-is reopens the same "Received cursor is invalid." empty list
+    // it was saved into, so drop the cursors on read as well: an already-broken preset heals
+    // itself the next time it is selected, with nothing to re-save (FEAT-145).
+    qs.delete("before");
+    qs.delete("after");
+
     qs.append("activeTab", index.toString());
     navigate(baseUrl.endsWith("?") ? baseUrl + qs.toString() : baseUrl + "?" + qs.toString());
   };
