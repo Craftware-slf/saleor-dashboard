@@ -125,7 +125,10 @@ export const PublishOnChannelButton: FC<PublishOnChannelButtonProps> = ({
   };
 
   return (
-    <Box marginTop={4} display="flex" flexDirection="column" gap={2}>
+    // paddingX matches DashboardCard.Content, because this Box is a bare sibling of the
+    // Availability card in the sidebar and would otherwise run the card's FULL width — wider
+    // than the channel rows it sits under.
+    <Box marginTop={4} paddingX={6} display="flex" flexDirection="column" gap={2}>
       <Button
         variant="primary"
         onClick={onClick}
