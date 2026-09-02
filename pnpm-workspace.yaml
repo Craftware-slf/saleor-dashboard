@@ -18,6 +18,14 @@ trustPolicyExclude:
 packages:
   - "."
 
+# FEAT-147: macaw's multiselects feed downshift's getInputProps a one-render-stale
+# `value`, so React rewrites input.value mid-composition and kills the macOS dead-key
+# IME sequence (Icelandic á é í ó ú ý typed into Collections came out as "N´ýjar").
+# The patch drops that stale `value` and instead resets downshift's own inputValue in
+# the stateReducer on selection, which is what the stale value had been masking.
+patchedDependencies:
+  "@saleor/macaw-ui@1.4.2": patches/@saleor__macaw-ui@1.4.2.patch
+
 # Keeps src/ and .github/workflows directories separated
 # as they are independent from one to another.
 recursiveInstall: false
