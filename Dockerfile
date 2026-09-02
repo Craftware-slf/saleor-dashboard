@@ -3,6 +3,9 @@ RUN apk --no-cache add bash
 RUN corepack enable && corepack prepare pnpm@10 --activate
 WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+# pnpm-workspace.yaml declares patchedDependencies, so the patch files must be
+# present before install or `pnpm install --frozen-lockfile` fails with ENOENT.
+COPY patches/ patches/
 ENV CI=1
 RUN pnpm install --frozen-lockfile
 
