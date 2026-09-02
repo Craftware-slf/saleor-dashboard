@@ -10,6 +10,8 @@ RUN corepack prepare pnpm@10 --activate
 FROM pnpm AS deps
 
 COPY --chown=1000:1000 ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./.npmrc /app/
+# patchedDependencies in pnpm-workspace.yaml needs these at install time
+COPY --chown=1000:1000 ./patches/ /app/patches/
 RUN --mount=type=cache,mode=0700,uid=1000,gid=1000,target=/pnpm/store \
 		pnpm install --frozen-lockfile
 
