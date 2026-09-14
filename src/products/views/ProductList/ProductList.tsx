@@ -15,6 +15,7 @@ import { Task } from "@dashboard/containers/BackgroundTasks/types";
 import {
   AttributeTypeEnum,
   type ProductListQueryVariables,
+  ProductOrderField,
   useAvailableColumnAttributesLazyQuery,
   useGridAttributesLazyQuery,
   useProductBulkDeleteMutation,
@@ -63,6 +64,7 @@ import ProductListPage, { ProductFilterKeys } from "../../components/ProductList
 import { ProductsExportParameters } from "./export";
 import { getFilterQueryParam, getFilterVariables, storageUtils } from "./filters";
 import { DEFAULT_SORT_KEY, getSortQueryVariables } from "./sort";
+import { useSkuFallbackSearch } from "./useSkuFallbackSearch";
 import { obtainChannelFromFilter } from "./utils";
 
 interface ProductListProps {
@@ -226,16 +228,46 @@ const ProductList = ({ params }: ProductListProps) => {
   const filteredColumnIds = (settings.columns ?? [])
     .filter(isAttributeColumnValue)
     .map(getAttributeIdFromColumnValue);
-  const { data, refetch } = useProductListQuery({
+  const sharedListVariables = {
+    hasChannel: !!selectedChannel,
+    includeCategories: settings.columns.includes("productCategory"),
+    includeCollections: settings.columns.includes("productCollections"),
+  };
+  const { data: primaryData, refetch } = useProductListQuery({
     displayLoader: true,
     variables: {
       ...queryVariables,
-      hasChannel: !!selectedChannel,
-      includeCategories: settings.columns.includes("productCategory"),
-      includeCollections: settings.columns.includes("productCollections"),
+      ...sharedListVariables,
     },
     skip: valueProvider.loading,
   });
+  // `products(search:)` is prefix-only Postgres full-text, so a SKU fragment
+  // like "45087" finds nothing even though the variant exists (FEAT-188). When
+  // a search comes back empty we resolve the fragment through the variant
+  // ILIKE filter instead and re-run the list by product id. Fallback-only, so a
+  // search that already works is never reordered or diluted.
+  const skuFallback = useSkuFallbackSearch({
+    query: params.query,
+    channel: filterVariables.channel,
+    enabled: !!params.query && primaryData?.products?.totalCount === 0,
+  });
+  const hasSkuFallbackHits = skuFallback.productIds.length > 0;
+  const { data: skuFallbackData } = useProductListQuery({
+    displayLoader: true,
+    variables: {
+      ...queryVariables,
+      ...sharedListVariables,
+      search: undefined,
+      // Saleor rejects RANK outright without a `search` — "Sorting by RANK is
+      // available only when using a search filter." useFilterHandlers switches
+      // the sort to RANK whenever a query is present, so it must come back off
+      // for the id-based query.
+      sort: sort?.field === ProductOrderField.RANK ? undefined : sort,
+      filter: { ids: skuFallback.productIds },
+    },
+    skip: !hasSkuFallbackHits,
+  });
+  const data = hasSkuFallbackHits ? skuFallbackData : primaryData;
   const products = mapEdgesToItems(data?.products);
   const handleSetSelectedProductIds = useCallback(
     (rows: number[], clearSelection: () => void) => {

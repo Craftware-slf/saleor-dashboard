@@ -15836,6 +15836,49 @@ export function useProductListLazyQuery(baseOptions?: ApolloReactHooks.LazyQuery
 export type ProductListQueryHookResult = ReturnType<typeof useProductListQuery>;
 export type ProductListLazyQueryHookResult = ReturnType<typeof useProductListLazyQuery>;
 export type ProductListQueryResult = Apollo.QueryResult<Types.ProductListQuery, Types.ProductListQueryVariables>;
+export const ProductIdsBySkuDocument = gql`
+    query ProductIdsBySku($query: String!, $channel: String, $first: Int!) {
+  productVariants(first: $first, filter: {search: $query}, channel: $channel) {
+    edges {
+      node {
+        product {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductIdsBySkuQuery__
+ *
+ * To run a query within a React component, call `useProductIdsBySkuQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductIdsBySkuQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductIdsBySkuQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *      channel: // value for 'channel'
+ *      first: // value for 'first'
+ *   },
+ * });
+ */
+export function useProductIdsBySkuQuery(baseOptions: ApolloReactHooks.QueryHookOptions<Types.ProductIdsBySkuQuery, Types.ProductIdsBySkuQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<Types.ProductIdsBySkuQuery, Types.ProductIdsBySkuQueryVariables>(ProductIdsBySkuDocument, options);
+      }
+export function useProductIdsBySkuLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<Types.ProductIdsBySkuQuery, Types.ProductIdsBySkuQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<Types.ProductIdsBySkuQuery, Types.ProductIdsBySkuQueryVariables>(ProductIdsBySkuDocument, options);
+        }
+export type ProductIdsBySkuQueryHookResult = ReturnType<typeof useProductIdsBySkuQuery>;
+export type ProductIdsBySkuLazyQueryHookResult = ReturnType<typeof useProductIdsBySkuLazyQuery>;
+export type ProductIdsBySkuQueryResult = Apollo.QueryResult<Types.ProductIdsBySkuQuery, Types.ProductIdsBySkuQueryVariables>;
 export const ProductCountDocument = gql`
     query ProductCount($filter: ProductFilterInput, $channel: String) {
   products(filter: $filter, channel: $channel) {
