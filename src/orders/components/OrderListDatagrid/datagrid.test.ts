@@ -242,7 +242,10 @@ describe("kennitala column", () => {
       useGetCellContent({ columns, orders: orderWith(privateMetadata) }),
     );
 
-    return result.current([0, 0], { added: [], removed: [] } as GetCellContentOpts) as TextCell;
+    return result.current([0, 0], {
+      added: [],
+      removed: [],
+    } as unknown as GetCellContentOpts) as TextCell;
   };
 
   it("renders the kennitala hyphenated", () => {
