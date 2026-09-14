@@ -50,6 +50,37 @@ export const productListQuery = gql`
     }
   }
 `;
+/**
+ * SKU-fragment fallback for the product list search box (FEAT-188).
+ *
+ * `products(search:)` is Postgres full-text: `prefix_search()` builds a tsquery
+ * with `:*` per lexeme, so it matches a query word only as the PREFIX of an
+ * indexed word. Every Örninn SKU opens with the same "0100…" run of digits, so
+ * the fragment staff actually type — the distinctive tail — finds nothing.
+ *
+ * `productVariants(filter: { search: ... })` is a different mechanism entirely:
+ * `Q(name__ilike=v) | Q(sku__ilike=v)`, a raw `ILIKE '%v%'` straight at the
+ * variant's sku column. Measured against Saleor 3.23: "06287" returns 0 products
+ * through `products(search:)` and exactly 1 through this. It cannot use an index,
+ * but it is a 10 ms sequential scan over 32,300 variants.
+ *
+ * Careful: the TOP-LEVEL `productVariants(search:)` argument is NOT this — it
+ * routes back through `prefix_search()` on the product's search vector. Only the
+ * `filter: { search: }` form does the ILIKE.
+ */
+export const productIdsBySkuQuery = gql`
+  query ProductIdsBySku($query: String!, $channel: String, $first: Int!) {
+    productVariants(first: $first, filter: { search: $query }, channel: $channel) {
+      edges {
+        node {
+          product {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
 export const productCountQuery = gql`
   query ProductCount($filter: ProductFilterInput, $channel: String) {
     products(filter: $filter, channel: $channel) {
