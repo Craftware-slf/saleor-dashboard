@@ -44,6 +44,12 @@ export const orderListQuery = gql`
           }
           userEmail
           chargeStatus
+          # Feeds the optional Kennitala column. Requires MANAGE_ORDERS, which is
+          # already required to reach this page at all.
+          privateMetadata {
+            key
+            value
+          }
         }
       }
       pageInfo {

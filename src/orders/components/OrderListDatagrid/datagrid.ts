@@ -22,6 +22,7 @@ import { type GridCell, type Item, type TextCell } from "@glideapps/glide-data-g
 import { type DefaultTheme, useTheme } from "@saleor/macaw-ui-next";
 import { type IntlShape, useIntl } from "react-intl";
 
+import { formatKennitala, getKennitala } from "../../kennitala";
 import { columnsMessages } from "./messages";
 
 export const orderListStaticColumnAdapter = (
@@ -66,6 +67,15 @@ export const orderListStaticColumnAdapter = (
       title: intl.formatMessage(columnsMessages.channel),
       width: 200,
     },
+    // Off by default — see ListViews.ORDER_LIST in src/config.ts. It is a national
+    // ID, so a whole screenful of them is opt-in via the column picker rather than
+    // what everyone sees on opening Orders. Not sortable: Saleor cannot order by
+    // private metadata, and canBeSorted() returns false for unknown columns.
+    {
+      id: "kennitala",
+      title: intl.formatMessage(columnsMessages.kennitala),
+      width: 150,
+    },
   ].map(column => ({
     ...column,
     icon: getColumnSortDirectionIcon(sort, column.id),
@@ -107,6 +117,8 @@ export const useGetCellContent = ({ columns, orders }: GetCellContentProps) => {
         return getTotalCellContent(rowData);
       case "channel":
         return getChannelCellContent(rowData);
+      case "kennitala":
+        return getKennitalaCellContent(rowData);
       default:
         return textCell("");
     }
@@ -200,4 +212,17 @@ function getChannelCellContent(rowData: RelayToFlat<OrderListQuery["orders"]>[nu
   }
 
   return readonlyTextCell("-");
+}
+
+/**
+ * Readonly like every other cell here — the grid has no save path for private
+ * metadata, and Business Central keys the customer card by this value.
+ *
+ * "-" rather than a blank for an order that carries none (prod #2-#8 predate
+ * capture), so an empty column reads as "no kennitala" and not "still loading".
+ */
+function getKennitalaCellContent(rowData: RelayToFlat<OrderListQuery["orders"]>[number]): TextCell {
+  const kennitala = getKennitala(rowData?.privateMetadata);
+
+  return readonlyTextCell(kennitala ? formatKennitala(kennitala) : "-");
 }

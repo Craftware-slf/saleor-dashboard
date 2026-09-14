@@ -220,3 +220,60 @@ describe("getPaymentCellContent", () => {
     expect((result.data as PillCell["data"]).value).toEqual("Overcharged");
   });
 });
+
+describe("kennitala column", () => {
+  const columns: AvailableColumn[] = [{ id: "kennitala", title: "Kennitala", width: 150 }];
+
+  const orderWith = (privateMetadata: Array<{ key: string; value: string }>) =>
+    [
+      {
+        __typename: "Order",
+        id: "order-1",
+        number: "41",
+        privateMetadata: privateMetadata.map(entry => ({
+          __typename: "MetadataItem",
+          ...entry,
+        })),
+      },
+    ] as RelayToFlat<NonNullable<OrderListQuery["orders"]>>;
+
+  const cellFor = (privateMetadata: Array<{ key: string; value: string }>) => {
+    const { result } = renderHook(() =>
+      useGetCellContent({ columns, orders: orderWith(privateMetadata) }),
+    );
+
+    return result.current([0, 0], { added: [], removed: [] } as GetCellContentOpts) as TextCell;
+  };
+
+  it("renders the kennitala hyphenated", () => {
+    // Act
+    const cell = cellFor([{ key: "kennitala", value: "0101902079" }]);
+
+    // Assert
+    expect(cell.displayData).toEqual("010190-2079");
+  });
+
+  it("renders a dash when the order predates capture", () => {
+    // Act
+    const cell = cellFor([]);
+
+    // Assert — a dash, not a blank, so the column does not read as "still loading"
+    expect(cell.displayData).toEqual("-");
+  });
+
+  it("ignores other private metadata keys", () => {
+    // Act
+    const cell = cellFor([{ key: "external_app_shipping_id", value: "abc123" }]);
+
+    // Assert
+    expect(cell.displayData).toEqual("-");
+  });
+
+  it("is readonly — the grid offers no way to edit a kennitala", () => {
+    // Act
+    const cell = cellFor([{ key: "kennitala", value: "0101902079" }]);
+
+    // Assert
+    expect(cell.readonly).toBe(true);
+  });
+});

@@ -1455,6 +1455,10 @@
   "6C1RWA": {
     "string": "No extensions installed yet"
   },
+  "6CBsjb": {
+    "context": "order list column, buyer's Icelandic national ID",
+    "string": "Kennitala"
+  },
   "6D+yYX": {
     "string": "Payment status"
   },
