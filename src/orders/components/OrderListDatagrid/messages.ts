@@ -48,4 +48,9 @@ export const columnsMessages = defineMessages({
     defaultMessage: "Channel",
     id: "KeO51o",
   },
+  kennitala: {
+    defaultMessage: "Kennitala",
+    id: "6CBsjb",
+    description: "order list column, buyer's Icelandic national ID",
+  },
 });

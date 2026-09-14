@@ -70,6 +70,10 @@ export const OrderMetadataDialog = ({ onClose, open, order }: OrderMetadataDialo
           : undefined,
       }}
       formIsDirty={formIsDirty}
+      // An order's private metadata is machine-written (the storefront's kennitala,
+      // the carrier's shipping id) and machine-read by the BC sync. Staff read it on
+      // the order page instead — see OrderCustomer's Kennitala field.
+      readonlyPrivateMetadata
     />
   );
 };

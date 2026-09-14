@@ -206,4 +206,90 @@ describe("MetadataDialog", () => {
       expect(screen.queryByTestId("back")).not.toBeInTheDocument();
     });
   });
+
+  describe("readonlyPrivateMetadata", () => {
+    const withData: MetadataDialogProps = {
+      ...defaultProps,
+      data: {
+        metadata: [{ key: "order_note", value: "leave at the door" }],
+        privateMetadata: [{ key: "kennitala", value: "0101902079" }],
+      },
+    };
+
+    // The two cards render in order: [0] public, [1] private.
+    const expandBoth = async (user: ReturnType<typeof userEvent.setup>) => {
+      const [expandPublic, expandPrivate] = screen.getAllByTestId("expand");
+
+      await user.click(expandPublic);
+      await user.click(expandPrivate);
+    };
+
+    const cards = () => screen.getAllByTestId("metadata-editor");
+
+    it("drops every edit affordance from the private card when set", async () => {
+      // Arrange
+      const user = userEvent.setup();
+
+      render(<MetadataDialog {...withData} readonlyPrivateMetadata />);
+
+      // Act
+      await expandBoth(user);
+
+      // Assert — the value is still readable...
+      const [, privateCard] = cards();
+
+      expect(within(privateCard).getByDisplayValue("kennitala")).toBeInTheDocument();
+      expect(within(privateCard).getByDisplayValue("0101902079")).toBeInTheDocument();
+
+      // ...but nothing can be typed into it. Note `readonly` keeps the textarea and
+      // marks it readOnly rather than swapping in plain text, so assert the attribute
+      // — querying for the absence of a textbox passes for the wrong reason.
+      const fields = within(privateCard).getAllByRole("textbox");
+
+      expect(fields.length).toBeGreaterThan(0);
+      fields.forEach(field => expect(field).toHaveAttribute("readonly"));
+
+      // ...and there is nothing to delete with or add to.
+      expect(within(privateCard).queryByTestId("delete-field-0")).not.toBeInTheDocument();
+      expect(within(privateCard).queryByTestId("add-field")).not.toBeInTheDocument();
+    });
+
+    it("leaves PUBLIC metadata editable when set — it is not a blanket lock", async () => {
+      // Arrange
+      const user = userEvent.setup();
+
+      render(<MetadataDialog {...withData} readonlyPrivateMetadata />);
+
+      // Act
+      await expandBoth(user);
+
+      // Assert
+      const [publicCard] = cards();
+
+      const publicFields = within(publicCard).getAllByRole("textbox");
+
+      expect(publicFields.length).toBeGreaterThan(0);
+      publicFields.forEach(field => expect(field).not.toHaveAttribute("readonly"));
+      expect(within(publicCard).getByTestId("add-field")).toBeInTheDocument();
+    });
+
+    it("keeps private metadata editable by default, for every other consumer", async () => {
+      // Arrange
+      const user = userEvent.setup();
+
+      render(<MetadataDialog {...withData} />);
+
+      // Act
+      await expandBoth(user);
+
+      // Assert
+      const [, privateCard] = cards();
+
+      const editableFields = within(privateCard).getAllByRole("textbox");
+
+      expect(editableFields.length).toBeGreaterThan(0);
+      editableFields.forEach(field => expect(field).not.toHaveAttribute("readonly"));
+      expect(within(privateCard).getByTestId("add-field")).toBeInTheDocument();
+    });
+  });
 });
