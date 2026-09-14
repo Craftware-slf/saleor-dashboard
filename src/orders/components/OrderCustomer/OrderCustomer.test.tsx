@@ -2,7 +2,7 @@ import { useUserPermissions } from "@dashboard/auth/hooks/useUserPermissions";
 import { PermissionEnum } from "@dashboard/graphql";
 import { OrderFixture } from "@dashboard/orders/fixtures/OrderFixture";
 import Wrapper from "@test/wrapper";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 
 import OrderCustomer from "./OrderCustomer";
@@ -260,6 +260,98 @@ describe("OrderCustomer", () => {
 
       // Assert
       expect(screen.queryByText("View profile")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("kennitala", () => {
+    const withPrivateMetadata = (privateMetadata: Array<{ key: string; value: string }>) => ({
+      ...defaultProps,
+      order: {
+        ...defaultProps.order,
+        privateMetadata: privateMetadata.map(entry => ({
+          __typename: "MetadataItem" as const,
+          ...entry,
+        })),
+      },
+    });
+
+    const renderWith = (props: typeof defaultProps) =>
+      render(
+        <Wrapper>
+          <MemoryRouter>
+            <OrderCustomer {...props} />
+          </MemoryRouter>
+        </Wrapper>,
+      );
+
+    it("shows the buyer's kennitala from private metadata, hyphenated for reading", () => {
+      // Arrange
+      const props = withPrivateMetadata([{ key: "kennitala", value: "0101902079" }]);
+
+      // Act
+      renderWith(props);
+
+      // Assert
+      expect(screen.getByText("Kennitala")).toBeInTheDocument();
+      expect(screen.getByTestId("kennitala-value")).toHaveTextContent("010190-2079");
+    });
+
+    it("says so plainly when the order carries none (orders predating capture)", () => {
+      // Arrange — the default fixture has privateMetadata: []
+      const props = withPrivateMetadata([]);
+
+      // Act
+      renderWith(props);
+
+      // Assert
+      expect(screen.getByText("Kennitala")).toBeInTheDocument();
+      expect(screen.getByTestId("kennitala-value")).toHaveTextContent("Not provided");
+    });
+
+    it("ignores other private metadata keys", () => {
+      // Arrange
+      const props = withPrivateMetadata([{ key: "external_app_shipping_id", value: "abc123" }]);
+
+      // Act
+      renderWith(props);
+
+      // Assert
+      expect(screen.getByTestId("kennitala-value")).toHaveTextContent("Not provided");
+      expect(screen.queryByText("abc123")).not.toBeInTheDocument();
+    });
+
+    // The displayed form is for humans; the copied form is what Business Central's
+    // customer No. actually is, so it pastes straight into a BC lookup.
+    it("copies the raw 10 digits, not the hyphenated display form", () => {
+      // Arrange
+      const props = withPrivateMetadata([{ key: "kennitala", value: "0101902079" }]);
+
+      renderWith(props);
+
+      // Act — the kennitala section's own copy button
+      const kennitalaSection = screen.getByTestId("kennitala-section");
+      const copyButton = within(kennitalaSection).getByRole("button", {
+        name: "Copy to clipboard",
+      });
+
+      fireEvent.click(copyButton);
+
+      // Assert
+      expect(mockCopy).toHaveBeenCalledWith("0101902079");
+      expect(mockCopy).not.toHaveBeenCalledWith("010190-2079");
+    });
+
+    it("renders the value as text, with no input to edit it", () => {
+      // Arrange
+      const props = withPrivateMetadata([{ key: "kennitala", value: "0101902079" }]);
+
+      // Act
+      renderWith(props);
+
+      // Assert
+      const kennitalaSection = screen.getByTestId("kennitala-section");
+
+      expect(within(kennitalaSection).queryByRole("textbox")).not.toBeInTheDocument();
     });
   });
 });

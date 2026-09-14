@@ -26,6 +26,16 @@ export interface MetadataDialogProps {
     privateMetadata?: string;
   };
   formIsDirty?: boolean;
+  /**
+   * Render the PRIVATE section without editing affordances — no value inputs, no
+   * per-row delete, no "Add Field". Public metadata is unaffected.
+   *
+   * Used by orders, whose private metadata is written by the storefront and consumed
+   * by the Business Central sync; a hand-edit there silently breaks an order's link to
+   * its BC customer. Note this removes the affordance, not the capability: anyone with
+   * MANAGE_ORDERS can still call updatePrivateMetadata directly.
+   */
+  readonlyPrivateMetadata?: boolean;
 }
 
 export const MetadataDialog = ({
@@ -39,6 +49,7 @@ export const MetadataDialog = ({
   disabled = false,
   errors = {},
   formIsDirty = false,
+  readonlyPrivateMetadata = false,
 }: MetadataDialogProps) => {
   const intl = useIntl();
   const [showExitDialog, setShowExitDialog] = useState(false);
@@ -89,6 +100,7 @@ export const MetadataDialog = ({
               data={data.privateMetadata}
               isPrivate={true}
               disabled={disabled || loading}
+              readonly={readonlyPrivateMetadata}
               onChange={event => onChange(event, true)}
               error={errors.privateMetadata}
             />

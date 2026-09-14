@@ -3132,6 +3132,10 @@
     "context": "label",
     "string": "Manual Amount"
   },
+  "FQOW7N": {
+    "context": "buyer's Icelandic national ID, on the order",
+    "string": "Kennitala"
+  },
   "FRJRmi": {
     "context": "selected customer gift card is sent to subtitle",
     "string": "Selected customer will be sent the generated gift card code. Someone else can redeem the gift card code. Gift card will be assigned to account which redeemed the code."
@@ -6168,6 +6172,10 @@
   "VIdXPy": {
     "context": "value input helper text",
     "string": "Cannot be higher than the price"
+  },
+  "VJMdTU": {
+    "context": "order carries no kennitala",
+    "string": "Not provided"
   },
   "VKWPBf": {
     "context": "dialog header",

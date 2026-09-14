@@ -24,6 +24,7 @@ import * as React from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { maybe } from "../../../misc";
+import { formatKennitala, getKennitala } from "../../kennitala";
 import { AddressTextError } from "./AddressTextError";
 import { CustomerEditForm } from "./CustomerEditForm";
 import { PickupAnnotation } from "./PickupAnnotation";
@@ -119,10 +120,15 @@ const OrderCustomer = (props: OrderCustomerProps) => {
   const [copiedEmail, copyEmail] = useClipboard();
   const [copiedShipping, copyShipping] = useClipboard();
   const [copiedBilling, copyBilling] = useClipboard();
+  const [copiedKennitala, copyKennitala] = useClipboard();
 
   const [showEmailCopy, setShowEmailCopy] = React.useState(false);
   const [showShippingCopy, setShowShippingCopy] = React.useState(false);
   const [showBillingCopy, setShowBillingCopy] = React.useState(false);
+  const [showKennitalaCopy, setShowKennitalaCopy] = React.useState(false);
+
+  // Already on OrderDetailsFragment via the ...Metadata spread — no extra query.
+  const kennitala = getKennitala(order?.privateMetadata);
 
   const iconClassName = sprinkles({ color: "default2" });
   const customerEmail = user?.email || order?.userEmail;
@@ -281,6 +287,64 @@ const OrderCustomer = (props: OrderCustomerProps) => {
                       )
                     }
                     onClick={() => copyEmail(customerEmail || "")}
+                    aria-label={copyAriaLabel}
+                  />
+                </Box>
+              </Box>
+            )}
+          </Box>
+
+          {/* Kennitala — deliberately read-only. Business Central keys the customer
+              card by this exact value, so an edit here silently breaks that link. */}
+          <Box data-test-id="kennitala-section">
+            <Box marginBottom={2}>
+              <Text color="default2" size={4}>
+                <FormattedMessage
+                  id="FQOW7N"
+                  defaultMessage="Kennitala"
+                  description="buyer's Icelandic national ID, on the order"
+                />
+              </Text>
+            </Box>
+            {kennitala === null ? (
+              <Text data-test-id="kennitala-value">
+                <FormattedMessage
+                  id="VJMdTU"
+                  defaultMessage="Not provided"
+                  description="order carries no kennitala"
+                />
+              </Text>
+            ) : (
+              <Box
+                display="flex"
+                alignItems="center"
+                gap={1}
+                onMouseEnter={() => setShowKennitalaCopy(true)}
+                onMouseLeave={() => setShowKennitalaCopy(false)}
+              >
+                <Text size={4} fontWeight="medium" data-test-id="kennitala-value">
+                  {formatKennitala(kennitala)}
+                </Text>
+                <Box
+                  style={{
+                    opacity: showKennitalaCopy ? 1 : 0,
+                    transition: "opacity 0.15s ease-in-out",
+                  }}
+                  pointerEvents={showKennitalaCopy ? "auto" : "none"}
+                >
+                  <Button
+                    variant="tertiary"
+                    size="small"
+                    icon={
+                      copiedKennitala ? (
+                        <CheckIcon size={14} className={iconClassName} />
+                      ) : (
+                        <CopyIcon size={14} className={iconClassName} />
+                      )
+                    }
+                    // The raw 10 digits, not the displayed DDMMYY-NNNN: this is what
+                    // Business Central's customer No. is, so it pastes straight in.
+                    onClick={() => copyKennitala(kennitala)}
                     aria-label={copyAriaLabel}
                   />
                 </Box>
