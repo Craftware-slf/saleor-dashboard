@@ -220,7 +220,7 @@ export function createGetCellContent({
       case "sku":
         return getSkuCellContent(rowData);
       case "stock":
-        return getStockCellContent(rowData, selectedChannelId);
+        return getStockCellContent(intl, rowData, selectedChannelId);
       case "productType":
         return getProductTypeCellContent(theme, rowData);
       case "availability":
@@ -327,11 +327,23 @@ export function getStockValue(
 // Rather than hardcode warehouse slugs here (they are data, not code), show a dash until a
 // channel is chosen — the same bargain the price column already makes.
 function getStockCellContent(
+  intl: IntlShape,
   rowData: RelayToFlat<ProductListQuery["products"]>[number],
   selectedChannelId: string | undefined,
 ) {
+  // Say "Select channel", exactly as getPriceCellContent does, rather than a bare dash.
+  // Both columns are channel-dependent and sit side by side, so a dash here next to
+  // Price's prompt reads as "this product has no stock data" instead of "pick a channel".
   if (!selectedChannelId) {
-    return readonlyTextCell("-", true);
+    return readonlyTextCell(
+      intl.formatMessage({
+        defaultMessage: "Select channel",
+        id: "o1Y0Bf",
+        description: "product stock",
+      }),
+      true,
+      "faded",
+    );
   }
 
   const variants = rowData?.variants ?? [];
