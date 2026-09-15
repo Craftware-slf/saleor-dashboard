@@ -8424,6 +8424,10 @@
     "context": "Warning when scheduling a visible product for the future",
     "string": "Product will be hidden until {date}."
   },
+  "hpJdrH": {
+    "context": "product stock quantity",
+    "string": "Stock"
+  },
   "hptDxW": {
     "context": "money",
     "string": "to {money}"
