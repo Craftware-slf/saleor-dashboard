@@ -16,6 +16,7 @@ const PRODUCT_STATICS = [
   "isVisibleInListing",
   "hasCategory",
   "giftCard",
+  "stockAvailability",
 ];
 
 const ORDER_STATICS = [

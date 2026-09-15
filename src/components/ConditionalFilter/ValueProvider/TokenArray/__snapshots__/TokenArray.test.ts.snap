@@ -127,6 +127,7 @@ TokenArray [
         "isAvailable",
         "isPublished",
         "published",
+        "stockAvailability",
       ],
       "disabled": Array [
         "left",

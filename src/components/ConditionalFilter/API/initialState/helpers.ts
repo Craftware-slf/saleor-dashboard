@@ -13,7 +13,7 @@ import {
   type ChannelCurrenciesQuery,
 } from "@dashboard/graphql";
 
-import { createBooleanOptions } from "../../constants";
+import { createBooleanOptions, createStockAvailabilityOptions } from "../../constants";
 import { type AttributeInputType } from "../../FilterElement/ConditionOptions";
 import { type ItemOption } from "../../FilterElement/ConditionValue";
 import { createCustomerOptionsFromAPI, createOptionsFromAPI } from "../Handler";
@@ -175,6 +175,7 @@ export const createInitialProductStateFromData = (
       isVisibleInListing: createBooleanOptions(),
       hasCategory: createBooleanOptions(),
       giftCard: createBooleanOptions(),
+      stockAvailability: createStockAvailabilityOptions(),
       attribute: {},
     },
   );

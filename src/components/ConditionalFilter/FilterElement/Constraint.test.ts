@@ -26,7 +26,14 @@ describe("ConditionalFilter / FilterElement / Constraint", () => {
 
     // Assert
     expect(constraint).toEqual({
-      dependsOn: ["price", "isVisibleInListing", "isAvailable", "isPublished", "published"],
+      dependsOn: [
+        "price",
+        "isVisibleInListing",
+        "isAvailable",
+        "isPublished",
+        "published",
+        "stockAvailability",
+      ],
       disabled: ["left", "condition"],
       removable: false,
       isGlobal: false,

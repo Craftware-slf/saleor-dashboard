@@ -34,6 +34,18 @@ export const productListQuery = gql`
           description
           variants {
             sku
+            # Deliberately NOT quantityAvailable: that field is channel-resolved, so on the
+            # default (channel-less) list it throws "More than one channel exists" for any
+            # cross-listed product. Warehouse stock rows carry no such requirement.
+            stocks {
+              id
+              quantity
+              quantityAllocated
+              warehouse {
+                id
+                slug
+              }
+            }
           }
           attributes {
             ...ProductListAttribute
