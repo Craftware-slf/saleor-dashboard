@@ -9636,6 +9636,10 @@
   "o/4OCR": {
     "string": "Shipping has already been refunded"
   },
+  "o1Y0Bf": {
+    "context": "product stock",
+    "string": "Select channel"
+  },
   "o5GUx9": {
     "string": "Outstanding balance"
   },
