@@ -60,6 +60,11 @@ export const columnsMessages = defineMessages({
     defaultMessage: "SKU",
     description: "product SKU",
   },
+  stock: {
+    id: "hpJdrH",
+    defaultMessage: "Stock",
+    description: "product stock quantity",
+  },
 });
 
 export const categoryMetaGroups = defineMessages({

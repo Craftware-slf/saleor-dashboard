@@ -1,3 +1,5 @@
+import { StockAvailability } from "@dashboard/graphql";
+
 import { type ConditionItem } from "./FilterElement/ConditionOptions";
 import { type ItemOption } from "./FilterElement/ConditionValue";
 import { type LeftOperand } from "./LeftOperandsProvider";
@@ -49,6 +51,7 @@ export const STATIC_CONDITIONS = {
   attributeType: [{ type: "select", label: "is", value: "input-1" }],
   hasCategory: [{ type: "select", label: "is", value: "input-1" }],
   giftCard: [{ type: "select", label: "is", value: "input-1" }],
+  stockAvailability: [{ type: "select", label: "is", value: "input-1" }],
   startDate: [
     { type: "datetime", label: "lower", value: "input-1" },
     { type: "datetime", label: "greater", value: "input-2" },
@@ -278,7 +281,18 @@ export const STATIC_CONDITIONS = {
 
 export const CONSTRAINTS = {
   channel: {
-    dependsOn: ["price", "isVisibleInListing", "isAvailable", "isPublished", "published"],
+    // `stockAvailability` is here because Saleor REQUIRES a channel for it: a channel-less
+    // `products(filter: { stockAvailability: ... })` throws "More than one channel exists.
+    // Specify which channel to use." even for a staff token. Listing it here makes the UI
+    // auto-add a locked Channel row, so the query can never be built without one.
+    dependsOn: [
+      "price",
+      "isVisibleInListing",
+      "isAvailable",
+      "isPublished",
+      "published",
+      "stockAvailability",
+    ],
     removable: false,
     disabled: ["left", "condition"],
   },
@@ -340,6 +354,13 @@ export const STATIC_PRODUCT_OPTIONS: LeftOperand[] = [
     label: "IsGiftcard",
     type: "giftCard",
     slug: "giftCard",
+    maxOccurrences: 1,
+  },
+  {
+    value: "stockAvailability",
+    label: "Stock availability",
+    type: "stockAvailability",
+    slug: "stockAvailability",
     maxOccurrences: 1,
   },
   {
@@ -914,3 +935,27 @@ export const createBooleanOption = (flag: boolean, type?: string): ItemOption =>
 
   return booleanOptionFalse(type);
 };
+
+/**
+ * `stockAvailability` is an enum (IN_STOCK / OUT_OF_STOCK), not a boolean, so it cannot reuse
+ * createBooleanOptions. The labels are spelled out here rather than derived from the enum so
+ * staff read "Out of stock" instead of "OUT_OF_STOCK".
+ *
+ * `slug` must equal `value`: the URL serializer writes `slug` and
+ * InitialProductStateResponse.filterByUrlToken rehydrates a saved filter by matching it back,
+ * so a mismatch silently empties the value when a preset is reopened.
+ */
+export const createStockAvailabilityOptions = (type?: string): ItemOption[] => [
+  {
+    label: "In stock",
+    value: StockAvailability.IN_STOCK,
+    slug: StockAvailability.IN_STOCK,
+    ...{ type },
+  },
+  {
+    label: "Out of stock",
+    value: StockAvailability.OUT_OF_STOCK,
+    slug: StockAvailability.OUT_OF_STOCK,
+    ...{ type },
+  },
+];

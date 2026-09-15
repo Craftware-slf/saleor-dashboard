@@ -30,6 +30,7 @@ export interface InitialProductState {
   isVisibleInListing: ItemOption[];
   hasCategory: ItemOption[];
   giftCard: ItemOption[];
+  stockAvailability: ItemOption[];
 }
 
 const isDateField = (name: string) =>
@@ -48,6 +49,7 @@ export class InitialProductStateResponse implements InitialProductState {
     public isVisibleInListing: ItemOption[] = [],
     public hasCategory: ItemOption[] = [],
     public giftCard: ItemOption[] = [],
+    public stockAvailability: ItemOption[] = [],
   ) {}
 
   public attributeByName(name: string) {
@@ -130,6 +132,8 @@ export class InitialProductStateResponse implements InitialProductState {
         return this.hasCategory;
       case "giftCard":
         return this.giftCard;
+      case "stockAvailability":
+        return this.stockAvailability;
       default:
         return [];
     }

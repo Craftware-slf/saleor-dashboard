@@ -10,6 +10,7 @@ import {
   StaffMemberStatusQueryVarsBuilder,
   StaticBooleanQueryVarsBuilder,
   StaticQueryVarsBuilder,
+  StockAvailabilityQueryVarsBuilder,
   VoucherStatusQueryVarsBuilder,
   VoucherTimesUsedQueryVarsBuilder,
 } from "./queryVarsBuilders";
@@ -39,6 +40,7 @@ export class FilterQueryVarsBuilderResolver<TQuery extends FilterQuery> {
       new StaffMemberStatusQueryVarsBuilder(),
       new StaticBooleanQueryVarsBuilder(),
       new StaticQueryVarsBuilder(),
+      new StockAvailabilityQueryVarsBuilder(),
       new VoucherStatusQueryVarsBuilder(),
       new VoucherTimesUsedQueryVarsBuilder(),
       new DefaultQueryVarsBuilder(),

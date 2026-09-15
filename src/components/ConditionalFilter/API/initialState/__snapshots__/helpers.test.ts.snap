@@ -161,5 +161,19 @@ Object {
       "value": "2",
     },
   ],
+  "stockAvailability": Array [
+    Object {
+      "label": "In stock",
+      "slug": "IN_STOCK",
+      "type": undefined,
+      "value": "IN_STOCK",
+    },
+    Object {
+      "label": "Out of stock",
+      "slug": "OUT_OF_STOCK",
+      "type": undefined,
+      "value": "OUT_OF_STOCK",
+    },
+  ],
 }
 `;

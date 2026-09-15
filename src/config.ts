@@ -81,6 +81,7 @@ export const VALUES_PAGINATE_BY = 10;
 export type ProductListColumns =
   | "name"
   | "sku"
+  | "stock"
   | "productType"
   | "description"
   | "availability"

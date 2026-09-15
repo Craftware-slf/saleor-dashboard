@@ -16,5 +16,6 @@ export * from "./SlugChannelQueryVarsBuilder";
 export * from "./StaffMemberStatusQueryVarsBuilder";
 export * from "./StaticBooleanQueryVarsBuilder";
 export * from "./StaticQueryVarsBuilder";
+export * from "./StockAvailabilityQueryVarsBuilder";
 export * from "./VoucherStatusQueryVarsBuilder";
 export * from "./VoucherTimesUsedQueryVarsBuilder";

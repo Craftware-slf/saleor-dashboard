@@ -15780,6 +15780,15 @@ export const ProductListDocument = gql`
         description
         variants {
           sku
+          stocks {
+            id
+            quantity
+            quantityAllocated
+            warehouse {
+              id
+              slug
+            }
+          }
         }
         attributes {
           ...ProductListAttribute

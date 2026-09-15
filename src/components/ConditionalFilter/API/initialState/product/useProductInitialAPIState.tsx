@@ -262,6 +262,7 @@ export const useProductInitialAPIState = (): InitialProductAPIState => {
             initialState.isVisibleInListing,
             initialState.hasCategory,
             initialState.giftCard,
+            initialState.stockAvailability,
           ),
         );
       } catch (error) {

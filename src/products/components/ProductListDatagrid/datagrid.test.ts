@@ -1,4 +1,48 @@
-import { getDescriptionValue, getSkuValue } from "./datagrid";
+import { getDescriptionValue, getSkuValue, getStockValue } from "./datagrid";
+
+describe("getStockValue", () => {
+  it("should return 0 when the product has no variants", () => {
+    expect(getStockValue([])).toBe(0);
+  });
+
+  it("should return 0 when a variant carries no stock rows", () => {
+    expect(getStockValue([{ stocks: [] }, { stocks: null }])).toBe(0);
+  });
+
+  it("should subtract allocated units from quantity", () => {
+    expect(getStockValue([{ stocks: [{ quantity: 10, quantityAllocated: 3 }] }])).toBe(7);
+  });
+
+  it("should sum across every variant of a product", () => {
+    expect(
+      getStockValue([
+        { stocks: [{ quantity: 5, quantityAllocated: 0 }] },
+        { stocks: [{ quantity: 4, quantityAllocated: 1 }] },
+        { stocks: [{ quantity: 1, quantityAllocated: 1 }] },
+      ]),
+    ).toBe(8); // (5-0) + (4-1) + (1-1)
+  });
+
+  it("should sum across multiple warehouses on one variant", () => {
+    // With a channel selected Saleor returns only that channel's warehouses, but a channel
+    // can legitimately be served by more than one.
+    expect(
+      getStockValue([
+        {
+          stocks: [
+            { quantity: 6, quantityAllocated: 2 },
+            { quantity: 3, quantityAllocated: 0 },
+          ],
+        },
+      ]),
+    ).toBe(7);
+  });
+
+  it("should report oversold stock as negative rather than clamping to 0", () => {
+    // Allocations can exceed quantity; hiding that would make a problem product look fine.
+    expect(getStockValue([{ stocks: [{ quantity: 1, quantityAllocated: 4 }] }])).toBe(-3);
+  });
+});
 
 describe("getDescriptionValue", () => {
   it("should return description value", () => {
