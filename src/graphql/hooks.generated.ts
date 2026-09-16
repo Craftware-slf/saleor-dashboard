@@ -16441,6 +16441,43 @@ export function useChannelDiagnosticsLazyQuery(baseOptions?: ApolloReactHooks.La
 export type ChannelDiagnosticsQueryHookResult = ReturnType<typeof useChannelDiagnosticsQuery>;
 export type ChannelDiagnosticsLazyQueryHookResult = ReturnType<typeof useChannelDiagnosticsLazyQuery>;
 export type ChannelDiagnosticsQueryResult = Apollo.QueryResult<Types.ChannelDiagnosticsQuery, Types.ChannelDiagnosticsQueryVariables>;
+export const ChannelWarehousesDocument = gql`
+    query ChannelWarehouses {
+  channels {
+    id
+    warehouses {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useChannelWarehousesQuery__
+ *
+ * To run a query within a React component, call `useChannelWarehousesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useChannelWarehousesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useChannelWarehousesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useChannelWarehousesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<Types.ChannelWarehousesQuery, Types.ChannelWarehousesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<Types.ChannelWarehousesQuery, Types.ChannelWarehousesQueryVariables>(ChannelWarehousesDocument, options);
+      }
+export function useChannelWarehousesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<Types.ChannelWarehousesQuery, Types.ChannelWarehousesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<Types.ChannelWarehousesQuery, Types.ChannelWarehousesQueryVariables>(ChannelWarehousesDocument, options);
+        }
+export type ChannelWarehousesQueryHookResult = ReturnType<typeof useChannelWarehousesQuery>;
+export type ChannelWarehousesLazyQueryHookResult = ReturnType<typeof useChannelWarehousesLazyQuery>;
+export type ChannelWarehousesQueryResult = Apollo.QueryResult<Types.ChannelWarehousesQuery, Types.ChannelWarehousesQueryVariables>;
 export const SetRefundReasonTypeDocument = gql`
     mutation SetRefundReasonType($modelTypeId: ID!) {
   refundSettingsUpdate(input: {refundReasonReferenceType: $modelTypeId}) {

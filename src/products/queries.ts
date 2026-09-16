@@ -380,3 +380,28 @@ export const channelDiagnosticsQuery = gql`
     }
   }
 `;
+
+/**
+ * Which warehouses actually serve a channel (FEAT-165).
+ *
+ * The Stock column sums warehouse stock rows. With a channel selected Saleor already scopes
+ * `variant.stocks` to that channel's warehouses, so a plain sum is right. With NO channel it
+ * returns every warehouse — including any that serves no channel at all, whose rows are stale
+ * leftovers rather than sellable stock. On this installation `orninn_warehouse` (retired) and
+ * `default-warehouse` are exactly that: measured on prod they are assigned to no channel, and
+ * on the local stack `orninn_warehouse` still holds 381 stock rows that would inflate the total.
+ *
+ * So the channel-less total counts only warehouses reachable from some channel. That set is
+ * derived here from `channels { warehouses }` rather than hardcoded, because warehouse slugs are
+ * data — a new brand or a re-activated warehouse must not need a dashboard change.
+ */
+export const channelWarehousesQuery = gql`
+  query ChannelWarehouses {
+    channels {
+      id
+      warehouses {
+        id
+      }
+    }
+  }
+`;
