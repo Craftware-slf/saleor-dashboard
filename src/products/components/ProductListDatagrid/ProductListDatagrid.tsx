@@ -16,6 +16,7 @@ import {
   type GridAttributesQuery,
   type ProductListQuery,
   type useAvailableColumnAttributesLazyQuery,
+  useChannelWarehousesQuery,
 } from "@dashboard/graphql";
 import { getPrevLocationState } from "@dashboard/hooks/useBackLinkWithState";
 import useLocale from "@dashboard/hooks/useLocale";
@@ -94,6 +95,20 @@ export const ProductListDatagrid = ({
   const { theme } = useTheme();
   const datagrid = useDatagridChangeState();
   const { locale } = useLocale();
+  // Only needed for the channel-less Stock total — with a channel selected Saleor has already
+  // scoped variant.stocks to that channel's warehouses, so skip the request entirely.
+  const { data: channelWarehousesData } = useChannelWarehousesQuery({
+    skip: isChannelSelected,
+  });
+  const servingWarehouseIds = useMemo(
+    () =>
+      new Set(
+        (channelWarehousesData?.channels ?? []).flatMap(channel =>
+          (channel.warehouses ?? []).map(warehouse => warehouse.id),
+        ),
+      ),
+    [channelWarehousesData],
+  );
   const location = useLocation();
   const productsLength = getProductRowsLength(disabled, products, disabled);
   const onPriceClick = usePriceClick({ isChannelSelected });
@@ -247,8 +262,9 @@ export const ProductListDatagrid = ({
         theme,
         locale,
         selectedChannelId,
+        servingWarehouseIds,
       }),
-    [visibleColumns, products, intl, locale, selectedChannelId],
+    [visibleColumns, products, intl, locale, selectedChannelId, servingWarehouseIds],
   );
 
   return (

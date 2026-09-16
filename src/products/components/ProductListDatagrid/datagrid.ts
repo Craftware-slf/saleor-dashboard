@@ -192,6 +192,12 @@ interface GetCellContentProps {
   theme: DefaultTheme;
   locale: Locale;
   selectedChannelId?: string;
+  /**
+   * Warehouses reachable from at least one channel. Only consulted for the channel-less Stock
+   * total; empty while its query is in flight or when a channel is selected (where Saleor has
+   * already scoped the stock rows).
+   */
+  servingWarehouseIds?: ReadonlySet<string>;
 }
 
 export function createGetCellContent({
@@ -200,6 +206,7 @@ export function createGetCellContent({
   theme,
   products,
   selectedChannelId,
+  servingWarehouseIds,
 }: GetCellContentProps) {
   return ([column, row]: Item, { changes, getChangeIndex, added, removed }: GetCellContentOpts) => {
     const columnId = columns[column]?.id;
@@ -220,7 +227,7 @@ export function createGetCellContent({
       case "sku":
         return getSkuCellContent(rowData);
       case "stock":
-        return getStockCellContent(intl, rowData, selectedChannelId);
+        return getStockCellContent(intl, rowData, selectedChannelId, servingWarehouseIds);
       case "productType":
         return getProductTypeCellContent(theme, rowData);
       case "availability":
@@ -303,38 +310,73 @@ function getSkuCellContent(rowData: RelayToFlat<ProductListQuery["products"]>[nu
 
 // Sellable units for a product: quantity minus what is already allocated to unfulfilled
 // orders, summed over every variant. Exported for tests.
+interface StockRow {
+  quantity: number;
+  quantityAllocated: number;
+  warehouse?: { id: string } | null;
+}
+
+/**
+ * Sellable units for a product: quantity minus what is already allocated to unfulfilled orders,
+ * summed over every variant. Exported for tests.
+ *
+ * `countedWarehouseIds` restricts the sum to those warehouses. Pass it for the channel-less
+ * total, where the query returns warehouses that serve no channel and whose rows are stale
+ * leftovers rather than sellable stock. Omit it when a channel is selected — Saleor has already
+ * scoped the rows, so every row returned should count.
+ */
 export function getStockValue(
-  variants: Array<{ stocks?: Array<{ quantity: number; quantityAllocated: number }> | null }>,
+  variants: Array<{ stocks?: StockRow[] | null }>,
+  countedWarehouseIds?: ReadonlySet<string>,
 ): number {
   return variants.reduce(
     (total, variant) =>
       total +
-      (variant.stocks ?? []).reduce(
-        (sum, stock) => sum + (stock.quantity - stock.quantityAllocated),
-        0,
-      ),
+      (variant.stocks ?? [])
+        .filter(
+          stock =>
+            !countedWarehouseIds ||
+            (!!stock.warehouse && countedWarehouseIds.has(stock.warehouse.id)),
+        )
+        .reduce((sum, stock) => sum + (stock.quantity - stock.quantityAllocated), 0),
     0,
   );
 }
 
-// The stock column is channel-dependent, like price.
+// Unlike price, the stock column answers with or without a channel.
 //
-// Saleor scopes `variant.stocks` to the warehouses assigned to the queried channel, so with a
-// channel selected the rows we get back are already the right ones and a plain sum is correct.
-// With NO channel the query returns every warehouse, which on this catalogue means the retired
-// `orninn_warehouse` as well as the brand ones — measured on prod, 380 of 100 products' variants
-// carry stock in more than one warehouse, so summing them would roughly double the real figure.
-// Rather than hardcode warehouse slugs here (they are data, not code), show a dash until a
-// channel is chosen — the same bargain the price column already makes.
+// With a channel selected Saleor scopes `variant.stocks` to that channel's warehouses, so a
+// plain sum over the returned rows is the channel's sellable stock.
+//
+// With NO channel the query returns every warehouse, so the sum is restricted to warehouses
+// reachable from some channel. Warehouses assigned to no channel hold stale leftovers, not
+// sellable stock: on prod `orninn_warehouse` (retired) and `default-warehouse` serve no channel
+// and hold zero rows, while the local stack still has 381 rows sitting in `orninn_warehouse`
+// that would inflate the total. The set comes from `channels { warehouses }` rather than a
+// hardcoded slug list, because warehouse slugs are data.
+//
+// The result is a cross-brand total until a channel narrows it. That is a slightly different
+// question from per-channel stock, but a number staff can act on beats a prompt they have to
+// satisfy before the column says anything at all.
 function getStockCellContent(
   intl: IntlShape,
   rowData: RelayToFlat<ProductListQuery["products"]>[number],
   selectedChannelId: string | undefined,
+  servingWarehouseIds: ReadonlySet<string> | undefined,
 ) {
-  // Say "Select channel", exactly as getPriceCellContent does, rather than a bare dash.
-  // Both columns are channel-dependent and sit side by side, so a dash here next to
-  // Price's prompt reads as "this product has no stock data" instead of "pick a channel".
-  if (!selectedChannelId) {
+  const variants = rowData?.variants ?? [];
+
+  if (variants.length === 0) {
+    return readonlyTextCell("-", true);
+  }
+
+  if (selectedChannelId) {
+    return readonlyTextCell(String(getStockValue(variants)), false);
+  }
+
+  // Still loading the channel→warehouse map. Showing 0 here would read as "out of stock", so
+  // fall back to the prompt until the set arrives rather than asserting a wrong number.
+  if (!servingWarehouseIds || servingWarehouseIds.size === 0) {
     return readonlyTextCell(
       intl.formatMessage({
         defaultMessage: "Select channel",
@@ -346,13 +388,7 @@ function getStockCellContent(
     );
   }
 
-  const variants = rowData?.variants ?? [];
-
-  if (variants.length === 0) {
-    return readonlyTextCell("-", true);
-  }
-
-  return readonlyTextCell(String(getStockValue(variants)), false);
+  return readonlyTextCell(String(getStockValue(variants, servingWarehouseIds)), false);
 }
 
 function getProductTypeCellContent(

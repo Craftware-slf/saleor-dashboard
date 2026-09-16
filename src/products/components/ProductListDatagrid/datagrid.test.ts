@@ -42,6 +42,69 @@ describe("getStockValue", () => {
     // Allocations can exceed quantity; hiding that would make a problem product look fine.
     expect(getStockValue([{ stocks: [{ quantity: 1, quantityAllocated: 4 }] }])).toBe(-3);
   });
+
+  describe("restricted to channel-serving warehouses (the channel-less total)", () => {
+    const brand = { id: "wh-golf" };
+    const retired = { id: "wh-orninn-lager" };
+    const serving: ReadonlySet<string> = new Set(["wh-golf"]);
+
+    it("should ignore rows in a warehouse that serves no channel", () => {
+      // The exact shape of the local stack: real stock in the brand warehouse, stale rows
+      // left behind in the retired one. Counting both is what inflated the total.
+      expect(
+        getStockValue(
+          [
+            {
+              stocks: [
+                { quantity: 4, quantityAllocated: 0, warehouse: brand },
+                { quantity: 99, quantityAllocated: 0, warehouse: retired },
+              ],
+            },
+          ],
+          serving,
+        ),
+      ).toBe(4);
+    });
+
+    it("should return 0 when every row sits in a non-serving warehouse", () => {
+      expect(
+        getStockValue(
+          [{ stocks: [{ quantity: 99, quantityAllocated: 0, warehouse: retired }] }],
+          serving,
+        ),
+      ).toBe(0);
+    });
+
+    it("should drop rows with no warehouse at all rather than counting them", () => {
+      expect(
+        getStockValue(
+          [
+            {
+              stocks: [
+                { quantity: 7, quantityAllocated: 0, warehouse: brand },
+                { quantity: 5, quantityAllocated: 0, warehouse: null },
+              ],
+            },
+          ],
+          serving,
+        ),
+      ).toBe(7);
+    });
+
+    it("should count every row when no set is passed, which is the channel-selected path", () => {
+      // Saleor has already scoped the rows there, so filtering again would be wrong.
+      expect(
+        getStockValue([
+          {
+            stocks: [
+              { quantity: 4, quantityAllocated: 0, warehouse: brand },
+              { quantity: 99, quantityAllocated: 0, warehouse: retired },
+            ],
+          },
+        ]),
+      ).toBe(103);
+    });
+  });
 });
 
 describe("getDescriptionValue", () => {
