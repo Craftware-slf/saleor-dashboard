@@ -218,6 +218,11 @@ const OrderDetailsPage = (props: OrderDetailsPageProps) => {
       });
     }
   };
+  // Craftware (Örninn FEAT-198): Return/Replace is hidden — see the comment on
+  // the menu item below. Typed `boolean` rather than inferred `false` so TS does
+  // not narrow the guard below into dead code.
+  const RETURNS_ENABLED: boolean = false;
+
   const selectCardMenuItems = filteredConditionalItems([
     {
       item: {
@@ -232,7 +237,21 @@ const OrderDetailsPage = (props: OrderDetailsPageProps) => {
         label: intl.formatMessage(messages.returnOrder),
         onSelect: onOrderReturn,
       },
-      shouldExist: hasAnyItemsReplaceable(order),
+      // Craftware (Örninn FEAT-198): hidden. Örninn issue refunds from the
+      // Refunds card only — "Refund with line items" (the default) and
+      // "Refund with manual amount" (goodwill / overcharge).
+      //
+      // This flow is not merely unused, it is unsafe here: it fires
+      // orderFulfillmentReturnProducts FIRST and grants the refund second, so
+      // when the grant fails the return is already committed — lines marked
+      // returned, stock possibly restocked, a replacement draft order possibly
+      // created — with no refund. That half-done state is unpicked by hand.
+      // The grant is expected to fail: this Saleor instance requires a
+      // reasonReference (refundSettings.reasonReferenceType = "Refund reason")
+      // and the return flow hardcodes reason: "" and sends no reference.
+      //
+      // Re-enable when the returns process is designed: flip the flag below.
+      shouldExist: RETURNS_ENABLED && hasAnyItemsReplaceable(order),
     },
     {
       // Craftware: print the Dropp shipping label.
