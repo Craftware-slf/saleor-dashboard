@@ -54,7 +54,11 @@ import { mapByChannel } from "@dashboard/products/components/ProductUpdatePage/u
 import { defaultGraphiQLQuery } from "@dashboard/products/queries";
 import { rippleProductMetadata } from "@dashboard/products/ripples/productMetadata";
 import { productImageUrl, productListPath, productListUrl } from "@dashboard/products/urls";
-import { type ChoiceWithAncestors, getChoicesWithAncestors } from "@dashboard/products/utils/utils";
+import {
+  type ChoiceWithAncestors,
+  getChoicesWithAncestors,
+  getChoicesWithAncestorsBySlug,
+} from "@dashboard/products/utils/utils";
 import { type ProductVariantListError } from "@dashboard/products/views/ProductUpdate/handlers/errors";
 import { type UseProductUpdateHandlerError } from "@dashboard/products/views/ProductUpdate/handlers/useProductUpdateHandler";
 import { productTypeUrl } from "@dashboard/productTypes/urls";
@@ -75,6 +79,7 @@ import { AvailabilityCard } from "../ProductDoctor/AvailabilityCard";
 import { useProductAvailabilityDiagnostics } from "../ProductDoctor/hooks/useProductAvailabilityDiagnostics";
 import { mapProductToDiagnosticData } from "../ProductDoctor/utils/mapProductToDiagnosticData";
 import ProductMedia from "../ProductMedia";
+import { ProductPseudoCategories } from "../ProductPseudoCategories/ProductPseudoCategories";
 import { ProductShipping } from "../ProductShipping";
 import { ProductTaxes } from "../ProductTaxes/ProductTaxes";
 import { type BulkCreateResult } from "../ProductVariantGenerator/types";
@@ -240,6 +245,12 @@ const ProductUpdatePage = ({
   );
   const [selectedTaxClass, setSelectedTaxClass] = useStateFromProps(product?.taxClass?.name ?? "");
   const categories = getChoicesWithAncestors(categoryChoiceList);
+  // Craftware (Örninn FEAT-185): the same options keyed by SLUG, for the per-store category
+  // pickers. Separate from `categories` on purpose — that one is keyed by id and feeds the real
+  // category field; the override is stored as a slug because that is what the indexer reads.
+  const categoriesBySlug = getChoicesWithAncestorsBySlug(
+    categoryChoiceList as Array<ChoiceWithAncestors & { slug: string }>,
+  );
   const selectedProductCategory = product?.category
     ? getChoicesWithAncestors([product.category as ChoiceWithAncestors])[0]
     : undefined;
@@ -659,6 +670,27 @@ const ProductUpdatePage = ({
                   onCategoryChange={handlers.selectCategory}
                   onCollectionChange={handlers.selectCollection}
                   selectedProductCategory={selectedProductCategory}
+                />
+                {/* Craftware: per-store category for multi-store products (Örninn FEAT-185).
+                    Placed directly under Organize Product because it is the same decision — where
+                    this product belongs — just answered once per store. Renders nothing unless the
+                    product is listed in more than one channel. Driven by live FORM state, so a
+                    store added in this session gets its picker before the first save. */}
+                <ProductPseudoCategories
+                  channels={(data.channels.updateChannels ?? [])
+                    .map(listing => channels?.find(channel => channel.id === listing.channelId))
+                    .filter((channel): channel is NonNullable<typeof channel> => !!channel)
+                    .map(channel => ({
+                      id: channel.id,
+                      slug: channel.slug,
+                      name: channel.name,
+                    }))}
+                  value={data.pseudoCategories}
+                  categories={categoriesBySlug}
+                  disabled={disabled}
+                  fetchCategories={fetchCategories}
+                  fetchMoreCategories={fetchMoreCategories}
+                  onChange={handlers.selectPseudoCategory}
                 />
                 <AvailabilityCard
                   diagnostics={availabilityDiagnostics}

@@ -117,6 +117,28 @@ export function useProductUpdateForm(
     opts.setSelectedCategory,
     opts.categories,
   );
+  /**
+   * Craftware (Örninn FEAT-185): set one store's category override.
+   *
+   * Rebuilds the whole `pseudoCategories` object and pushes it through `handleChange` under that
+   * exact field name — `useForm` tracks changes per top-level field, so mutating the object in
+   * place would never mark the form dirty and the value would never reach submit. An empty
+   * selection deletes the entry rather than storing "", so clearing the control removes the
+   * metadata key instead of writing a blank category slug.
+   */
+  const handlePseudoCategorySelect = (channelSlug: string, categorySlug: string) => {
+    const next = { ...form.data.pseudoCategories };
+
+    if (categorySlug) {
+      next[channelSlug] = categorySlug;
+    } else {
+      delete next[channelSlug];
+    }
+
+    handleChange({
+      target: { name: "pseudoCategories", value: next },
+    } as unknown as React.ChangeEvent<HTMLInputElement>);
+  };
   const handleAttributeChange = createAttributeChangeHandler(attributes, triggerChange);
   const handleAttributeMultiChange = createAttributeMultiChangeHandler(
     attributes.change,
@@ -282,6 +304,7 @@ export function useProductUpdateForm(
       selectAttributeReference: handleAttributeReferenceChange,
       selectAttributeReferenceAdditionalData: handleAttributeMetadataChange,
       selectCategory: handleCategorySelect,
+      selectPseudoCategory: handlePseudoCategorySelect,
       selectCollection: handleCollectionSelect,
       selectTaxClass: handleTaxClassSelect,
       updateChannelList: handleChannelListUpdate,

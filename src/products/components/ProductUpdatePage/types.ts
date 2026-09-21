@@ -52,6 +52,12 @@ export interface ProductUpdateFormData {
   hasPreorderEndDate: boolean;
   preorderEndDateTime?: string;
   weight: string;
+  /**
+   * Craftware (Örninn FEAT-185): channelSlug → category SLUG, persisted as product metadata
+   * `category_<channelSlug>`. Saleor allows one real category per product; Örninn sell the same
+   * product in several brand stores whose category trees are separate namespaces.
+   */
+  pseudoCategories: Record<string, string>;
 }
 export interface ProductUpdateData extends ProductUpdateFormData {
   attributes: AttributeInput[];
@@ -79,6 +85,8 @@ export interface ProductUpdateHandlers
   fetchReferences: (value: string) => void;
   fetchMoreReferences: FetchMoreProps;
   updateChannelList: ProductChannelsListingDialogSubmit;
+  /** Craftware (Örninn FEAT-185): set the per-store category override for one channel. */
+  selectPseudoCategory: (channelSlug: string, categorySlug: string) => void;
 }
 
 export interface UseProductUpdateFormOutput

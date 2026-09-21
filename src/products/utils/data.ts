@@ -184,6 +184,13 @@ export function getChoices(nodes: Node[]): Option[] {
   );
 }
 
+/**
+ * Craftware (Örninn FEAT-185): metadata key prefix for the per-store category override.
+ * Exported so the form seeding and the submit handler cannot drift apart — the whole feature is
+ * one string matching in two places.
+ */
+export const PSEUDO_CATEGORY_PREFIX = "category_";
+
 export function getProductUpdatePageFormData(
   product: ProductFragment,
   variants: ProductDetailsVariantFragment[],
@@ -217,6 +224,15 @@ export function getProductUpdatePageFormData(
     ),
     slug: product?.slug || "",
     trackInventory: !!variant?.trackInventory,
+    // Craftware (Örninn FEAT-185): seed the per-store category overrides from existing metadata.
+    // MANDATORY, not cosmetic — `useForm.change()` silently ignores any field name that is not
+    // already present in the initial data, so without this the control renders, accepts input,
+    // reports success and saves nothing at all.
+    pseudoCategories: Object.fromEntries(
+      (product?.metadata ?? [])
+        .filter(entry => entry.key.startsWith(PSEUDO_CATEGORY_PREFIX))
+        .map(entry => [entry.key.slice(PSEUDO_CATEGORY_PREFIX.length), entry.value]),
+    ),
     weight: product?.weight?.value.toString() || "",
     isPreorder: !!variant?.preorder || false,
     globalThreshold: variant?.preorder?.globalThreshold?.toString() || "",
