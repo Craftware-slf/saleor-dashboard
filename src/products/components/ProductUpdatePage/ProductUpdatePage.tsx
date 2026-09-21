@@ -677,7 +677,7 @@ const ProductUpdatePage = ({
                     product is listed in more than one channel. Driven by live FORM state, so a
                     store added in this session gets its picker before the first save. */}
                 <ProductPseudoCategories
-                  channels={data.channels.updateChannels
+                  channels={(data.channels.updateChannels ?? [])
                     .map(listing => channels?.find(channel => channel.id === listing.channelId))
                     .filter((channel): channel is NonNullable<typeof channel> => !!channel)
                     .map(channel => ({
