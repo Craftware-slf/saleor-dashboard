@@ -38,6 +38,22 @@ const getAncestorsLabel = (choice: ChoiceWithAncestors): string => {
   return `${rootCategoryLabel} ${level > 2 ? "/ ... /" : "/"} ${parentLabel} / `;
 };
 
+/**
+ * Craftware: the same options, keyed by category SLUG instead of id (Örninn FEAT-185).
+ *
+ * The per-store category override is stored in product metadata as a slug, because that is what
+ * Örninn's search indexer and storefronts read. Everything else in the dashboard keys categories
+ * by id, so this deliberately does NOT change `getChoicesWithAncestors` — mixing the two is the
+ * easiest way to produce a control that looks right and writes an unusable value.
+ */
+export const getChoicesWithAncestorsBySlug = (
+  choices: Array<ChoiceWithAncestors & { slug: string }>,
+): Option[] =>
+  getChoicesWithAncestors(choices).map((option, index) => ({
+    ...option,
+    value: choices[index].slug,
+  }));
+
 export const getChoicesWithAncestors = (choices: ChoiceWithAncestors[]): Option[] =>
   choices.map(category => {
     const hasAncestors = category.level > 0;

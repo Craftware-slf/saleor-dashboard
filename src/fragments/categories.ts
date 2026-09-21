@@ -43,6 +43,7 @@ export const categoryWithAncestorFragment = gql`
   fragment CategoryWithAncestors on Category {
     id
     name
+    slug
     parent {
       id
       name

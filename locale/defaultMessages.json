@@ -5371,6 +5371,10 @@
     "context": "close full-screen",
     "string": "Close"
   },
+  "QjSJs+": {
+    "context": "section header, multi-store product",
+    "string": "Category per store"
+  },
   "QjwEr6": {
     "string": "Go to categories"
   },
@@ -7588,6 +7592,10 @@
   "cZN5Jd": {
     "context": "Webhook details events",
     "string": "Events"
+  },
+  "caY4gG": {
+    "context": "help text, multi-store product category",
+    "string": "This product is sold in more than one store. Choose where it belongs in each store's categories. Without this it will not appear on any category page in the other store."
   },
   "ccXLVi": {
     "string": "Category"

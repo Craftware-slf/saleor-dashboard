@@ -75,6 +75,8 @@ const createMockReferenceData = (data: {
       __typename: "Category" as const,
       id: c.id,
       name: c.name,
+      // Craftware: CategoryWithAncestors carries `slug` since Örninn FEAT-185.
+      slug: c.id,
       level: 0,
       parent: null,
       ancestors: null,
