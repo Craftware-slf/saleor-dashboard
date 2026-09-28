@@ -79,6 +79,7 @@ export const DiscountDetailsForm = ({
     onRuleDeleteSubmit,
     onRuleUpdateSubmit,
     ruleConditionsOptionsDetailsMap: ruleConditionsValues.labels,
+    brandCollectionIds: ruleConditionsValues.brandCollectionIds,
     giftsOptionsDetailsMap: gifts.labels,
   });
 

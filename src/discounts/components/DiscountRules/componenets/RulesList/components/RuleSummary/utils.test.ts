@@ -149,6 +149,15 @@ describe("getConditionEntityUrl", () => {
     expect(collectionUrl).toHaveBeenCalledWith("cid");
   });
 
+  it("delegates to collectionUrl for brand (brands are collections)", () => {
+    // Act
+    const result = getConditionEntityUrl("brand", "bid");
+
+    // Assert
+    expect(result).toBe("mock-collection-url:bid");
+    expect(collectionUrl).toHaveBeenCalledWith("bid");
+  });
+
   it("delegates to categoryUrl for category", () => {
     // Act
     const result = getConditionEntityUrl("category", "catid");

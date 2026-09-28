@@ -2,6 +2,7 @@ import { type CatalogConditions } from "@dashboard/discounts/types";
 import { type getSearchFetchMoreProps } from "@dashboard/hooks/makeTopLevelSearch/utils";
 import { type Option } from "@saleor/macaw-ui-next";
 
+import { useBrandOptions } from "./options/useBrandOptions";
 import { useCategorieOptions } from "./options/useCategorieOptions";
 import { useCollectionOptions } from "./options/useCollectionOptions";
 import { useProductOptions } from "./options/useProductOptions";
@@ -16,11 +17,13 @@ interface FetchOptions {
 export const useCondtionValues = (channel: string | null, conditionId: string | null) => {
   const productSearch = useProductOptions(channel, conditionId);
   const collectionSearch = useCollectionOptions(channel, conditionId);
+  const brandSearch = useBrandOptions(channel, conditionId);
   const categorySearch = useCategorieOptions(channel, conditionId);
   const variantSearch = useVariantOptions(channel, conditionId);
   const typeToFetchMap: Record<CatalogConditions, FetchOptions> = {
     product: productSearch,
     collection: collectionSearch,
+    brand: brandSearch,
     category: categorySearch,
     variant: variantSearch,
   };

@@ -42,6 +42,13 @@ const getConditionsTypes = (
         value: "is",
       },
     ],
+    brand: [
+      {
+        type: "multiselect",
+        label: CONDITIONT_TYPES_LABELS.IS,
+        value: "is",
+      },
+    ],
     variant: [
       {
         type: "multiselect",

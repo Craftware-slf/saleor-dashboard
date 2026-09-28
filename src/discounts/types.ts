@@ -37,7 +37,9 @@ export interface DiscoutFormData {
   rules: Rule[];
 }
 
-export type CatalogConditions = "product" | "category" | "collection" | "variant";
+// "brand" is a UI-only condition: it is saved as a collectionPredicate over brand
+// collections (see brandCollections.ts), there is no brandPredicate in the API.
+export type CatalogConditions = "product" | "category" | "collection" | "brand" | "variant";
 
 export type OrderConditions = "baseSubtotalPrice" | "baseTotalPrice";
 

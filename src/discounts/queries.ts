@@ -173,6 +173,8 @@ export const ruleConditionsSelectedOptionsDetails = gql`
         node {
           id
           name
+          # Marks a brand collection (Brand rule condition), see discounts/brandCollections.ts
+          brandPageId: metafield(key: "brand_page_id")
         }
       }
     }

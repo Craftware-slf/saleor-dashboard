@@ -167,6 +167,16 @@ describe("Rule Model - hasPredicateCreatedViaApi", () => {
 
     expect(hasPredicateNestedConditions(catalogPredicate)).toBe(false);
   });
+  it("should return false for brand and collection conditions saved as two collectionPredicates", () => {
+    const catalogPredicate = {
+      OR: [
+        { collectionPredicate: { ids: ["brand-1"] } },
+        { collectionPredicate: { ids: ["col-1"] } },
+      ],
+    } as CataloguePredicateAPI;
+
+    expect(hasPredicateNestedConditions(catalogPredicate)).toBe(false);
+  });
   it("shouldd return false when order predicate with proper nesting", () => {
     const orderPredicate = {
       discountedObjectPredicate: {

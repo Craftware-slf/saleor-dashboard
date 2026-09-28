@@ -19,6 +19,14 @@ export const useCatalogConditionNames = (): Option[] => {
       },
       {
         label: intl.formatMessage({
+          defaultMessage: "Brands",
+          id: "otiABV",
+          description: "discount rule condition: brand collections",
+        }),
+        value: "brand",
+      },
+      {
+        label: intl.formatMessage({
           defaultMessage: "Categories",
           id: "VKb1MS",
         }),

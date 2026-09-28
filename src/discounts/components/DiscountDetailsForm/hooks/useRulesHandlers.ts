@@ -8,11 +8,13 @@ import {
 import { type CommonError } from "@dashboard/utils/errors/common";
 import { useEffect, useState } from "react";
 
-import { getCurrentConditionsValuesLabels } from "../utils";
+import { getCurrentBrandCollectionIds, getCurrentConditionsValuesLabels } from "../utils";
 
 interface UseRulesHandlersProps {
   data: PromotionDetailsFragment | undefined | null;
   ruleConditionsOptionsDetailsMap: Record<string, string>;
+  /** Brand collection ids resolved from the selected options details query. */
+  brandCollectionIds?: string[];
   giftsOptionsDetailsMap: Record<string, string>;
   onRuleUpdateSubmit: (data: Rule) => Promise<Array<CommonError<PromotionRuleUpdateErrorFragment>>>;
   onRuleCreateSubmit: (data: Rule) => Promise<Array<CommonError<PromotionRuleCreateErrorFragment>>>;
@@ -22,6 +24,7 @@ interface UseRulesHandlersProps {
 export const useRulesHandlers = ({
   data,
   ruleConditionsOptionsDetailsMap,
+  brandCollectionIds = [],
   giftsOptionsDetailsMap,
   onRuleUpdateSubmit,
   onRuleCreateSubmit,
@@ -31,11 +34,19 @@ export const useRulesHandlers = ({
   const [conditionValuesLabelMap, setConditionValuesLabelMap] = useState<Record<string, string>>(
     {},
   );
+  // Brand ids picked in rules submitted during this session. The selected options details are
+  // fetched only once per page load, so without these a freshly saved Brand condition would
+  // load back as a Collections one.
+  const [submittedBrandCollectionIds, setSubmittedBrandCollectionIds] = useState<string[]>([]);
+  // Derived on every render (not stored), so rules are re-classified as soon as the details
+  // query resolves; nothing is permanently misclassified while it is loading.
+  const knownBrandCollectionIds = [...brandCollectionIds, ...submittedBrandCollectionIds];
   const rules = sortRules(
     data?.rules?.map(rule =>
       mapAPIRuleToForm(data?.type, rule, {
         conditionsValues: conditionValuesLabelMap,
         gifts: giftsOptionsDetailsMap,
+        brandCollectionIds: knownBrandCollectionIds,
       }),
     ) ?? [],
   );
@@ -54,6 +65,7 @@ export const useRulesHandlers = ({
       ...labels,
       ...getCurrentConditionsValuesLabels([rule]),
     }));
+    setSubmittedBrandCollectionIds(ids => [...ids, ...getCurrentBrandCollectionIds([rule])]);
   };
   const onRuleSubmit = async (rule: Rule, ruleEditIndex: number | null) => {
     let errors: Array<
