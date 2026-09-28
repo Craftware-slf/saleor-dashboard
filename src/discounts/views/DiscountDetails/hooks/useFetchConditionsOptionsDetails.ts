@@ -1,3 +1,4 @@
+import { isBrandCollection } from "@dashboard/discounts/brandCollections";
 import { type CataloguePredicateAPI } from "@dashboard/discounts/types";
 import {
   type PromotionDetailsQuery,
@@ -37,18 +38,20 @@ interface AllConditionsIds {
   variantsIds: string[];
 }
 
-const initAllConditionsIds: AllConditionsIds = {
+// A fresh accumulator per call: reduceConditionsLabels pushes into these arrays, so a shared
+// module-level object would leak ids between calls.
+const createInitAllConditionsIds = (): AllConditionsIds => ({
   productsIds: [],
   categoriesIds: [],
   collectionsIds: [],
   variantsIds: [],
-};
+});
 
 export function getAllConditionsOptionsIdsToFetch(
   data: PromotionDetailsQuery | undefined,
 ): AllConditionsIds {
   if (!data?.promotion?.rules) {
-    return initAllConditionsIds;
+    return createInitAllConditionsIds();
   }
 
   const allConditionsIds = data.promotion.rules.reduce((acc, rule) => {
@@ -62,7 +65,7 @@ export function getAllConditionsOptionsIdsToFetch(
     reduceConditionsLabels(predicate, acc);
 
     return acc;
-  }, initAllConditionsIds);
+  }, createInitAllConditionsIds());
 
   return {
     productsIds: Array.from(new Set(allConditionsIds.productsIds)),
@@ -124,6 +127,18 @@ export function getRuleConditionsOptionsDetailsMap(
 
     return acc;
   }, {});
+}
+
+/**
+ * Ids of the selected collections that are brand collections (`brand_page_id` metadata).
+ * They are stored as a collectionPredicate and loaded back as the "brand" condition.
+ */
+export function getBrandCollectionIds(
+  data: RuleConditionsSelectedOptionsDetailsQuery | undefined,
+): string[] {
+  return (mapEdgesToItems(data?.collections) ?? [])
+    .filter(isBrandCollection)
+    .map(collection => collection.id);
 }
 
 function whenNoCondtionsIds(conditionsOptionsIdsToFetch: AllConditionsIds) {

@@ -18,3 +18,14 @@ export const getCurrentConditionsValuesLabels = (rule: Rule[]) => {
       {} as Record<string, string>,
     );
 };
+
+/**
+ * Collection ids picked in the rules' Brand conditions. Brands are saved as a plain
+ * collectionPredicate, so these ids are needed to load the saved rule back as "brand".
+ */
+export const getCurrentBrandCollectionIds = (rules: Rule[]): string[] => {
+  return rules
+    .flatMap(rule => rule.conditions)
+    .filter(condition => condition.id === "brand" && isArrayOfOptions(condition.value))
+    .flatMap(condition => (condition.value as Option[]).map(option => option.value));
+};

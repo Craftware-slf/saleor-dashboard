@@ -23,6 +23,8 @@ export const mapAPIRuleToForm = (
   labelMaps: {
     conditionsValues: Record<string, string>;
     gifts: Record<string, string>;
+    /** Collection ids known to be brand collections (loaded as the "brand" condition). */
+    brandCollectionIds?: string[];
   },
 ): Rule => {
   const baseRuleData = createBaseRuleInputFromAPI(rule, labelMaps.gifts);
@@ -46,6 +48,7 @@ export const mapAPIRuleToForm = (
     const catalogueConditions = prepareCatalogueRuleConditions(
       predicate,
       labelMaps.conditionsValues,
+      labelMaps.brandCollectionIds,
     );
 
     return {

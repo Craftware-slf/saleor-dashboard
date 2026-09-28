@@ -8505,6 +8505,7 @@ export const RuleConditionsSelectedOptionsDetailsDocument = gql`
       node {
         id
         name
+        brandPageId: metafield(key: "brand_page_id")
       }
     }
   }
@@ -17218,6 +17219,59 @@ export function useSearchCollectionsWithTotalProductsLazyQuery(baseOptions?: Apo
 export type SearchCollectionsWithTotalProductsQueryHookResult = ReturnType<typeof useSearchCollectionsWithTotalProductsQuery>;
 export type SearchCollectionsWithTotalProductsLazyQueryHookResult = ReturnType<typeof useSearchCollectionsWithTotalProductsLazyQuery>;
 export type SearchCollectionsWithTotalProductsQueryResult = Apollo.QueryResult<Types.SearchCollectionsWithTotalProductsQuery, Types.SearchCollectionsWithTotalProductsQueryVariables>;
+export const SearchRuleConditionCollectionsDocument = gql`
+    query SearchRuleConditionCollections($after: String, $first: Int!, $channel: String, $filter: CollectionFilterInput) {
+  search: collections(
+    after: $after
+    first: $first
+    filter: $filter
+    channel: $channel
+  ) {
+    edges {
+      node {
+        id
+        name
+        slug
+        brandPageId: metafield(key: "brand_page_id")
+      }
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}
+    ${PageInfoFragmentDoc}`;
+
+/**
+ * __useSearchRuleConditionCollectionsQuery__
+ *
+ * To run a query within a React component, call `useSearchRuleConditionCollectionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchRuleConditionCollectionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchRuleConditionCollectionsQuery({
+ *   variables: {
+ *      after: // value for 'after'
+ *      first: // value for 'first'
+ *      channel: // value for 'channel'
+ *      filter: // value for 'filter'
+ *   },
+ * });
+ */
+export function useSearchRuleConditionCollectionsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<Types.SearchRuleConditionCollectionsQuery, Types.SearchRuleConditionCollectionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<Types.SearchRuleConditionCollectionsQuery, Types.SearchRuleConditionCollectionsQueryVariables>(SearchRuleConditionCollectionsDocument, options);
+      }
+export function useSearchRuleConditionCollectionsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<Types.SearchRuleConditionCollectionsQuery, Types.SearchRuleConditionCollectionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<Types.SearchRuleConditionCollectionsQuery, Types.SearchRuleConditionCollectionsQueryVariables>(SearchRuleConditionCollectionsDocument, options);
+        }
+export type SearchRuleConditionCollectionsQueryHookResult = ReturnType<typeof useSearchRuleConditionCollectionsQuery>;
+export type SearchRuleConditionCollectionsLazyQueryHookResult = ReturnType<typeof useSearchRuleConditionCollectionsLazyQuery>;
+export type SearchRuleConditionCollectionsQueryResult = Apollo.QueryResult<Types.SearchRuleConditionCollectionsQuery, Types.SearchRuleConditionCollectionsQueryVariables>;
 export const SearchCustomersDocument = gql`
     query SearchCustomers($after: String, $first: Int!, $query: String!) {
   search: customers(after: $after, first: $first, filter: {search: $query}) {

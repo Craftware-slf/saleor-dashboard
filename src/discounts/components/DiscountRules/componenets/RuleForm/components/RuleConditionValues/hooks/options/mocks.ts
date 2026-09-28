@@ -1,7 +1,7 @@
 import {
   SearchCategoriesDocument,
-  SearchCollectionsDocument,
   SearchProductsDocument,
+  SearchRuleConditionCollectionsDocument,
   SearchVariantsDocument,
 } from "@dashboard/graphql";
 
@@ -108,10 +108,11 @@ export const searchCategoriesMock = {
 
 export const searchCollectionsMock = {
   request: {
-    query: SearchCollectionsDocument,
+    query: SearchRuleConditionCollectionsDocument,
     variables: {
       ...queryVariablesMock,
       channel: "test",
+      filter: { search: "" },
     },
   },
   result: {
@@ -122,18 +123,37 @@ export const searchCollectionsMock = {
             node: {
               id: "Q29sbGVjdGlvbjoz",
               name: "Featured Products",
+              slug: "featured-products",
+              brandPageId: null,
+              __typename: "Collection",
             },
           },
           {
             node: {
               id: "Q29sbGVjdGlvbjox",
               name: "Summer collection",
+              slug: "summer-collection",
+              brandPageId: null,
+              __typename: "Collection",
             },
           },
           {
             node: {
               id: "Q29sbGVjdGlvbjoy",
               name: "Winter sale",
+              slug: "winter-sale",
+              brandPageId: null,
+              __typename: "Collection",
+            },
+          },
+          // A brand collection must not be offered by the Collections condition
+          {
+            node: {
+              id: "Q29sbGVjdGlvbjo5",
+              name: "Brand: AXA",
+              slug: "brand-axa",
+              brandPageId: "UGFnZTox",
+              __typename: "Collection",
             },
           },
         ],
@@ -142,7 +162,54 @@ export const searchCollectionsMock = {
           hasNextPage: false,
           hasPreviousPage: false,
           startCursor: "WyJmZWF0dXJlZC1wcm9kdWN0cyJd",
+          __typename: "PageInfo",
         },
+        __typename: "CollectionCountableConnection",
+      },
+    },
+  },
+};
+
+// Brand collections have no channel listings, so the Brands condition searches without a channel
+export const searchBrandsMock = {
+  request: {
+    query: SearchRuleConditionCollectionsDocument,
+    variables: {
+      ...queryVariablesMock,
+      filter: { metadata: [{ key: "brand_page_id" }], search: "" },
+    },
+  },
+  result: {
+    data: {
+      search: {
+        edges: [
+          {
+            node: {
+              id: "Q29sbGVjdGlvbjo5",
+              name: "Brand: AXA",
+              slug: "brand-axa",
+              brandPageId: "UGFnZTox",
+              __typename: "Collection",
+            },
+          },
+          {
+            node: {
+              id: "Q29sbGVjdGlvbjoxMA==",
+              name: "Brand: Giant",
+              slug: "brand-giant",
+              brandPageId: "UGFnZToy",
+              __typename: "Collection",
+            },
+          },
+        ],
+        pageInfo: {
+          endCursor: "WyJ3aW50ZXItc2FsZSJd",
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: "WyJmZWF0dXJlZC1wcm9kdWN0cyJd",
+          __typename: "PageInfo",
+        },
+        __typename: "CollectionCountableConnection",
       },
     },
   },

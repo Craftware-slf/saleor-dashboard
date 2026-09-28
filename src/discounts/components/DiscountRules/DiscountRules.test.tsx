@@ -8,6 +8,7 @@ import { type ReactNode } from "react";
 import { MemoryRouter } from "react-router-dom";
 
 import {
+  searchBrandsMock,
   searchCategoriesMock,
   searchCollectionsMock,
   searchProductsMock,
@@ -27,6 +28,7 @@ jest.mock("@dashboard/discounts/views/DiscountDetails/context/context", () => ({
   useLabelMapsContext: jest.fn(() => ({
     ruleConditionsValues: {
       labels: {},
+      brandCollectionIds: [],
       loading: false,
     },
     gifts: {
@@ -47,6 +49,7 @@ const Wrapper = ({ children }: { children: ReactNode }): JSX.Element => {
     <MemoryRouter>
       <MockedProvider
         mocks={[
+          searchBrandsMock,
           searchCategoriesMock,
           searchCollectionsMock,
           searchProductsMock,
@@ -235,6 +238,96 @@ describe("DiscountRules", () => {
       null,
     );
   });
+  it("should allow to add new catalog rule with brand condition", async () => {
+    // Arrange
+    const onRuleAdd = jest.fn();
+
+    render(
+      <DiscountRules
+        promotionId={null}
+        discountType={PromotionTypeEnum.CATALOGUE}
+        channels={channels}
+        rules={[]}
+        errors={[]}
+        onRuleSubmit={onRuleAdd}
+        onRuleDelete={jest.fn()}
+        disabled={false}
+        deleteButtonState="default"
+        getRuleConfirmButtonState={jest.fn(() => "default")}
+      />,
+      { wrapper: Wrapper },
+    );
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /add rule/i })).toBeInTheDocument();
+    });
+    // Act
+    await act(async () => {
+      await userEvent.click(screen.getByRole("button", { name: /add rule/i }));
+    });
+    await userEvent.type(screen.getByRole("input", { name: "Name" }), "Brand rule");
+    await userEvent.click(screen.getByTestId("channel-dropdown"));
+    expect(await screen.findByText(/test/i)).toBeInTheDocument();
+    await act(async () => {
+      await userEvent.click(screen.getAllByTestId("select-option")[0]);
+    });
+    await userEvent.click(screen.getByRole("button", { name: /add condition/i }));
+    await userEvent.click(await screen.findByTestId(/condition-name-0/i));
+    await userEvent.click(await screen.findByRole("option", { name: "Brands" }));
+    await userEvent.click(await screen.findByTestId(/condition-value-0/i));
+    await userEvent.click(await screen.findByRole("option", { name: "Brand: Giant" }));
+    await userEvent.type(screen.getByRole("input", { name: "Reward value" }), "10");
+    await userEvent.click(screen.getByRole("button", { name: /save/i }));
+    // Assert
+    expect(onRuleAdd).toHaveBeenCalledWith(
+      expect.objectContaining({
+        conditions: [
+          {
+            id: "brand",
+            type: "is",
+            value: [{ label: "Brand: Giant", value: "Q29sbGVjdGlvbjoxMA==" }],
+          },
+        ],
+      }),
+      null,
+    );
+  });
+  it("should not offer brand collections in the collections condition", async () => {
+    // Arrange
+    render(
+      <DiscountRules
+        promotionId={null}
+        discountType={PromotionTypeEnum.CATALOGUE}
+        channels={channels}
+        rules={[]}
+        errors={[]}
+        onRuleSubmit={jest.fn()}
+        onRuleDelete={jest.fn()}
+        disabled={false}
+        deleteButtonState="default"
+        getRuleConfirmButtonState={jest.fn(() => "default")}
+      />,
+      { wrapper: Wrapper },
+    );
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /add rule/i })).toBeInTheDocument();
+    });
+    // Act
+    await act(async () => {
+      await userEvent.click(screen.getByRole("button", { name: /add rule/i }));
+    });
+    await userEvent.click(screen.getByTestId("channel-dropdown"));
+    expect(await screen.findByText(/test/i)).toBeInTheDocument();
+    await act(async () => {
+      await userEvent.click(screen.getAllByTestId("select-option")[0]);
+    });
+    await userEvent.click(screen.getByRole("button", { name: /add condition/i }));
+    await userEvent.click(await screen.findByTestId(/condition-name-0/i));
+    await userEvent.click(await screen.findByRole("option", { name: "Collections" }));
+    await userEvent.click(await screen.findByTestId(/condition-value-0/i));
+    // Assert
+    expect(await screen.findByRole("option", { name: "Summer collection" })).toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: "Brand: AXA" })).not.toBeInTheDocument();
+  });
   it("should allow to add new order rule", async () => {
     // Arrange
     const onRuleAdd = jest.fn();
@@ -337,9 +430,9 @@ describe("DiscountRules", () => {
 
     await userEvent.clear(nameField);
     await userEvent.type(nameField, "New name");
-    // Edit condition
+    // Edit condition (left options: Collections, Brands, Variants)
     await userEvent.click(await screen.findByTestId(/condition-name-0/i));
-    await userEvent.click(screen.getAllByTestId("select-option")[1]);
+    await userEvent.click(screen.getAllByTestId("select-option")[2]);
     await userEvent.click(await screen.findByTestId(/condition-value-0/i));
     await userEvent.click(await screen.getAllByTestId("select-option")[2]);
     // Remove condition

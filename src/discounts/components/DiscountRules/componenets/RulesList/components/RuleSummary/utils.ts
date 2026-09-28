@@ -61,6 +61,9 @@ export const getConditionEntityUrl = (
       return productUrl(entityId);
     case "collection":
       return collectionUrl(entityId);
+    case "brand":
+      // Brands are collections (see discounts/brandCollections.ts)
+      return collectionUrl(entityId);
     case "category":
       return categoryUrl(entityId);
     case "variant":

@@ -9775,6 +9775,10 @@
     "context": "currency filter label",
     "string": "Currency"
   },
+  "otiABV": {
+    "context": "discount rule condition: brand collections",
+    "string": "Brands"
+  },
   "ous0aA": {
     "context": "dialog subtitle for order discount",
     "string": "Discount this order by a percentage or fixed amount"

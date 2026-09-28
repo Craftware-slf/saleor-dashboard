@@ -55,3 +55,58 @@ describe("prepareCataloguePredicate", () => {
     });
   });
 });
+
+describe("prepareCataloguePredicate - brand condition", () => {
+  it("should save a brand condition as a plain collectionPredicate", () => {
+    // Arrange
+    const conditions: Condition[] = [
+      {
+        id: "brand",
+        type: "is",
+        value: [
+          { label: "Brand: AXA", value: "brand-1" },
+          { label: "Brand: Giant", value: "brand-2" },
+        ],
+      },
+    ];
+
+    // Act
+    const result = prepareCataloguePredicate(conditions);
+
+    // Assert
+    expect(result).toEqual({ collectionPredicate: { ids: ["brand-1", "brand-2"] } });
+    expect(result).not.toHaveProperty("brandPredicate");
+  });
+  it("should OR brand and collection conditions as two collectionPredicates", () => {
+    // Arrange
+    const conditions: Condition[] = [
+      { id: "collection", type: "is", value: [{ label: "Summer", value: "col-1" }] },
+      { id: "brand", type: "is", value: [{ label: "Brand: AXA", value: "brand-1" }] },
+      { id: "product", type: "is", value: [{ label: "Bike", value: "prod-1" }] },
+    ];
+
+    // Act
+    const result = prepareCataloguePredicate(conditions);
+
+    // Assert
+    expect(result).toEqual({
+      OR: [
+        { collectionPredicate: { ids: ["col-1"] } },
+        { collectionPredicate: { ids: ["brand-1"] } },
+        { productPredicate: { ids: ["prod-1"] } },
+      ],
+    });
+  });
+  it("should skip an empty brand condition", () => {
+    // Arrange
+    const conditions: Condition[] = [
+      { id: "brand", type: "is", value: [] },
+      { id: "category", type: "is", value: [{ label: "Bikes", value: "cat-1" }] },
+    ];
+
+    // Act & Assert
+    expect(prepareCataloguePredicate(conditions)).toEqual({
+      categoryPredicate: { ids: ["cat-1"] },
+    });
+  });
+});

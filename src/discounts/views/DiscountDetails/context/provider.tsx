@@ -1,7 +1,8 @@
 import { type PromotionDetailsQuery } from "@dashboard/graphql";
-import { type ReactNode } from "react";
+import { type ReactNode, useMemo } from "react";
 
 import {
+  getBrandCollectionIds,
   getRuleConditionsOptionsDetailsMap,
   useFetchConditionsOptionsDetails,
 } from "../hooks/useFetchConditionsOptionsDetails";
@@ -19,10 +20,15 @@ export const LabelsMapsProvider = ({ children, promotionData }: LabelsMapsProovi
   const ruleConditionsOptionsDetailsMap = getRuleConditionsOptionsDetailsMap(
     ruleConditionsOptionsDetails,
   );
+  const brandCollectionIds = useMemo(
+    () => getBrandCollectionIds(ruleConditionsOptionsDetails),
+    [ruleConditionsOptionsDetails],
+  );
   const { giftsLabels, loading: giftsLabelsLoading } = useFetchGiftLables(promotionData);
   const contextValue = {
     ruleConditionsValues: {
       labels: ruleConditionsOptionsDetailsMap,
+      brandCollectionIds,
       loading: ruleConditionsOptionsDetailsLoading,
     },
     gifts: {
@@ -40,6 +46,7 @@ export const EmpptyLabelsMapsProvider = ({ children }: { children: ReactNode }) 
       value={{
         ruleConditionsValues: {
           labels: {},
+          brandCollectionIds: [],
           loading: false,
         },
         gifts: {

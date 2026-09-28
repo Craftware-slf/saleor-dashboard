@@ -5,6 +5,7 @@ import {
 
 import {
   getAllConditionsOptionsIdsToFetch,
+  getBrandCollectionIds,
   getRuleConditionsOptionsDetailsMap,
 } from "./useFetchConditionsOptionsDetails";
 
@@ -127,5 +128,45 @@ describe("getRuleConditionsOptionsDetailsMap", () => {
       "1111": "variant 1",
       "2222": "variant 2",
     });
+  });
+});
+
+describe("getAllConditionsOptionsIdsToFetch - accumulator", () => {
+  it("should not leak ids from a previous call", () => {
+    // Arrange
+    getAllConditionsOptionsIdsToFetch({
+      promotion: {
+        rules: [{ cataloguePredicate: { collectionPredicate: { ids: ["brand-1"] } } }],
+      },
+    } as PromotionDetailsQuery);
+
+    // Act & Assert
+    expect(getAllConditionsOptionsIdsToFetch(undefined)).toEqual({
+      productsIds: [],
+      categoriesIds: [],
+      collectionsIds: [],
+      variantsIds: [],
+    });
+  });
+});
+
+describe("getBrandCollectionIds", () => {
+  it("should return empty array if data is undefined", () => {
+    expect(getBrandCollectionIds(undefined)).toEqual([]);
+  });
+  it("should return ids of collections with brand_page_id metadata only", () => {
+    // Arrange
+    const data = {
+      collections: {
+        edges: [
+          { node: { id: "col-1", name: "Summer", brandPageId: null } },
+          { node: { id: "brand-1", name: "Brand: AXA", brandPageId: "UGFnZTox" } },
+          { node: { id: "brand-2", name: "Brand: Giant", brandPageId: "UGFnZToy" } },
+        ],
+      },
+    } as RuleConditionsSelectedOptionsDetailsQuery;
+
+    // Act & Assert
+    expect(getBrandCollectionIds(data)).toEqual(["brand-1", "brand-2"]);
   });
 });
