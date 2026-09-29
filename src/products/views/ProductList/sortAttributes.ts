@@ -8,7 +8,8 @@ import { useMemo } from "react";
  * Saleor's `sortBy: { attributeId, direction }`:
  *
  * - `sort_sku` — the product's lowest variant SKU
- * - `sort_category` — the product's category name
+ * - `sort_category` — the product's category name, then its name (both keys end in the product id, so
+ *   they are unique — Saleor's attribute-sort cursor has no pk tie-breaker)
  *
  * Saleor sorts attribute values as strings; products without a value go last ascending and
  * first descending.
