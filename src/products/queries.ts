@@ -93,6 +93,23 @@ export const productIdsBySkuQuery = gql`
     }
   }
 `;
+/**
+ * The hidden attributes backing the product list's SKU and Category sorts (Örninn FEAT-210) —
+ * slugs in `PRODUCT_LIST_SORT_ATTRIBUTE_SLUGS`. Resolved by slug because attribute ids differ per
+ * instance.
+ */
+export const productListSortAttributesQuery = gql`
+  query ProductListSortAttributes($slugs: [String!]!) {
+    attributes(first: 10, filter: { slugs: $slugs }) {
+      edges {
+        node {
+          id
+          slug
+        }
+      }
+    }
+  }
+`;
 export const productCountQuery = gql`
   query ProductCount($filter: ProductFilterInput, $channel: String) {
     products(filter: $filter, channel: $channel) {

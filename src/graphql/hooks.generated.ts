@@ -15890,6 +15890,46 @@ export function useProductIdsBySkuLazyQuery(baseOptions?: ApolloReactHooks.LazyQ
 export type ProductIdsBySkuQueryHookResult = ReturnType<typeof useProductIdsBySkuQuery>;
 export type ProductIdsBySkuLazyQueryHookResult = ReturnType<typeof useProductIdsBySkuLazyQuery>;
 export type ProductIdsBySkuQueryResult = Apollo.QueryResult<Types.ProductIdsBySkuQuery, Types.ProductIdsBySkuQueryVariables>;
+export const ProductListSortAttributesDocument = gql`
+    query ProductListSortAttributes($slugs: [String!]!) {
+  attributes(first: 10, filter: {slugs: $slugs}) {
+    edges {
+      node {
+        id
+        slug
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductListSortAttributesQuery__
+ *
+ * To run a query within a React component, call `useProductListSortAttributesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductListSortAttributesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductListSortAttributesQuery({
+ *   variables: {
+ *      slugs: // value for 'slugs'
+ *   },
+ * });
+ */
+export function useProductListSortAttributesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<Types.ProductListSortAttributesQuery, Types.ProductListSortAttributesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<Types.ProductListSortAttributesQuery, Types.ProductListSortAttributesQueryVariables>(ProductListSortAttributesDocument, options);
+      }
+export function useProductListSortAttributesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<Types.ProductListSortAttributesQuery, Types.ProductListSortAttributesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<Types.ProductListSortAttributesQuery, Types.ProductListSortAttributesQueryVariables>(ProductListSortAttributesDocument, options);
+        }
+export type ProductListSortAttributesQueryHookResult = ReturnType<typeof useProductListSortAttributesQuery>;
+export type ProductListSortAttributesLazyQueryHookResult = ReturnType<typeof useProductListSortAttributesLazyQuery>;
+export type ProductListSortAttributesQueryResult = Apollo.QueryResult<Types.ProductListSortAttributesQuery, Types.ProductListSortAttributesQueryVariables>;
 export const ProductCountDocument = gql`
     query ProductCount($filter: ProductFilterInput, $channel: String) {
   products(filter: $filter, channel: $channel) {

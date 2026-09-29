@@ -75,6 +75,13 @@ export enum ProductListUrlSortField {
   rank = "rank",
   date = "date",
   created = "created",
+  /**
+   * Örninn FEAT-210. Saleor has no SKU or category product sort, so these two sort by a hidden
+   * PLAIN_TEXT attribute the orninn sync worker keeps up to date — see `sortAttributes.ts`. The
+   * attribute id is resolved at runtime and never written to the URL.
+   */
+  sku = "sku",
+  category = "category",
 }
 type ProductListUrlSort = Sort<ProductListUrlSortField>;
 export interface ProductListUrlQueryParams

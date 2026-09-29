@@ -12957,6 +12957,13 @@ export type ProductIdsBySkuQueryVariables = Exact<{
 
 export type ProductIdsBySkuQuery = { __typename: 'Query', productVariants: { __typename: 'ProductVariantCountableConnection', edges: Array<{ __typename: 'ProductVariantCountableEdge', node: { __typename: 'ProductVariant', product: { __typename: 'Product', id: string } } }> } | null };
 
+export type ProductListSortAttributesQueryVariables = Exact<{
+  slugs: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type ProductListSortAttributesQuery = { __typename: 'Query', attributes: { __typename: 'AttributeCountableConnection', edges: Array<{ __typename: 'AttributeCountableEdge', node: { __typename: 'Attribute', id: string, slug: string } }> } | null };
+
 export type ProductCountQueryVariables = Exact<{
   filter?: InputMaybe<ProductFilterInput>;
   channel?: InputMaybe<Scalars['String']>;

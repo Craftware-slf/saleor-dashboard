@@ -63,7 +63,8 @@ import { FormattedMessage, useIntl } from "react-intl";
 import ProductListPage, { ProductFilterKeys } from "../../components/ProductListPage";
 import { ProductsExportParameters } from "./export";
 import { getFilterQueryParam, getFilterVariables, storageUtils } from "./filters";
-import { DEFAULT_SORT_KEY, getSortQueryVariables } from "./sort";
+import { DEFAULT_SORT_KEY, getEffectiveSortField, getSortQueryVariables } from "./sort";
+import { isAttributeSortField, useProductListSortAttributes } from "./sortAttributes";
 import { useSkuFallbackSearch } from "./useSkuFallbackSearch";
 import { obtainChannelFromFilter } from "./utils";
 
@@ -211,7 +212,12 @@ const ProductList = ({ params }: ProductListProps) => {
     filterContainer: valueProvider.value,
     queryParams: params,
   });
-  const sort = getSortQueryVariables(params, !!selectedChannel);
+  // SKU/Category sort by hidden attributes resolved by slug (FEAT-210). Until the lookup settles
+  // a `sort=sku` URL would otherwise be queried with no sort and then re-queried.
+  const sortAttributes = useProductListSortAttributes();
+  const isWaitingForSortAttributes = isAttributeSortField(params.sort) && sortAttributes.loading;
+  const effectiveSortField = getEffectiveSortField(params.sort, sortAttributes.ids);
+  const sort = getSortQueryVariables(params, !!selectedChannel, sortAttributes.ids);
   const queryVariables = useMemo<
     Omit<
       ProductListQueryVariables,
@@ -223,7 +229,7 @@ const ProductList = ({ params }: ProductListProps) => {
       ...filterVariables,
       sort,
     }),
-    [params, settings.rowNumber, valueProvider.value],
+    [params, settings.rowNumber, valueProvider.value, sortAttributes.ids],
   );
   const filteredColumnIds = (settings.columns ?? [])
     .filter(isAttributeColumnValue)
@@ -239,7 +245,7 @@ const ProductList = ({ params }: ProductListProps) => {
       ...queryVariables,
       ...sharedListVariables,
     },
-    skip: valueProvider.loading,
+    skip: valueProvider.loading || isWaitingForSortAttributes,
   });
   // `products(search:)` is prefix-only Postgres full-text, so a SKU fragment
   // like "45087" finds nothing even though the variant exists (FEAT-188). When
@@ -324,8 +330,9 @@ const ProductList = ({ params }: ProductListProps) => {
         activeAttributeSortId={params.attributeId}
         sort={{
           asc: params.asc,
-          sort: params.sort,
+          sort: effectiveSortField,
         }}
+        sortAttributeIds={sortAttributes.ids}
         onSort={handleSort}
         currencySymbol={selectedChannel?.currencyCode || ""}
         currentTab={selectedPreset}
