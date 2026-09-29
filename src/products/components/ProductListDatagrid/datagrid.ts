@@ -113,8 +113,21 @@ export const productListStaticColumnAdapter = ({
     },
   ].map(column => ({
     ...column,
-    icon: getColumnSortDirectionIcon(sort, column.id),
+    icon: getColumnSortDirectionIcon(sort, getColumnSortField(column.id)),
   }));
+
+/**
+ * Columns whose id differs from the URL sort value they drive. The Category column is
+ * `productCategory` (a stored column-picker id, so it can't be renamed) but sorts as
+ * `sort=category` (FEAT-210).
+ */
+const COLUMN_SORT_FIELDS: Record<string, ProductListUrlSortField> = {
+  productCategory: ProductListUrlSortField.category,
+};
+
+export function getColumnSortField(columnId: string): ProductListUrlSortField {
+  return COLUMN_SORT_FIELDS[columnId] ?? (columnId as ProductListUrlSortField);
+}
 
 export const productListDynamicColumnAdapter = ({
   availableAttributesData,
@@ -595,7 +608,7 @@ export function getColumnMetadata(column: string) {
   }
 
   return {
-    columnName: column as ProductListUrlSortField,
+    columnName: getColumnSortField(column),
   };
 }
 

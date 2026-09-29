@@ -43,6 +43,7 @@ import { FormattedMessage, useIntl } from "react-intl";
 import { useLocation } from "react-router";
 
 import { type ProductListUrlSortField, productUrl } from "../../urls";
+import { type SortAttributeIds } from "../../views/ProductList/sortAttributes";
 import { ProductListDatagrid } from "../ProductListDatagrid";
 import { ProductListTiles } from "../ProductListTiles/ProductListTiles";
 import { ProductListViewSwitch } from "../ProductListViewSwitch";
@@ -74,6 +75,8 @@ interface ProductListPageProps
   onSelectProductIds: (ids: number[], clearSelection: () => void) => void;
   clearRowSelection: () => void;
   filterDependency?: FilterElement;
+  /** Passed through to the datagrid, which gates the SKU/Category sorts on it (FEAT-210). */
+  sortAttributeIds?: SortAttributeIds;
 }
 
 export type ProductListViewType = "datagrid" | "tile";

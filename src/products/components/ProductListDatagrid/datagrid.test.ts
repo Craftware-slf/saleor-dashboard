@@ -1,4 +1,14 @@
-import { getDescriptionValue, getSkuValue, getStockValue } from "./datagrid";
+import { ProductListUrlSortField } from "@dashboard/products/urls";
+import { type IntlShape } from "react-intl";
+
+import {
+  getColumnMetadata,
+  getColumnSortField,
+  getDescriptionValue,
+  getSkuValue,
+  getStockValue,
+  productListStaticColumnAdapter,
+} from "./datagrid";
 
 describe("getStockValue", () => {
   it("should return 0 when the product has no variants", () => {
@@ -172,5 +182,53 @@ describe("getSkuValue", () => {
 
   it("should fall back to the first SKU when variants share no common prefix", () => {
     expect(getSkuValue(["ABC-1", "XYZ-2"])).toBe("ABC-1 (+2)");
+  });
+});
+
+describe("SKU / Category column sorting (FEAT-210)", () => {
+  const intl = {
+    formatMessage: ({ defaultMessage }: { defaultMessage?: string }) => defaultMessage,
+  } as unknown as IntlShape;
+  const iconOf = (columns: Array<{ id: string; icon?: string }>, id: string): string | undefined =>
+    columns.find(column => column.id === id)?.icon;
+
+  it("maps the productCategory column onto the category sort", () => {
+    expect(getColumnSortField("productCategory")).toBe(ProductListUrlSortField.category);
+    expect(getColumnMetadata("productCategory")).toEqual({
+      columnName: ProductListUrlSortField.category,
+    });
+  });
+
+  it("maps the sku column onto the sku sort", () => {
+    expect(getColumnMetadata("sku")).toEqual({ columnName: ProductListUrlSortField.sku });
+  });
+
+  it("keeps attribute column ids intact", () => {
+    expect(getColumnMetadata("attribute:abc")).toEqual({
+      columnName: ProductListUrlSortField.attribute,
+      columnId: "abc",
+    });
+  });
+
+  it("shows the arrow on the Category column when sorted by category", () => {
+    const columns = productListStaticColumnAdapter({
+      intl,
+      sort: { sort: ProductListUrlSortField.category, asc: true },
+      onPriceClick: undefined,
+    });
+
+    expect(iconOf(columns, "productCategory")).toBe("arrowUp");
+    expect(iconOf(columns, "sku")).toBeUndefined();
+  });
+
+  it("shows the arrow on the SKU column when sorted by sku", () => {
+    const columns = productListStaticColumnAdapter({
+      intl,
+      sort: { sort: ProductListUrlSortField.sku, asc: false },
+      onPriceClick: undefined,
+    });
+
+    expect(iconOf(columns, "sku")).toBe("arrowDown");
+    expect(iconOf(columns, "productCategory")).toBeUndefined();
   });
 });

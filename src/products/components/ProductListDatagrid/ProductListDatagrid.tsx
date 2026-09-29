@@ -23,6 +23,10 @@ import useLocale from "@dashboard/hooks/useLocale";
 import { ProductListUrlSortField } from "@dashboard/products/urls";
 import { canBeSorted } from "@dashboard/products/views/ProductList/sort";
 import {
+  isAttributeSortField,
+  type SortAttributeIds,
+} from "@dashboard/products/views/ProductList/sortAttributes";
+import {
   type ChannelProps,
   type ListProps,
   type PageListProps,
@@ -70,6 +74,8 @@ interface ProductListDatagridProps
   onSelectProductIds: (rowsIndex: number[], clearSelection: () => void) => void;
   hasRowHover?: boolean;
   loading: boolean;
+  /** Resolved SKU/Category sort attributes; a column whose attribute is missing isn't sortable. */
+  sortAttributeIds?: SortAttributeIds;
 }
 
 export const ProductListDatagrid = ({
@@ -89,6 +95,7 @@ export const ProductListDatagrid = ({
   onSelectProductIds,
   hasRowHover,
   rowAnchor,
+  sortAttributeIds,
 }: ProductListDatagridProps) => {
   const isChannelSelected = !!selectedChannelId;
   const intl = useIntl();
@@ -194,11 +201,11 @@ export const ProductListDatagrid = ({
     (col: number) => {
       const { columnName, columnId } = getColumnMetadata(visibleColumns[col].id);
 
-      if (canBeSorted(columnName, !!selectedChannelId)) {
+      if (canBeSorted(columnName, !!selectedChannelId, sortAttributeIds)) {
         onSort(columnName, columnId);
       }
     },
-    [visibleColumns, onSort, selectedChannelId],
+    [visibleColumns, onSort, selectedChannelId, sortAttributeIds],
   );
   const handleRowClick = useCallback(
     ([col, row]: Item) => {
@@ -237,12 +244,18 @@ export const ProductListDatagrid = ({
       const { columnName } = getColumnMetadata(visibleColumns[colIndex].id);
 
       // Sortable column or empty
-      if (canBeSorted(columnName, !!selectedChannelId) || visibleColumns[colIndex].id === "empty") {
+      if (
+        canBeSorted(columnName, !!selectedChannelId, sortAttributeIds) ||
+        visibleColumns[colIndex].id === "empty"
+      ) {
         return "";
       }
 
-      // No sortable column
-      if (!Object.keys(ProductListUrlSortField).includes(columnName)) {
+      // No sortable column — including SKU/Category where the sort attribute is missing
+      if (
+        !Object.keys(ProductListUrlSortField).includes(columnName) ||
+        isAttributeSortField(columnName)
+      ) {
         return intl.formatMessage(commonTooltipMessages.noSortable);
       }
 
@@ -251,7 +264,7 @@ export const ProductListDatagrid = ({
         filterName: filterDependency.label,
       });
     },
-    [visibleColumns, filterDependency.label, intl, selectedChannelId],
+    [visibleColumns, filterDependency.label, intl, selectedChannelId, sortAttributeIds],
   );
   const getCellContent = useMemo(
     () =>
