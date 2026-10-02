@@ -129,6 +129,7 @@ export function useProductAvailabilityDiagnostics({
         // data is available — matches LEGACY_MODE_FALLBACK's spirit of not
         // silently downgrading prior behavior.
         isShippingRequired: product?.isShippingRequired ?? true,
+        isBundle: product?.isBundle ?? false,
       };
     }
 
@@ -144,6 +145,7 @@ export function useProductAvailabilityDiagnostics({
         permissions: defaultPermissions,
         useLegacyShippingZoneStockAvailability,
         isShippingRequired: product.isShippingRequired,
+        isBundle: product.isBundle,
       };
     }
 
@@ -312,6 +314,7 @@ export function useProductAvailabilityDiagnostics({
       permissions,
       useLegacyShippingZoneStockAvailability,
       isShippingRequired: product.isShippingRequired,
+      isBundle: product.isBundle,
     };
   }, [product, channelData, loading, enabled, intl, basePermissions]);
 

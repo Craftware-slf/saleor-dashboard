@@ -478,7 +478,17 @@ export function runAvailabilityChecks(
   // - If a product doesn't track inventory, variant.stocks will be empty and checks will pass
   // Warehouses + stock are part of the purchasability surface.
   if (!options?.skipWarehouseChecks) {
-    runGroup(warehouseChecks, "purchasability");
+    // Craftware (FEAT-218): a bundle's only variant is a stockless placeholder by
+    // design — its parts carry the stock — so "no stock" would always fire and
+    // never be actionable. The warehouse-link check still applies.
+    runGroup(
+      product.isBundle
+        ? warehouseChecks.filter(
+            check => check !== checkNoStock && check !== checkStockOutsideChannelWarehouses,
+          )
+        : warehouseChecks,
+      "purchasability",
+    );
   }
 
   // Run shipping checks only if:
