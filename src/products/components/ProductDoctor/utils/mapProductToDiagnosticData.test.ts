@@ -86,6 +86,7 @@ describe("mapProductToDiagnosticData", () => {
       id: "product-1",
       name: "Test Product",
       isShippingRequired: true,
+      isBundle: false,
       channelListings: [
         {
           channel: {
@@ -151,6 +152,7 @@ describe("mapProductToDiagnosticData", () => {
       id: "product-2",
       name: "Empty Product",
       isShippingRequired: true,
+      isBundle: false,
       channelListings: [],
       variants: [],
     });
@@ -183,5 +185,24 @@ describe("mapProductToDiagnosticData", () => {
     // Assert
     expect(result?.channelListings[0].publishedAt).toBeNull();
     expect(result?.channelListings[0].availableForPurchaseAt).toBeNull();
+  });
+});
+
+describe("mapProductToDiagnosticData — bundles (Craftware FEAT-218)", () => {
+  it("flags a product of the bundle product type", () => {
+    expect(
+      mapProductToDiagnosticData(
+        createTestProduct({ productType: { isShippingRequired: true, slug: "bundle" } }),
+      )?.isBundle,
+    ).toBe(true);
+  });
+
+  it("does not flag any other product type, or a type with no slug", () => {
+    expect(
+      mapProductToDiagnosticData(
+        createTestProduct({ productType: { isShippingRequired: true, slug: "bc-item" } }),
+      )?.isBundle,
+    ).toBe(false);
+    expect(mapProductToDiagnosticData(createTestProduct())?.isBundle).toBe(false);
   });
 });

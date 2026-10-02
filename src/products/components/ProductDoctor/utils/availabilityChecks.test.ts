@@ -41,6 +41,7 @@ const createProduct = (overrides: Partial<ProductDiagnosticData> = {}): ProductD
   id: "product-1",
   name: "Test Product",
   isShippingRequired: true,
+  isBundle: false,
   channelListings: [
     {
       channel: { id: "channel-1", name: "Default Channel", slug: "default-channel" },
@@ -610,5 +611,70 @@ describe("runAvailabilityChecks", () => {
         expect(issue.category).toMatch(/^(purchasability|shipping)$/);
       });
     });
+  });
+});
+
+// Craftware (Örninn FEAT-218): a bundle is sold as its parts. Its only variant is a
+// stockless placeholder by design, so the stock checks must not fire for it.
+describe("bundle products (Craftware FEAT-218)", () => {
+  const stocklessPlaceholder: ProductDiagnosticData["variants"] = [
+    {
+      id: "placeholder",
+      name: "Bundle — do not edit",
+      channelListings: [{ channel: { id: "channel-1" }, price: { amount: 261975 } }],
+      stocks: [],
+    },
+  ];
+
+  it("does not report no-stock for a bundle's stockless placeholder", () => {
+    // Arrange
+    const product = createProduct({ isBundle: true, variants: stocklessPlaceholder });
+    const channelData = createChannelData();
+
+    // Act
+    const issues = runAvailabilityChecks(
+      product,
+      channelData,
+      product.channelListings[0],
+      mockIntl,
+    );
+
+    // Assert
+    expect(issues.map(i => i.id)).not.toContain("no-stock");
+    expect(issues.map(i => i.id)).not.toContain("stock-outside-channel-warehouses");
+  });
+
+  it("still reports no-stock for an ordinary product with the same data", () => {
+    // Arrange
+    const product = createProduct({ isBundle: false, variants: stocklessPlaceholder });
+    const channelData = createChannelData();
+
+    // Act
+    const issues = runAvailabilityChecks(
+      product,
+      channelData,
+      product.channelListings[0],
+      mockIntl,
+    );
+
+    // Assert
+    expect(issues.map(i => i.id)).toContain("no-stock");
+  });
+
+  it("still reports a channel with no warehouses for a bundle — its parts need one", () => {
+    // Arrange
+    const product = createProduct({ isBundle: true, variants: stocklessPlaceholder });
+    const channelData = createChannelData({ warehouses: [] });
+
+    // Act
+    const issues = runAvailabilityChecks(
+      product,
+      channelData,
+      product.channelListings[0],
+      mockIntl,
+    );
+
+    // Assert
+    expect(issues.map(i => i.id)).toContain("no-warehouses");
   });
 });

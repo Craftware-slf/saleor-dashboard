@@ -59,6 +59,8 @@ interface AvailabilityChannelItemProps {
    *  override must not fire for them. Defaults to true (the conservative legacy
    *  assumption). */
   isShippingRequired?: boolean;
+  /** Craftware (FEAT-218): the product is an Örninn bundle — see PublicApiVerificationBadge. */
+  isBundle?: boolean;
 }
 
 export const AvailabilityChannelItem = ({
@@ -77,6 +79,7 @@ export const AvailabilityChannelItem = ({
   onVerify,
   useLegacyShippingZoneStockAvailability = true,
   isShippingRequired = true,
+  isBundle = false,
 }: AvailabilityChannelItemProps) => {
   const intl = useIntl();
   const dateNow = useCurrentDate();
@@ -328,6 +331,7 @@ export const AvailabilityChannelItem = ({
             useLegacyShippingZoneStockAvailability={useLegacyShippingZoneStockAvailability}
             shippingZoneCount={summary.shippingZoneCount}
             isShippingRequired={isShippingRequired}
+            isBundle={isBundle}
           />
         </Box>
       </Accordion.Content>
@@ -426,6 +430,7 @@ interface PublicApiVerificationSectionProps {
    *  to shippable products — digital goods can be purchased without any
    *  shipping configuration. */
   isShippingRequired: boolean;
+  isBundle: boolean;
 }
 
 const VERIFICATION_COOLDOWN_MS = 1500;
@@ -436,6 +441,7 @@ const PublicApiVerificationSection = ({
   useLegacyShippingZoneStockAvailability,
   shippingZoneCount,
   isShippingRequired,
+  isBundle,
 }: PublicApiVerificationSectionProps) => {
   const intl = useIntl();
   const isVerifying = verificationResult?.status === "loading";
@@ -505,6 +511,7 @@ const PublicApiVerificationSection = ({
             shippingZoneCount === "unknown" ? undefined : shippingZoneCount
           }
           isShippingRequired={isShippingRequired}
+          isBundle={isBundle}
         />
       )}
     </Box>

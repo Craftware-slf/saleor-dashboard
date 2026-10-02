@@ -5578,6 +5578,10 @@
     "context": "header",
     "string": "Create Webhook"
   },
+  "Rz8GAu": {
+    "context": "Craftware FEAT-218: public API verification result for a bundle product, which is visible and is bought as its parts",
+    "string": "Visible — bundle sold as its parts"
+  },
   "RzDYi8": {
     "context": "checkbox label",
     "string": "Set the same for billing address"
@@ -11485,6 +11489,10 @@
   "xOEZjV": {
     "context": "attribute's label",
     "string": "Default Label"
+  },
+  "xPp8gW": {
+    "context": "Craftware FEAT-218: reassurance under the public API verification badge for a bundle product",
+    "string": "This is a bundle. Shoppers buy its parts, and each part's stock is checked at checkout. The bundle's own variant has no stock on purpose, so it is never sold by itself."
   },
   "xRMVTn": {
     "string": "Read-only — editing requires Manage users"

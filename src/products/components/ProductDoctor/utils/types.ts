@@ -73,6 +73,11 @@ export interface ProductDiagnosticData {
    * track inventory, variant.stocks will be empty and warehouse checks will pass naturally.
    */
   isShippingRequired: boolean;
+  /**
+   * Craftware (FEAT-218): the product is an Örninn bundle (product type `bundle`).
+   * Its placeholder variant has no stock by design, so stock checks are skipped.
+   */
+  isBundle: boolean;
   channelListings: Array<{
     channel: {
       id: string;
@@ -155,4 +160,6 @@ export interface DiagnosticsResult {
    * assumption) when the product is not yet known.
    */
   isShippingRequired: boolean;
+  /** Craftware (FEAT-218): see `ProductDiagnosticData.isBundle`. */
+  isBundle: boolean;
 }

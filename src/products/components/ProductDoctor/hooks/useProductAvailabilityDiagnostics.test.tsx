@@ -32,6 +32,7 @@ const createMockProduct = (overrides?: Partial<ProductDiagnosticData>): ProductD
   id: "product-123",
   name: "Test Product",
   isShippingRequired: true,
+  isBundle: false,
   channelListings: [
     {
       channel: {

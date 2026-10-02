@@ -82,6 +82,7 @@ export const AvailabilityCard = ({
     permissions,
     useLegacyShippingZoneStockAvailability,
     isShippingRequired,
+    isBundle,
   } = diagnostics;
 
   const verification = usePublicApiVerification(productId || "");
@@ -276,6 +277,7 @@ export const AvailabilityCard = ({
                             useLegacyShippingZoneStockAvailability
                           }
                           isShippingRequired={isShippingRequired}
+                          isBundle={isBundle}
                         />
                       );
                     })}
@@ -508,6 +510,9 @@ interface PublicApiVerificationBadgeProps {
    *  zones, so their "Purchasable" verdict is genuinely correct. Defaults to
    *  true (the conservative legacy assumption). */
   isShippingRequired?: boolean;
+  /** Craftware (FEAT-218): an Örninn bundle, sold as its parts. Its placeholder
+   *  variant never has stock, so "not purchasable" is the expected API verdict. */
+  isBundle?: boolean;
 }
 
 export const PublicApiVerificationBadge = ({
@@ -515,6 +520,7 @@ export const PublicApiVerificationBadge = ({
   useLegacyShippingZoneStockAvailability = true,
   shippingZoneCount,
   isShippingRequired = true,
+  isBundle = false,
 }: PublicApiVerificationBadgeProps) => {
   const intl = useIntl();
 
@@ -556,6 +562,21 @@ export const PublicApiVerificationBadge = ({
         status={intl.formatMessage(messages.publicApiNotVisible)}
         reassurance={intl.formatMessage(messages.verificationReassurance_notVisible)}
         reassuranceTestId="not-visible"
+      />
+    );
+  }
+
+  // Craftware (FEAT-218): visible is all a bundle needs from the public API. Shoppers
+  // buy its parts, each checked for stock at checkout; the bundle's own placeholder
+  // variant is stockless on purpose, so Saleor never sells it by itself.
+  if (isBundle) {
+    return (
+      <PublicApiVerificationBadgeShell
+        icon={<CheckCircle size={14} color="var(--mu-colors-text-success1)" />}
+        statusColor="success1"
+        status={intl.formatMessage(messages.publicApiBundleVisible)}
+        reassurance={intl.formatMessage(messages.verificationReassurance_bundle)}
+        reassuranceTestId="bundle"
       />
     );
   }

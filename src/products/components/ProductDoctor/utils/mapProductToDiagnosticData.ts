@@ -1,3 +1,4 @@
+import { BUNDLE_PRODUCT_TYPE_SLUG } from "./constants";
 import { type ProductDiagnosticData } from "./types";
 
 /**
@@ -9,6 +10,7 @@ export interface ProductDiagnosticInput {
   name: string;
   productType: {
     isShippingRequired: boolean;
+    slug?: string;
   };
   channelListings?: Array<{
     channel: {
@@ -57,6 +59,7 @@ export function mapProductToDiagnosticData(
     id: product.id,
     name: product.name,
     isShippingRequired: product.productType.isShippingRequired,
+    isBundle: product.productType.slug === BUNDLE_PRODUCT_TYPE_SLUG,
     channelListings:
       product.channelListings?.map(listing => ({
         channel: {

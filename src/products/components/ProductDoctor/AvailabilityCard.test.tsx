@@ -47,6 +47,7 @@ const baseDiagnostics = (overrides: Partial<DiagnosticsResult> = {}): Diagnostic
   },
   useLegacyShippingZoneStockAvailability: true,
   isShippingRequired: true,
+  isBundle: false,
   ...overrides,
 });
 
@@ -435,6 +436,21 @@ const makeVerification = (
 };
 
 describe("PublicApiVerificationBadge reassurance", () => {
+  it("explains a bundle instead of reporting it not purchasable (Craftware FEAT-218)", () => {
+    // Arrange — what the public API returns for a bundle: visible, its one variant stockless
+    const result = makeVerification({ isAvailable: false, variantsWithStock: 0 });
+
+    // Act
+    render(<PublicApiVerificationBadge result={result} isBundle />, { wrapper: Wrapper });
+
+    // Assert
+    const reassurance = screen.getByTestId("verification-reassurance");
+
+    expect(reassurance).toHaveAttribute("data-test-reassurance", "bundle");
+    expect(reassurance).toHaveTextContent(/sold by itself/i);
+    expect(screen.queryByText(/not purchasable/i)).not.toBeInTheDocument();
+  });
+
   it("shows the legacy-mode reassurance when product is purchasable in legacy mode", () => {
     // Arrange
     const result = makeVerification({ isAvailable: true, variantsWithStock: 2 });

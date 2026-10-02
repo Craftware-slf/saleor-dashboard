@@ -280,6 +280,12 @@ export const messages = defineMessages({
     defaultMessage: "Not purchasable",
     description: "Product cannot be purchased by customers",
   },
+  publicApiBundleVisible: {
+    defaultMessage: "Visible — bundle sold as its parts",
+    id: "Rz8GAu",
+    description:
+      "Craftware FEAT-218: public API verification result for a bundle product, which is visible and is bought as its parts",
+  },
   publicApiNotVisible: {
     id: "6fAGSm",
     defaultMessage: "Not visible",
@@ -337,6 +343,13 @@ export const messages = defineMessages({
     defaultMessage:
       "The public API confirms the product is purchasable. Stock availability is taken directly from the warehouse-channel link, regardless of shipping zones.",
     description: "Reassurance under verification badge when product is purchasable in direct mode",
+  },
+  verificationReassurance_bundle: {
+    defaultMessage:
+      "This is a bundle. Shoppers buy its parts, and each part's stock is checked at checkout. The bundle's own variant has no stock on purpose, so it is never sold by itself.",
+    id: "xPp8gW",
+    description:
+      "Craftware FEAT-218: reassurance under the public API verification badge for a bundle product",
   },
   verificationReassurance_notPurchasable: {
     id: "UuX9YV",
