@@ -552,7 +552,7 @@ export const PublicApiVerificationBadge = ({
     return null;
   }
 
-  const { productFound, isAvailable, variantsWithStock } = result.result;
+  const { productFound, isAvailable, isAvailableForPurchase, variantsWithStock } = result.result;
 
   if (!productFound) {
     return (
@@ -566,19 +566,41 @@ export const PublicApiVerificationBadge = ({
     );
   }
 
-  // Craftware (FEAT-218): visible is all a bundle needs from the public API. Shoppers
-  // buy its parts, each checked for stock at checkout; the bundle's own placeholder
-  // variant is stockless on purpose, so Saleor never sells it by itself.
+  // Craftware (FEAT-218): shoppers buy a bundle's parts, each checked for stock at
+  // checkout; the bundle's own placeholder variant is stockless on purpose, so
+  // Saleor never sells it by itself.
   if (isBundle) {
-    return (
-      <PublicApiVerificationBadgeShell
-        icon={<CheckCircle size={14} color="var(--mu-colors-text-success1)" />}
-        statusColor="success1"
-        status={intl.formatMessage(messages.publicApiBundleVisible)}
-        reassurance={intl.formatMessage(messages.verificationReassurance_bundle)}
-        reassuranceTestId="bundle"
-      />
-    );
+    if (variantsWithStock > 0) {
+      // The placeholder has stock, so Saleor WOULD sell it on its own.
+      return (
+        <PublicApiVerificationBadgeShell
+          icon={<XCircle size={14} color="var(--mu-colors-text-warning1)" />}
+          statusColor="warning1"
+          status={intl.formatMessage(messages.publicApiBundleHasStock)}
+          statusSuffix={intl.formatMessage(messages.publicApiVariantsInStock, {
+            count: variantsWithStock,
+          })}
+          reassurance={intl.formatMessage(messages.verificationReassurance_bundleHasStock)}
+          reassuranceTestId="bundle-has-stock"
+        />
+      );
+    }
+
+    // Only when nothing else blocks the purchase: a channel that cannot ship, or
+    // purchase switched off, falls through to the generic "Not purchasable" badge.
+    const cannotShip = shippingZoneCount === 0 && isShippingRequired;
+
+    if (!cannotShip && isAvailableForPurchase !== false) {
+      return (
+        <PublicApiVerificationBadgeShell
+          icon={<CheckCircle size={14} color="var(--mu-colors-text-success1)" />}
+          statusColor="success1"
+          status={intl.formatMessage(messages.publicApiBundleVisible)}
+          reassurance={intl.formatMessage(messages.verificationReassurance_bundle)}
+          reassuranceTestId="bundle"
+        />
+      );
+    }
   }
 
   if (isAvailable && variantsWithStock > 0) {

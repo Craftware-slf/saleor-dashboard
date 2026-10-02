@@ -661,6 +661,53 @@ describe("bundle products (Craftware FEAT-218)", () => {
     expect(issues.map(i => i.id)).toContain("no-stock");
   });
 
+  it("warns when a bundle's placeholder variant has stock — it would be sold on its own", () => {
+    // Arrange
+    const product = createProduct({
+      isBundle: true,
+      variants: [
+        {
+          id: "placeholder",
+          name: "Bundle — do not edit",
+          channelListings: [{ channel: { id: "channel-1" }, price: { amount: 261975 } }],
+          stocks: [{ warehouse: { id: "warehouse-1" }, quantity: 3 }],
+        },
+      ],
+    });
+    const channelData = createChannelData();
+
+    // Act
+    const issues = runAvailabilityChecks(
+      product,
+      channelData,
+      product.channelListings[0],
+      mockIntl,
+    );
+
+    // Assert
+    const issue = issues.find(i => i.id === "bundle-variant-has-stock");
+
+    expect(issue?.severity).toBe("warning");
+    expect(issue?.category).toBe("purchasability");
+  });
+
+  it("never reports bundle-variant-has-stock for an ordinary product with stock", () => {
+    // Arrange
+    const product = createProduct({ isBundle: false });
+    const channelData = createChannelData();
+
+    // Act
+    const issues = runAvailabilityChecks(
+      product,
+      channelData,
+      product.channelListings[0],
+      mockIntl,
+    );
+
+    // Assert
+    expect(issues.map(i => i.id)).not.toContain("bundle-variant-has-stock");
+  });
+
   it("still reports a channel with no warehouses for a bundle — its parts need one", () => {
     // Arrange
     const product = createProduct({ isBundle: true, variants: stocklessPlaceholder });

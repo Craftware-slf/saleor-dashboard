@@ -567,6 +567,10 @@
     "context": "grant refund table, column header",
     "string": "Qty to refund"
   },
+  "1/uFde": {
+    "context": "Craftware FEAT-218: warning title when a bundle's placeholder variant has stock and can be sold on its own",
+    "string": "Bundle variant has stock"
+  },
   "11ep0q": {
     "context": "button",
     "string": "Show metadata"
@@ -2224,6 +2228,10 @@
   "AFZfCS": {
     "context": "Reassurance under verification badge when API reports stock but the channel has no shipping zones in legacy mode",
     "string": "The public API reports the product as in stock, but no shipping zones are configured for this channel — no customer is currently covered, so checkout cannot complete."
+  },
+  "AGwXPh": {
+    "context": "Craftware FEAT-218: reassurance under the public API verification badge when a bundle's placeholder variant has stock",
+    "string": "This bundle's own variant has stock, so it can be bought by itself instead of its parts. Remove its stock in the Inventory card."
   },
   "AHK0K9": {
     "context": "dialog content",
@@ -4136,6 +4144,10 @@
   "K58C4r": {
     "string": "We are working on replacing plugins with apps. Use apps unless no other option. {learnMore}"
   },
+  "K7nGQ5": {
+    "context": "Craftware FEAT-218: description for the bundle-variant-has-stock warning",
+    "string": "A bundle is sold as its parts. Remove the stock from its own variant so it cannot be bought by itself."
+  },
   "K8xNLe": {
     "context": "products section name",
     "string": "Products"
@@ -4192,6 +4204,10 @@
   },
   "KYMCYg": {
     "string": "Shipping rate deleted"
+  },
+  "KbsJ5y": {
+    "context": "Craftware FEAT-218: public API verification result when a bundle's placeholder variant has stock, so it can be sold on its own",
+    "string": "Bundle variant has stock"
   },
   "KcsJKm": {
     "context": "error with activatation alert message",
