@@ -436,6 +436,60 @@ const makeVerification = (
 };
 
 describe("PublicApiVerificationBadge reassurance", () => {
+  it("warns when a bundle's placeholder variant has stock (Craftware FEAT-218)", () => {
+    // Arrange
+    const result = makeVerification({ isAvailable: true, variantsWithStock: 1 });
+
+    // Act
+    render(<PublicApiVerificationBadge result={result} isBundle />, { wrapper: Wrapper });
+
+    // Assert
+    expect(screen.getByTestId("verification-reassurance")).toHaveAttribute(
+      "data-test-reassurance",
+      "bundle-has-stock",
+    );
+  });
+
+  it("does not show a bundle as fine in a channel that cannot ship (Craftware FEAT-218)", () => {
+    // Arrange
+    const result = makeVerification({ isAvailable: false, variantsWithStock: 0 });
+
+    // Act
+    render(
+      <PublicApiVerificationBadge
+        result={result}
+        isBundle
+        shippingZoneCount={0}
+        isShippingRequired={true}
+      />,
+      { wrapper: Wrapper },
+    );
+
+    // Assert
+    expect(screen.getByTestId("verification-reassurance")).toHaveAttribute(
+      "data-test-reassurance",
+      "not-purchasable",
+    );
+  });
+
+  it("does not show a bundle as fine when purchase is switched off (Craftware FEAT-218)", () => {
+    // Arrange
+    const result = makeVerification({
+      isAvailable: false,
+      isAvailableForPurchase: false,
+      variantsWithStock: 0,
+    });
+
+    // Act
+    render(<PublicApiVerificationBadge result={result} isBundle />, { wrapper: Wrapper });
+
+    // Assert
+    expect(screen.getByTestId("verification-reassurance")).toHaveAttribute(
+      "data-test-reassurance",
+      "not-purchasable",
+    );
+  });
+
   it("explains a bundle instead of reporting it not purchasable (Craftware FEAT-218)", () => {
     // Arrange — what the public API returns for a bundle: visible, its one variant stockless
     const result = makeVerification({ isAvailable: false, variantsWithStock: 0 });

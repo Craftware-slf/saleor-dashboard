@@ -117,6 +117,18 @@ export const messages = defineMessages({
     defaultMessage: 'No stock in warehouses for "{channelName}"',
     description: "Warning when no stock in channel warehouses",
   },
+  bundleVariantHasStock: {
+    defaultMessage: "Bundle variant has stock",
+    id: "1/uFde",
+    description:
+      "Craftware FEAT-218: warning title when a bundle's placeholder variant has stock and can be sold on its own",
+  },
+  bundleVariantHasStockDescription: {
+    defaultMessage:
+      "A bundle is sold as its parts. Remove the stock from its own variant so it cannot be bought by itself.",
+    id: "K7nGQ5",
+    description: "Craftware FEAT-218: description for the bundle-variant-has-stock warning",
+  },
   noStockDescription: {
     id: "n51nG4",
     defaultMessage: "Add stock to at least one warehouse assigned to this channel.",
@@ -286,6 +298,12 @@ export const messages = defineMessages({
     description:
       "Craftware FEAT-218: public API verification result for a bundle product, which is visible and is bought as its parts",
   },
+  publicApiBundleHasStock: {
+    defaultMessage: "Bundle variant has stock",
+    id: "KbsJ5y",
+    description:
+      "Craftware FEAT-218: public API verification result when a bundle's placeholder variant has stock, so it can be sold on its own",
+  },
   publicApiNotVisible: {
     id: "6fAGSm",
     defaultMessage: "Not visible",
@@ -350,6 +368,13 @@ export const messages = defineMessages({
     id: "xPp8gW",
     description:
       "Craftware FEAT-218: reassurance under the public API verification badge for a bundle product",
+  },
+  verificationReassurance_bundleHasStock: {
+    defaultMessage:
+      "This bundle's own variant has stock, so it can be bought by itself instead of its parts. Remove its stock in the Inventory card.",
+    id: "AGwXPh",
+    description:
+      "Craftware FEAT-218: reassurance under the public API verification badge when a bundle's placeholder variant has stock",
   },
   verificationReassurance_notPurchasable: {
     id: "UuX9YV",

@@ -214,6 +214,13 @@ const checkNoShippingZones: CheckFunction = ({
  * Check if no stock exists in warehouses for this channel
  */
 const checkNoStock: CheckFunction = ({ product, channelData, intl }) => {
+  // Craftware (FEAT-218): a bundle's only variant is a stockless placeholder by
+  // design — its parts carry the stock — so this would always fire for it and
+  // never be actionable. checkBundleVariantHasStock covers the opposite case.
+  if (product.isBundle) {
+    return null;
+  }
+
   if (!product.variants || product.variants.length === 0) {
     return null;
   }
@@ -337,6 +344,12 @@ const checkWarehouseNotInShippingZone: CheckFunction = ({
  * `no-stock` warning by pointing at a concrete fix.
  */
 const checkStockOutsideChannelWarehouses: CheckFunction = ({ product, channelData, intl }) => {
+  // Craftware (FEAT-218): see checkNoStock — any stock on a bundle is reported by
+  // checkBundleVariantHasStock instead.
+  if (product.isBundle) {
+    return null;
+  }
+
   if (!product.variants || product.variants.length === 0) {
     return null;
   }
@@ -395,12 +408,41 @@ const coreChecks: CheckFunction[] = [
 ];
 
 /**
+ * Craftware (FEAT-218): a bundle's placeholder variant must have NO stock. With
+ * stock, Saleor sells the SKU-less placeholder on its own — an item Business
+ * Central cannot fulfil — instead of the bundle's parts.
+ */
+const checkBundleVariantHasStock: CheckFunction = ({ product, channelData, intl }) => {
+  if (!product.isBundle) {
+    return null;
+  }
+
+  const hasStock = product.variants.some(variant =>
+    variant.stocks?.some(stock => stock.quantity > 0),
+  );
+
+  if (!hasStock) {
+    return null;
+  }
+
+  return {
+    id: "bundle-variant-has-stock",
+    severity: "warning",
+    channelId: channelData.id,
+    channelName: channelData.name,
+    message: intl.formatMessage(messages.bundleVariantHasStock),
+    description: intl.formatMessage(messages.bundleVariantHasStockDescription),
+  };
+};
+
+/**
  * Checks that require warehouse visibility
  */
 const warehouseChecks: CheckFunction[] = [
   checkNoWarehouses,
   checkNoStock,
   checkStockOutsideChannelWarehouses,
+  checkBundleVariantHasStock,
 ];
 
 /**
@@ -478,17 +520,7 @@ export function runAvailabilityChecks(
   // - If a product doesn't track inventory, variant.stocks will be empty and checks will pass
   // Warehouses + stock are part of the purchasability surface.
   if (!options?.skipWarehouseChecks) {
-    // Craftware (FEAT-218): a bundle's only variant is a stockless placeholder by
-    // design — its parts carry the stock — so "no stock" would always fire and
-    // never be actionable. The warehouse-link check still applies.
-    runGroup(
-      product.isBundle
-        ? warehouseChecks.filter(
-            check => check !== checkNoStock && check !== checkStockOutsideChannelWarehouses,
-          )
-        : warehouseChecks,
-      "purchasability",
-    );
+    runGroup(warehouseChecks, "purchasability");
   }
 
   // Run shipping checks only if:
