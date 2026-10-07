@@ -2880,6 +2880,10 @@
   "Dd0Dwl": {
     "string": "Go to promotions"
   },
+  "DdRad8": {
+    "context": "order list shipping method cell: click & collect from this warehouse",
+    "string": "Pickup: {warehouseName}"
+  },
   "Dg4Y2p": {
     "context": "set shipping method link when no shipping method selected",
     "string": "Set shipping method"
@@ -7398,6 +7402,10 @@
   "bcf60I": {
     "context": "voucher",
     "string": "Applies to"
+  },
+  "bcfh+I": {
+    "context": "order list column, how the order ships (carrier, Dropp pickup point, or store pickup)",
+    "string": "Shipping method"
   },
   "bfj3NC": {
     "context": "Button with Manage app label",

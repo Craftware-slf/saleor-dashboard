@@ -48,6 +48,17 @@ export const columnsMessages = defineMessages({
     defaultMessage: "Channel",
     id: "KeO51o",
   },
+  shippingMethod: {
+    defaultMessage: "Shipping method",
+    id: "bcfh+I",
+    description:
+      "order list column, how the order ships (carrier, Dropp pickup point, or store pickup)",
+  },
+  shippingMethodPickup: {
+    defaultMessage: "Pickup: {warehouseName}",
+    id: "DdRad8",
+    description: "order list shipping method cell: click & collect from this warehouse",
+  },
   kennitala: {
     defaultMessage: "Kennitala",
     id: "6CBsjb",

@@ -13383,6 +13383,22 @@ export const OrderListDocument = gql`
         }
         userEmail
         chargeStatus
+        shippingMethodName
+        deliveryMethod {
+          __typename
+          ... on ShippingMethod {
+            id
+            name
+          }
+          ... on Warehouse {
+            id
+            name
+          }
+        }
+        metadata {
+          key
+          value
+        }
         privateMetadata {
           key
           value
