@@ -45,8 +45,7 @@ export const orderListQuery = gql`
           userEmail
           chargeStatus
           # Feeds the Shipping method column (src/orders/shippingMethod.ts): the
-          # snapshotted name, the warehouse for native click & collect, and the
-          # Dropp pickup point the Örninn storefronts stamp as public metadata.
+          # snapshotted name, and the warehouse for native click & collect.
           shippingMethodName
           deliveryMethod {
             __typename
@@ -59,7 +58,7 @@ export const orderListQuery = gql`
               name
             }
           }
-          # Also feeds the Payment method column (src/orders/paymentMethod.ts).
+          # Feeds the Payment method column (src/orders/paymentMethod.ts).
           metadata {
             key
             value

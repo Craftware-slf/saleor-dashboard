@@ -50,9 +50,8 @@ export const columnsMessages = defineMessages({
   },
   shippingMethod: {
     defaultMessage: "Shipping method",
-    id: "bcfh+I",
-    description:
-      "order list column, how the order ships (carrier, Dropp pickup point, or store pickup)",
+    id: "9Te2wW",
+    description: "order list column, how the order ships (carrier or store pickup)",
   },
   shippingMethodPickup: {
     defaultMessage: "Pickup: {warehouseName}",

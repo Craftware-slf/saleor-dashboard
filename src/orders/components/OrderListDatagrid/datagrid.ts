@@ -260,8 +260,7 @@ function getPaymentMethodCellContent(
 }
 
 /**
- * How the order ships, on one line: the method name, then the Dropp pickup point when
- * the storefront stamped one ("Dropp.is · Orkan Dalvegi, Dalvegur 20, 201 Kópavogur").
+ * How the order ships, by method name only: "Pósturinn", "Dropp.is" or "Sótt í verslun".
  */
 export function getShippingMethodCellContent(
   intl: IntlShape,
@@ -281,9 +280,5 @@ export function getShippingMethodCellContent(
     );
   }
 
-  return readonlyTextCell(
-    shippingMethod.pickupPoint
-      ? `${shippingMethod.name} · ${shippingMethod.pickupPoint}`
-      : shippingMethod.name,
-  );
+  return readonlyTextCell(shippingMethod.name);
 }
