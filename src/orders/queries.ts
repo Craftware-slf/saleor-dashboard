@@ -44,15 +44,29 @@ export const orderListQuery = gql`
           }
           userEmail
           chargeStatus
-          # Feeds the optional Kennitala column. Requires MANAGE_ORDERS, which is
-          # already required to reach this page at all.
-          privateMetadata {
+          # Feeds the Shipping method column (src/orders/shippingMethod.ts): the
+          # snapshotted name, the warehouse for native click & collect, and the
+          # Dropp pickup point the Örninn storefronts stamp as public metadata.
+          shippingMethodName
+          deliveryMethod {
+            __typename
+            ... on ShippingMethod {
+              id
+              name
+            }
+            ... on Warehouse {
+              id
+              name
+            }
+          }
+          # Also feeds the Payment method column (src/orders/paymentMethod.ts).
+          metadata {
             key
             value
           }
-          # Feeds the Payment method column (public payment_method, stamped by the
-          # Örninn storefronts).
-          metadata {
+          # Feeds the optional Kennitala column. Requires MANAGE_ORDERS, which is
+          # already required to reach this page at all.
+          privateMetadata {
             key
             value
           }

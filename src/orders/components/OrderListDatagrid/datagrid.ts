@@ -24,6 +24,7 @@ import { type IntlShape, useIntl } from "react-intl";
 
 import { formatKennitala, getKennitala } from "../../kennitala";
 import { formatPaymentMethod, getPaymentMethod } from "../../paymentMethod";
+import { getOrderShippingMethod } from "../../shippingMethod";
 import { columnsMessages } from "./messages";
 
 export const orderListStaticColumnAdapter = (
@@ -67,6 +68,14 @@ export const orderListStaticColumnAdapter = (
       id: "channel",
       title: intl.formatMessage(columnsMessages.channel),
       width: 200,
+    },
+    // On by default for new viewers (src/config.ts). Staff who already saved a column
+    // layout keep theirs and add it from the column picker. Not sortable: Saleor has
+    // no order sort field for it.
+    {
+      id: "shippingMethod",
+      title: intl.formatMessage(columnsMessages.shippingMethod),
+      width: 250,
     },
     // Off by default — see ListViews.ORDER_LIST in src/config.ts. It is a national
     // ID, so a whole screenful of them is opt-in via the column picker rather than
@@ -125,6 +134,8 @@ export const useGetCellContent = ({ columns, orders }: GetCellContentProps) => {
         return getTotalCellContent(rowData);
       case "channel":
         return getChannelCellContent(rowData);
+      case "shippingMethod":
+        return getShippingMethodCellContent(intl, rowData);
       case "kennitala":
         return getKennitalaCellContent(rowData);
       case "paymentMethod":
@@ -246,4 +257,33 @@ function getPaymentMethodCellContent(
   rowData: RelayToFlat<OrderListQuery["orders"]>[number],
 ): TextCell {
   return readonlyTextCell(formatPaymentMethod(intl, getPaymentMethod(rowData?.metadata)) ?? "-");
+}
+
+/**
+ * How the order ships, on one line: the method name, then the Dropp pickup point when
+ * the storefront stamped one ("Dropp.is · Orkan Dalvegi, Dalvegur 20, 201 Kópavogur").
+ */
+export function getShippingMethodCellContent(
+  intl: IntlShape,
+  rowData: RelayToFlat<OrderListQuery["orders"]>[number],
+): TextCell {
+  const shippingMethod = getOrderShippingMethod(rowData);
+
+  if (!shippingMethod) {
+    return readonlyTextCell("-");
+  }
+
+  if (shippingMethod.kind === "pickup") {
+    return readonlyTextCell(
+      intl.formatMessage(columnsMessages.shippingMethodPickup, {
+        warehouseName: shippingMethod.warehouseName,
+      }),
+    );
+  }
+
+  return readonlyTextCell(
+    shippingMethod.pickupPoint
+      ? `${shippingMethod.name} · ${shippingMethod.pickupPoint}`
+      : shippingMethod.name,
+  );
 }

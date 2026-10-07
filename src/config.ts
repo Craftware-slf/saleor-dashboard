@@ -165,6 +165,7 @@ export const defaultListSettings: AppListViewSettings = {
       "status",
       "total",
       "channel",
+      "shippingMethod",
     ],
   },
   [ListViews.PAGES_LIST]: {
