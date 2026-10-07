@@ -50,6 +50,12 @@ export const orderListQuery = gql`
             key
             value
           }
+          # Feeds the Payment method column (public payment_method, stamped by the
+          # Örninn storefronts).
+          metadata {
+            key
+            value
+          }
         }
       }
       pageInfo {

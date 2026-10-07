@@ -22,7 +22,7 @@ import useNavigator from "@dashboard/hooks/useNavigator";
 import { commonMessages } from "@dashboard/intl";
 import { renderCollection } from "@dashboard/misc";
 import OrderChangeWarehouseDialog from "@dashboard/orders/components/OrderChangeWarehouseDialog";
-import { getPaymentMethod, isKnownPaymentMethod } from "@dashboard/orders/paymentMethod";
+import { formatPaymentMethod, getPaymentMethod } from "@dashboard/orders/paymentMethod";
 import {
   type OrderFulfillUrlDialog,
   type OrderFulfillUrlQueryParams,
@@ -84,19 +84,9 @@ const OrderFulfillPage = (props: OrderFulfillPageProps) => {
   } = props;
   const intl = useIntl();
   const classes = useStyles(props);
-  const paymentMethod = getPaymentMethod(order?.metadata);
   const paymentMethodLabel =
-    paymentMethod === null
-      ? intl.formatMessage(messages.paymentMethodNone)
-      : isKnownPaymentMethod(paymentMethod)
-        ? intl.formatMessage(
-            {
-              krafa: messages.paymentMethodKrafa,
-              teya: messages.paymentMethodTeya,
-              netgiro: messages.paymentMethodNetgiro,
-            }[paymentMethod],
-          )
-        : paymentMethod;
+    formatPaymentMethod(intl, getPaymentMethod(order?.metadata)) ??
+    intl.formatMessage(messages.paymentMethodNone);
   const navigate = useNavigator();
   const { change: formsetChange, data: formsetData } = useFormset<null, OrderFulfillLineFormData[]>(
     (getToFulfillOrderLines(order?.lines) as OrderFulfillLineFragment[]).map(line => {

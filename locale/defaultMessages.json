@@ -5542,6 +5542,10 @@
     "context": "no cards found title message",
     "string": "No gift cards found"
   },
+  "Re7LS8": {
+    "context": "order list column, how the order was paid (Krafa, card, Netgíró)",
+    "string": "Payment method"
+  },
   "RfPJ1E": {
     "context": "issue card button label",
     "string": "Issue card"

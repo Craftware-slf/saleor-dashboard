@@ -53,4 +53,9 @@ export const columnsMessages = defineMessages({
     id: "6CBsjb",
     description: "order list column, buyer's Icelandic national ID",
   },
+  paymentMethod: {
+    defaultMessage: "Payment method",
+    id: "Re7LS8",
+    description: "order list column, how the order was paid (Krafa, card, Netgíró)",
+  },
 });

@@ -13387,6 +13387,10 @@ export const OrderListDocument = gql`
           key
           value
         }
+        metadata {
+          key
+          value
+        }
       }
     }
     pageInfo {
