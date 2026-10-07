@@ -316,7 +316,7 @@ describe("shipping method column", () => {
     expect(cell.readonly).toBe(true);
   });
 
-  it("appends the Dropp pickup point the storefront stamps", () => {
+  it("shows Dropp by name only, without the stamped pickup point", () => {
     // Act
     const cell = cellFor({
       shippingMethodName: "Dropp.is",
@@ -332,7 +332,7 @@ describe("shipping method column", () => {
     });
 
     // Assert
-    expect(cell.displayData).toEqual("Dropp.is · Orkan Dalvegi, Dalvegur 20, 201 Kópavogur");
+    expect(cell.displayData).toEqual("Dropp.is");
   });
 
   it("names the warehouse for native click & collect", () => {

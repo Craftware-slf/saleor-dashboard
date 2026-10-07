@@ -1,11 +1,5 @@
 import { getOrderShippingMethod } from "./shippingMethod";
 
-const item = (key: string, value: string) => ({
-  __typename: "MetadataItem" as const,
-  key,
-  value,
-});
-
 const shippingMethod = (name: string) => ({
   __typename: "ShippingMethod" as const,
   name,
@@ -16,7 +10,6 @@ describe("getOrderShippingMethod", () => {
     expect(
       getOrderShippingMethod({
         shippingMethodName: null,
-        metadata: [],
         deliveryMethod: {
           __typename: "Warehouse",
           name: "Örninn Faxafen",
@@ -29,53 +22,31 @@ describe("getOrderShippingMethod", () => {
     expect(
       getOrderShippingMethod({
         shippingMethodName: "Pósturinn – Heimsending",
-        metadata: [],
         deliveryMethod: shippingMethod("Renamed later"),
       }),
-    ).toEqual({ kind: "shipping", name: "Pósturinn – Heimsending", pickupPoint: null });
+    ).toEqual({ kind: "shipping", name: "Pósturinn – Heimsending" });
   });
 
   it("falls back to the live method's name when the order has none", () => {
     expect(
       getOrderShippingMethod({
         shippingMethodName: "  ",
-        metadata: [],
         deliveryMethod: shippingMethod("Pósturinn"),
       }),
-    ).toEqual({ kind: "shipping", name: "Pósturinn", pickupPoint: null });
+    ).toEqual({ kind: "shipping", name: "Pósturinn" });
   });
 
-  it("adds the Dropp pickup point the storefront stamps", () => {
-    expect(
-      getOrderShippingMethod({
-        shippingMethodName: "Dropp.is – Höfuðborgarsvæðið",
-        metadata: [
-          item("dropp_pickup_point_name", "Dropp Kringlan"),
-          item("dropp_pickup_point_address", "Kringlan 1, 103 Reykjavík"),
-        ],
-        deliveryMethod: shippingMethod("Dropp.is – Höfuðborgarsvæðið"),
-      }),
-    ).toEqual({
-      kind: "shipping",
-      name: "Dropp.is – Höfuðborgarsvæðið",
-      pickupPoint: "Dropp Kringlan, Kringlan 1, 103 Reykjavík",
-    });
-  });
-
-  it("shows a pickup point name stamped without an address", () => {
+  it("shows a Dropp order by method name only, ignoring the stamped pickup point", () => {
     expect(
       getOrderShippingMethod({
         shippingMethodName: "Dropp.is",
-        metadata: [item("dropp_pickup_point_name", "Dropp Kringlan")],
-        deliveryMethod: null,
+        deliveryMethod: shippingMethod("Dropp.is"),
       }),
-    ).toEqual({ kind: "shipping", name: "Dropp.is", pickupPoint: "Dropp Kringlan" });
+    ).toEqual({ kind: "shipping", name: "Dropp.is" });
   });
 
   it("returns null when the order has no delivery method", () => {
-    expect(
-      getOrderShippingMethod({ shippingMethodName: null, metadata: [], deliveryMethod: null }),
-    ).toBeNull();
+    expect(getOrderShippingMethod({ shippingMethodName: null, deliveryMethod: null })).toBeNull();
     expect(getOrderShippingMethod(null)).toBeNull();
   });
 });
