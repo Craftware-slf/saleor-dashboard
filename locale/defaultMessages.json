@@ -286,6 +286,10 @@
     "context": "WarehousesSection select field placeholder",
     "string": "Select Warehouse"
   },
+  "/dHYgX": {
+    "context": "payment method: order carries no payment method",
+    "string": "Not recorded"
+  },
   "/dnWE8": {
     "context": "products in collection",
     "string": "Products in {name}"
@@ -2493,6 +2497,10 @@
   "BfhUcl": {
     "context": "Indicator label shown when shop has Shop.useLegacyShippingZoneStockAvailability=false",
     "string": "Stock availability uses direct warehouse-channel link"
+  },
+  "BgxsuW": {
+    "context": "payment method: Netgíró",
+    "string": "Netgíró"
   },
   "Bkxrhw": {
     "context": "no webhooks message",
@@ -8900,6 +8908,10 @@
     "context": "order header date, less than an hour ago",
     "string": "Created {minutes, plural, one {# minute} other {# minutes}} ago"
   },
+  "k9yaUR": {
+    "context": "payment method: card payment through Teya",
+    "string": "Card (Teya)"
+  },
   "kAAlGL": {
     "string": "Rules"
   },
@@ -9692,6 +9704,10 @@
   "o8f4Sg": {
     "context": "disabled option description",
     "string": "Can’t fulfill until payment is captured"
+  },
+  "o9JvJ4": {
+    "context": "label for how the order was paid, shown above the items to fulfill",
+    "string": "Payment method"
   },
   "oB0y5Y": {
     "context": "order status",
@@ -11066,6 +11082,10 @@
   "vLc9Td": {
     "context": "Title for public API verification section",
     "string": "Public API verification"
+  },
+  "vLvAX3": {
+    "context": "payment method: Örninn B2B on-account order",
+    "string": "Krafa (on account)"
   },
   "vMo6/3": {
     "string": "Tracking: {trackingNumber}"

@@ -1,6 +1,31 @@
 import { defineMessages } from "react-intl";
 
 export const messages = defineMessages({
+  paymentMethod: {
+    id: "o9JvJ4",
+    defaultMessage: "Payment method",
+    description: "label for how the order was paid, shown above the items to fulfill",
+  },
+  paymentMethodKrafa: {
+    id: "vLvAX3",
+    defaultMessage: "Krafa (on account)",
+    description: "payment method: Örninn B2B on-account order",
+  },
+  paymentMethodTeya: {
+    id: "k9yaUR",
+    defaultMessage: "Card (Teya)",
+    description: "payment method: card payment through Teya",
+  },
+  paymentMethodNetgiro: {
+    id: "BgxsuW",
+    defaultMessage: "Netgíró",
+    description: "payment method: Netgíró",
+  },
+  paymentMethodNone: {
+    id: "/dHYgX",
+    defaultMessage: "Not recorded",
+    description: "payment method: order carries no payment method",
+  },
   headerOrderNumberAddFulfillment: {
     id: "CJpx4E",
     defaultMessage: "Order no. {orderNumber} - Add Fulfillment",
