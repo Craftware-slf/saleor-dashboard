@@ -59,6 +59,7 @@ export const orderListQuery = gql`
               name
             }
           }
+          # Also feeds the Payment method column (src/orders/paymentMethod.ts).
           metadata {
             key
             value
@@ -204,10 +205,6 @@ export const orderFulfillData = gql`
     order(id: $orderId) {
       id
       isPaid
-      metadata {
-        key
-        value
-      }
       deliveryMethod {
         __typename
         ... on ShippingMethod {

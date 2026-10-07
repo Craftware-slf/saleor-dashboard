@@ -161,6 +161,7 @@ export const defaultListSettings: AppListViewSettings = {
       "date",
       "customer",
       "payment",
+      "paymentMethod",
       "status",
       "total",
       "channel",

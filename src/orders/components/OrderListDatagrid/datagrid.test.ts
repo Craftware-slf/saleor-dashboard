@@ -361,3 +361,53 @@ describe("shipping method column", () => {
     expect(cell.displayData).toEqual("-");
   });
 });
+
+describe("payment method column", () => {
+  const columns: AvailableColumn[] = [{ id: "paymentMethod", title: "Payment method", width: 180 }];
+
+  const cellFor = (metadata: Array<{ key: string; value: string }>) => {
+    const orders = [
+      {
+        __typename: "Order",
+        id: "order-1",
+        number: "41",
+        metadata: metadata.map(entry => ({ __typename: "MetadataItem", ...entry })),
+      },
+    ] as RelayToFlat<NonNullable<OrderListQuery["orders"]>>;
+    const { result } = renderHook(() => useGetCellContent({ columns, orders }));
+
+    return result.current([0, 0], {
+      added: [],
+      removed: [],
+    } as unknown as GetCellContentOpts) as TextCell;
+  };
+
+  it.each([
+    ["krafa", "Krafa (on account)"],
+    ["teya", "Card (Teya)"],
+    ["netgiro", "Netgíró"],
+  ])("names %s for staff", (value, label) => {
+    // Act
+    const cell = cellFor([{ key: "payment_method", value }]);
+
+    // Assert
+    expect(cell.displayData).toEqual(label);
+  });
+
+  it("shows an unrecognised method raw rather than hiding it", () => {
+    // Act
+    const cell = cellFor([{ key: "payment_method", value: "pei" }]);
+
+    // Assert
+    expect(cell.displayData).toEqual("pei");
+  });
+
+  it("renders a dash for an order with no payment method, and is readonly", () => {
+    // Act
+    const cell = cellFor([{ key: "to_pack", value: "1" }]);
+
+    // Assert
+    expect(cell.displayData).toEqual("-");
+    expect(cell.readonly).toBe(true);
+  });
+});

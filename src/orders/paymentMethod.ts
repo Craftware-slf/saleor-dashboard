@@ -1,4 +1,5 @@
 import { type MetadataItemFragment } from "@dashboard/graphql";
+import { defineMessages, type IntlShape } from "react-intl";
 
 /**
  * How an Örninn order was paid for. The storefronts stamp it onto the checkout as PUBLIC
@@ -29,3 +30,37 @@ export const getPaymentMethod = (
 
 export const isKnownPaymentMethod = (value: string): value is KnownPaymentMethod =>
   value === "krafa" || value === "teya" || value === "netgiro";
+
+const paymentMethodMessages = defineMessages({
+  krafa: {
+    id: "vLvAX3",
+    defaultMessage: "Krafa (on account)",
+    description: "payment method: Örninn B2B on-account order",
+  },
+  teya: {
+    id: "k9yaUR",
+    defaultMessage: "Card (Teya)",
+    description: "payment method: card payment through Teya",
+  },
+  netgiro: {
+    id: "BgxsuW",
+    defaultMessage: "Netgíró",
+    description: "payment method: Netgíró",
+  },
+});
+
+/**
+ * The payment method as staff should read it, or null when the order carries none (the
+ * caller picks the placeholder). An unrecognised value is shown raw rather than hidden.
+ */
+export const formatPaymentMethod = (intl: IntlShape, method: string | null): string | null => {
+  if (method === null) {
+    return null;
+  }
+
+  if (!isKnownPaymentMethod(method)) {
+    return method;
+  }
+
+  return intl.formatMessage(paymentMethodMessages[method]);
+};

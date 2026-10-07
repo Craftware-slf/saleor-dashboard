@@ -23,6 +23,7 @@ import { type DefaultTheme, useTheme } from "@saleor/macaw-ui-next";
 import { type IntlShape, useIntl } from "react-intl";
 
 import { formatKennitala, getKennitala } from "../../kennitala";
+import { formatPaymentMethod, getPaymentMethod } from "../../paymentMethod";
 import { getOrderShippingMethod } from "../../shippingMethod";
 import { columnsMessages } from "./messages";
 
@@ -85,6 +86,13 @@ export const orderListStaticColumnAdapter = (
       title: intl.formatMessage(columnsMessages.kennitala),
       width: 150,
     },
+    // How the order was paid — above all, whether it is a Krafa (on account) order
+    // that was never charged. Not sortable: Saleor cannot order by metadata.
+    {
+      id: "paymentMethod",
+      title: intl.formatMessage(columnsMessages.paymentMethod),
+      width: 180,
+    },
   ].map(column => ({
     ...column,
     icon: getColumnSortDirectionIcon(sort, column.id),
@@ -130,6 +138,8 @@ export const useGetCellContent = ({ columns, orders }: GetCellContentProps) => {
         return getShippingMethodCellContent(intl, rowData);
       case "kennitala":
         return getKennitalaCellContent(rowData);
+      case "paymentMethod":
+        return getPaymentMethodCellContent(intl, rowData);
       default:
         return textCell("");
     }
@@ -236,6 +246,17 @@ function getKennitalaCellContent(rowData: RelayToFlat<OrderListQuery["orders"]>[
   const kennitala = getKennitala(rowData?.privateMetadata);
 
   return readonlyTextCell(kennitala ? formatKennitala(kennitala) : "-");
+}
+
+/**
+ * Readonly, from the public `payment_method` metadata. "-" for an order that carries
+ * none, matching the Kennitala column.
+ */
+function getPaymentMethodCellContent(
+  intl: IntlShape,
+  rowData: RelayToFlat<OrderListQuery["orders"]>[number],
+): TextCell {
+  return readonlyTextCell(formatPaymentMethod(intl, getPaymentMethod(rowData?.metadata)) ?? "-");
 }
 
 /**
