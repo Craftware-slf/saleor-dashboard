@@ -6,7 +6,6 @@ export const orderToFulfill: OrderFulfillDataQuery["order"] = {
   __typename: "Order",
   id: "T3JkZXI6Mg==",
   isPaid: true,
-  metadata: [],
   deliveryMethod: null,
   lines: [
     {

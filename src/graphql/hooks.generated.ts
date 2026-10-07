@@ -13724,10 +13724,6 @@ export const OrderFulfillDataDocument = gql`
   order(id: $orderId) {
     id
     isPaid
-    metadata {
-      key
-      value
-    }
     deliveryMethod {
       __typename
       ... on ShippingMethod {

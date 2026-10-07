@@ -22,7 +22,6 @@ import useNavigator from "@dashboard/hooks/useNavigator";
 import { commonMessages } from "@dashboard/intl";
 import { renderCollection } from "@dashboard/misc";
 import OrderChangeWarehouseDialog from "@dashboard/orders/components/OrderChangeWarehouseDialog";
-import { formatPaymentMethod, getPaymentMethod } from "@dashboard/orders/paymentMethod";
 import {
   type OrderFulfillUrlDialog,
   type OrderFulfillUrlQueryParams,
@@ -84,9 +83,6 @@ const OrderFulfillPage = (props: OrderFulfillPageProps) => {
   } = props;
   const intl = useIntl();
   const classes = useStyles(props);
-  const paymentMethodLabel =
-    formatPaymentMethod(intl, getPaymentMethod(order?.metadata)) ??
-    intl.formatMessage(messages.paymentMethodNone);
   const navigate = useNavigator();
   const { change: formsetChange, data: formsetData } = useFormset<null, OrderFulfillLineFormData[]>(
     (getToFulfillOrderLines(order?.lines) as OrderFulfillLineFragment[]).map(line => {
@@ -195,14 +191,6 @@ const OrderFulfillPage = (props: OrderFulfillPageProps) => {
                 </DashboardCard.Header>
                 {order ? (
                   <DashboardCard.Content>
-                    <Box display="flex" gap={2} alignItems="baseline" marginBottom={4}>
-                      <Text size={3} color="default2">
-                        {intl.formatMessage(messages.paymentMethod)}
-                      </Text>
-                      <Text size={3} fontWeight="bold" data-test-id="payment-method">
-                        {paymentMethodLabel}
-                      </Text>
-                    </Box>
                     <ResponsiveTable className={classes.table}>
                       <TableHead>
                         <TableRowLink>

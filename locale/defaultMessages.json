@@ -286,10 +286,6 @@
     "context": "WarehousesSection select field placeholder",
     "string": "Select Warehouse"
   },
-  "/dHYgX": {
-    "context": "payment method: order carries no payment method",
-    "string": "Not recorded"
-  },
   "/dnWE8": {
     "context": "products in collection",
     "string": "Products in {name}"
@@ -9708,10 +9704,6 @@
   "o8f4Sg": {
     "context": "disabled option description",
     "string": "Can’t fulfill until payment is captured"
-  },
-  "o9JvJ4": {
-    "context": "label for how the order was paid, shown above the items to fulfill",
-    "string": "Payment method"
   },
   "oB0y5Y": {
     "context": "order status",
