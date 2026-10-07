@@ -12,8 +12,14 @@ import { type RelayToFlat } from "@dashboard/types";
 import { type TextCell } from "@glideapps/glide-data-grid";
 import { testIntlInstance } from "@test/intl";
 import { renderHook } from "@testing-library/react";
+import { type IntlShape } from "react-intl";
 
-import { getCustomerCellContent, getPaymentCellContent, useGetCellContent } from "./datagrid";
+import {
+  getCustomerCellContent,
+  getPaymentCellContent,
+  getShippingMethodCellContent,
+  useGetCellContent,
+} from "./datagrid";
 
 jest.mock("@saleor/macaw-ui-next", () => ({
   useTheme: () => ({ theme: "defaultLight" }),
@@ -278,5 +284,80 @@ describe("kennitala column", () => {
 
     // Assert
     expect(cell.readonly).toBe(true);
+  });
+});
+
+describe("shipping method column", () => {
+  const columns: AvailableColumn[] = [
+    { id: "shippingMethod", title: "Shipping method", width: 250 },
+  ];
+
+  const cellFor = (order: Record<string, unknown>) => {
+    const orders = [
+      { __typename: "Order", id: "order-1", number: "23", metadata: [], ...order },
+    ] as unknown as RelayToFlat<NonNullable<OrderListQuery["orders"]>>;
+    const { result } = renderHook(() => useGetCellContent({ columns, orders }));
+
+    return result.current([0, 0], {
+      added: [],
+      removed: [],
+    } as unknown as GetCellContentOpts) as TextCell;
+  };
+
+  it("renders the method name", () => {
+    // Act
+    const cell = cellFor({
+      shippingMethodName: "Pósturinn",
+      deliveryMethod: { __typename: "ShippingMethod", id: "sm-1", name: "Pósturinn" },
+    });
+
+    // Assert
+    expect(cell.displayData).toEqual("Pósturinn");
+    expect(cell.readonly).toBe(true);
+  });
+
+  it("appends the Dropp pickup point the storefront stamps", () => {
+    // Act
+    const cell = cellFor({
+      shippingMethodName: "Dropp.is",
+      deliveryMethod: { __typename: "ShippingMethod", id: "sm-2", name: "Dropp.is" },
+      metadata: [
+        { __typename: "MetadataItem", key: "dropp_pickup_point_name", value: "Orkan Dalvegi" },
+        {
+          __typename: "MetadataItem",
+          key: "dropp_pickup_point_address",
+          value: "Dalvegur 20, 201 Kópavogur",
+        },
+      ],
+    });
+
+    // Assert
+    expect(cell.displayData).toEqual("Dropp.is · Orkan Dalvegi, Dalvegur 20, 201 Kópavogur");
+  });
+
+  it("names the warehouse for native click & collect", () => {
+    // Arrange — the react-intl jest mock does not interpolate, so interpolate here
+    const intl = {
+      formatMessage: (message: { defaultMessage: string }, values: Record<string, string>) =>
+        message.defaultMessage.replace("{warehouseName}", values.warehouseName),
+    } as unknown as IntlShape;
+    const order = {
+      shippingMethodName: null,
+      deliveryMethod: { __typename: "Warehouse", id: "wh-1", name: "Örninn Faxafen" },
+    } as unknown as RelayToFlat<NonNullable<OrderListQuery["orders"]>>[number];
+
+    // Act
+    const cell = getShippingMethodCellContent(intl, order);
+
+    // Assert
+    expect(cell.displayData).toEqual("Pickup: Örninn Faxafen");
+  });
+
+  it("renders a dash when the order has no delivery method", () => {
+    // Act
+    const cell = cellFor({ shippingMethodName: null, deliveryMethod: null });
+
+    // Assert
+    expect(cell.displayData).toEqual("-");
   });
 });

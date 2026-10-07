@@ -44,6 +44,25 @@ export const orderListQuery = gql`
           }
           userEmail
           chargeStatus
+          # Feeds the Shipping method column (src/orders/shippingMethod.ts): the
+          # snapshotted name, the warehouse for native click & collect, and the
+          # Dropp pickup point the Örninn storefronts stamp as public metadata.
+          shippingMethodName
+          deliveryMethod {
+            __typename
+            ... on ShippingMethod {
+              id
+              name
+            }
+            ... on Warehouse {
+              id
+              name
+            }
+          }
+          metadata {
+            key
+            value
+          }
           # Feeds the optional Kennitala column. Requires MANAGE_ORDERS, which is
           # already required to reach this page at all.
           privateMetadata {
