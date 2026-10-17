@@ -127,6 +127,7 @@ export const AppWidgets = ({ extensions, params }: AppWidgetsProps) => {
                       src={GETappIframeUrl}
                       appToken={ext.accessToken}
                       appId={ext.app.id}
+                      extensionId={ext.id}
                       dashboardVersion={APP_VERSION}
                       params={params}
                     />

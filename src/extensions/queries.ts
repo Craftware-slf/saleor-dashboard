@@ -104,6 +104,18 @@ export const appDetails = gql`
   }
 `;
 
+// Craftware: re-mints ONE extension's access token (fork fix, see useFreshExtensionToken).
+// ExtensionList below is read cache-first, so the token it carries is minted once per
+// dashboard page load and is dead five minutes later.
+export const extensionAccessToken = gql`
+  query ExtensionAccessToken($id: ID!) {
+    appExtension(id: $id) {
+      id
+      accessToken
+    }
+  }
+`;
+
 export const EXTENSION_LIST_QUERY = "ExtensionList";
 export const extensionList = gql`
   query ExtensionList($filter: AppExtensionFilterInput!) {
