@@ -18,6 +18,8 @@ type FormState = {
 
 type ActiveParams = {
   id: string;
+  /** Craftware: the extension being shown, so its frame can re-mint a stale token. */
+  extensionId?: string;
   appToken: string;
   src: string;
   label: string;
@@ -42,6 +44,8 @@ class ExtensionActiveState {
 
   id: string;
 
+  extensionId?: string;
+
   appToken: string;
 
   src: string;
@@ -56,6 +60,7 @@ class ExtensionActiveState {
 
   constructor(params: ActiveParams) {
     this.id = params.id;
+    this.extensionId = params.extensionId;
     this.appToken = params.appToken;
     this.src = params.src;
     this.label = params.label;

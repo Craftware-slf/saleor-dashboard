@@ -34,6 +34,7 @@ export const AppExtensionPopupProvider = ({ children }: PropsWithChildren) => {
             src={state.src}
             appToken={state.appToken}
             appId={state.id}
+            extensionId={state.extensionId}
             params={state.params}
             dashboardVersion={APP_VERSION}
             coreVersion={shop?.version}

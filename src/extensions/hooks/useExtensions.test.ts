@@ -394,6 +394,7 @@ describe("Extensions / hooks / useExtensions", () => {
     // Assert
     expect(mockOpenApp).toHaveBeenCalledWith({
       id: "app1",
+      extensionId: "ext1",
       appToken: "token1",
       src: "https://example.com/ext1",
       label: "Extension 1",
@@ -419,6 +420,7 @@ describe("Extensions / hooks / useExtensions", () => {
     // Assert
     expect(mockOpenApp).toHaveBeenCalledWith({
       id: "app3",
+      extensionId: "ext3",
       appToken: "", // Should use empty string for null accessToken
       src: "https://example.com/ext3",
       label: "Extension 3",

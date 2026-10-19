@@ -17,6 +17,8 @@ export const useAppActions = (
     core: string;
     dashboard: string;
   },
+  /** Craftware: called when the app (re-)announces itself, before the handshake reply. */
+  onNotifyReady?: () => void,
 ) => {
   const postToExtension = usePostToExtension(frameEl, appOrigin);
   const { handle: handleNotification } = AppActionsHandler.useHandleNotificationAction();
@@ -50,6 +52,8 @@ export const useAppActions = (
        * Send handshake after app informs its ready and mounted
        */
       case "notifyReady": {
+        onNotifyReady?.();
+
         const response = handleNotifyReady(action);
 
         setHandshakeDone(true);

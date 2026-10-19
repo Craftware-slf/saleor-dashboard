@@ -9622,6 +9622,42 @@ export function useAppLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOpti
 export type AppQueryHookResult = ReturnType<typeof useAppQuery>;
 export type AppLazyQueryHookResult = ReturnType<typeof useAppLazyQuery>;
 export type AppQueryResult = Apollo.QueryResult<Types.AppQuery, Types.AppQueryVariables>;
+export const ExtensionAccessTokenDocument = gql`
+    query ExtensionAccessToken($id: ID!) {
+  appExtension(id: $id) {
+    id
+    accessToken
+  }
+}
+    `;
+
+/**
+ * __useExtensionAccessTokenQuery__
+ *
+ * To run a query within a React component, call `useExtensionAccessTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useExtensionAccessTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useExtensionAccessTokenQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useExtensionAccessTokenQuery(baseOptions: ApolloReactHooks.QueryHookOptions<Types.ExtensionAccessTokenQuery, Types.ExtensionAccessTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<Types.ExtensionAccessTokenQuery, Types.ExtensionAccessTokenQueryVariables>(ExtensionAccessTokenDocument, options);
+      }
+export function useExtensionAccessTokenLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<Types.ExtensionAccessTokenQuery, Types.ExtensionAccessTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<Types.ExtensionAccessTokenQuery, Types.ExtensionAccessTokenQueryVariables>(ExtensionAccessTokenDocument, options);
+        }
+export type ExtensionAccessTokenQueryHookResult = ReturnType<typeof useExtensionAccessTokenQuery>;
+export type ExtensionAccessTokenLazyQueryHookResult = ReturnType<typeof useExtensionAccessTokenLazyQuery>;
+export type ExtensionAccessTokenQueryResult = Apollo.QueryResult<Types.ExtensionAccessTokenQuery, Types.ExtensionAccessTokenQueryVariables>;
 export const ExtensionListDocument = gql`
     query ExtensionList($filter: AppExtensionFilterInput!) {
   appExtensions(filter: $filter, first: 100) {

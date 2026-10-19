@@ -108,6 +108,7 @@ const prepareExtensionsWithActions = ({
 
           openAppInContext({
             id: app.id,
+            extensionId: id,
             appToken: accessToken || "",
             src: url,
             label,

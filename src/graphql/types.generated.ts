@@ -11229,6 +11229,13 @@ export type AppQueryVariables = Exact<{
 
 export type AppQuery = { __typename: 'Query', app: { __typename: 'App', aboutApp: string | null, author: string | null, dataPrivacyUrl: string | null, id: string, name: string | null, created: any | null, isActive: boolean | null, type: AppTypeEnum | null, homepageUrl: string | null, appUrl: string | null, manifestUrl: string | null, configurationUrl: string | null, supportUrl: string | null, version: string | null, accessToken: string | null, permissions: Array<{ __typename: 'Permission', code: PermissionEnum, name: string }> | null, brand: { __typename: 'AppBrand', logo: { __typename: 'AppBrandLogo', default: string } } | null, privateMetadata?: Array<{ __typename: 'MetadataItem', key: string, value: string }>, metadata?: Array<{ __typename: 'MetadataItem', key: string, value: string }>, tokens?: Array<{ __typename: 'AppToken', authToken: string | null, id: string, name: string | null }> | null, webhooks?: Array<{ __typename: 'Webhook', id: string, name: string | null, isActive: boolean, app: { __typename: 'App', id: string, name: string | null } }> | null } | null };
 
+export type ExtensionAccessTokenQueryVariables = Exact<{
+  id: Scalars['ID'];
+}>;
+
+
+export type ExtensionAccessTokenQuery = { __typename: 'Query', appExtension: { __typename: 'AppExtension', id: string, accessToken: string | null } | null };
+
 export type ExtensionListQueryVariables = Exact<{
   filter: AppExtensionFilterInput;
 }>;

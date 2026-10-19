@@ -10,6 +10,7 @@ import { AppIFrame } from "./AppIFrame";
 import { useStyles } from "./styles";
 import { useAppActions } from "./useAppActions";
 import { useAppDashboardUpdates } from "./useAppDashboardUpdates";
+import { isTokenStale, useFreshExtensionToken } from "./useFreshExtensionToken";
 import { useTokenRefresh } from "./useTokenRefresh";
 import { useUpdateAppToken } from "./useUpdateAppToken";
 
@@ -17,6 +18,11 @@ interface Props {
   src: string;
   appToken: string;
   appId: string;
+  /**
+   * Craftware: the extension this frame renders. Lets a POPUP/WIDGET frame re-mint its own
+   * token (useFreshExtensionToken); APP_PAGE frames renew through `refetch` instead.
+   */
+  extensionId?: string;
   className?: string;
   params?: AppDetailsUrlQueryParams;
   refetch?: () => void;
@@ -30,8 +36,9 @@ const getOrigin = (url: string) => new URL(url).origin;
 
 export const AppFrame = ({
   src,
-  appToken,
+  appToken: initialAppToken,
   appId,
+  extensionId,
   className,
   params,
   onError,
@@ -45,6 +52,10 @@ export const AppFrame = ({
   const appOrigin = getOrigin(src);
   const flags = useAllFlags();
   const { setIframe, clearIframe } = useAppFrameReferences();
+  const { token: appToken, refresh: refreshExtensionToken } = useFreshExtensionToken(
+    initialAppToken,
+    extensionId,
+  );
   /**
    * React on messages from App
    */
@@ -57,13 +68,28 @@ export const AppFrame = ({
       core: coreVersion,
       dashboard: dashboardVersion,
     },
+    // Craftware: an app asking again is usually holding a dead token — mint a new one, which
+    // reaches it as a tokenRefresh event right after the handshake.
+    (): void => {
+      if (refreshExtensionToken && isTokenStale(appToken)) {
+        void refreshExtensionToken();
+      }
+    },
   );
 
   /**
    * Listen to Dashboard context like theme or locale and inform app about it
    */
   useAppDashboardUpdates(frameRef.current, appOrigin, handshakeDone, appId);
-  useTokenRefresh(appToken, refetch);
+  useTokenRefresh(
+    appToken,
+    refetch ??
+      (refreshExtensionToken
+        ? (): void => {
+            void refreshExtensionToken();
+          }
+        : undefined),
+  );
 
   const handleLoad = useCallback(() => {
     setIframe(frameRef.current!, true, target);
