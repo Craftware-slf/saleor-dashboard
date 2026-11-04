@@ -110,7 +110,8 @@ export const useFixedAmountGuard = (
           PromotionRuleFixedAmountPricesQueryVariables
         >({
           query: PromotionRuleFixedAmountPricesDocument,
-          fetchPolicy: "network-only",
+          // Used once, so keep it out of the normalized cache the product pages read.
+          fetchPolicy: "no-cache",
           variables: {
             channel: channelSlug,
             productIds,

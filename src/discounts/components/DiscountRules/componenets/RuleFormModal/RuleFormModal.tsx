@@ -23,7 +23,7 @@ import { getValidationSchema } from "./validationSchema";
 interface RuleFormModalProps {
   children: ReactNode;
   onClose: () => void;
-  onSubmit: (data: Rule) => void;
+  onSubmit: (data: Rule) => void | Promise<void>;
   confimButtonState: ConfirmButtonTransitionState;
   initialFormValues?: Rule | null;
 }
@@ -46,32 +46,45 @@ export const RuleFormModal = ({
     resolver: zodResolver(getValidationSchema(intl)),
   });
   // Örninn FEAT-251: refuse a fixed amount that would take a product's whole price.
-  const findWipedPrices = useFixedAmountGuard(channels);
+  const checkFixedAmount = useFixedAmountGuard(channels);
+  // The price lookup runs before the save starts, so a second click in that window must not save
+  // the rule twice.
+  const submitting = useRef(false);
   const submit = useCallback(
     async (data: Rule): Promise<void> => {
-      const wiped = await findWipedPrices(data);
-      const first = wiped[0];
-
-      if (first) {
-        methods.setError("rewardValue", {
-          type: "manual",
-          message: intl.formatMessage(messages.fixedAmountTooHigh, {
-            amount: formatMoney(
-              { amount: data.rewardValue ?? 0, currency: first.currency },
-              locale,
-            ),
-            name: first.name,
-            price: formatMoney({ amount: first.amount, currency: first.currency }, locale),
-            more: wiped.length - 1,
-          }),
-        });
-
+      if (submitting.current) {
         return;
       }
 
-      onSubmit(data);
+      submitting.current = true;
+
+      try {
+        const wiped = await checkFixedAmount(data);
+        const first = wiped[0];
+
+        if (first) {
+          methods.setError("rewardValue", {
+            type: "manual",
+            message: intl.formatMessage(messages.fixedAmountTooHigh, {
+              amount: formatMoney(
+                { amount: data.rewardValue ?? 0, currency: first.currency },
+                locale,
+              ),
+              name: first.name,
+              price: formatMoney({ amount: first.amount, currency: first.currency }, locale),
+              more: wiped.length - 1,
+            }),
+          });
+
+          return;
+        }
+
+        await onSubmit(data);
+      } finally {
+        submitting.current = false;
+      }
     },
-    [findWipedPrices, intl, locale, methods, onSubmit],
+    [checkFixedAmount, intl, locale, methods, onSubmit],
   );
   const updateOverflowState = useCallback((): void => {
     const scrollContainer = scrollContainerRef.current;
