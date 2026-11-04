@@ -126,4 +126,11 @@ export const messages = defineMessages({
     id: "C0MnAi",
     defaultMessage: "off",
   },
+  // Örninn FEAT-251
+  fixedAmountTooHigh: {
+    id: "I1EqlW",
+    defaultMessage:
+      "Invalid amount: {amount} is at least the price of {name} ({price}){more, plural, =0 {} one { and # other product} other { and # other products}}. Lower the amount or use a percentage.",
+    description: "fixed-amount catalogue rule would take a product's whole price",
+  },
 });

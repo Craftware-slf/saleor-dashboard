@@ -4,7 +4,9 @@ import {
   type ConfirmButtonTransitionState,
 } from "@dashboard/components/ConfirmButton";
 import { DashboardModal } from "@dashboard/components/Modal";
+import { formatMoney } from "@dashboard/components/Money";
 import { type Rule } from "@dashboard/discounts/models";
+import useLocale from "@dashboard/hooks/useLocale";
 import { buttonMessages } from "@dashboard/intl";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Text } from "@saleor/macaw-ui-next";
@@ -15,12 +17,13 @@ import { useIntl } from "react-intl";
 import { useDiscountRulesContext } from "../../context";
 import { messages } from "../../messages";
 import { getDefaultValue } from "./defaultFormValues";
+import { useFixedAmountGuard } from "./fixedAmountGuard";
 import { getValidationSchema } from "./validationSchema";
 
 interface RuleFormModalProps {
   children: ReactNode;
   onClose: () => void;
-  onSubmit: (data: Rule) => void;
+  onSubmit: (data: Rule) => void | Promise<void>;
   confimButtonState: ConfirmButtonTransitionState;
   initialFormValues?: Rule | null;
 }
@@ -33,7 +36,8 @@ export const RuleFormModal = ({
   onSubmit,
 }: RuleFormModalProps): JSX.Element => {
   const intl = useIntl();
-  const { discountType } = useDiscountRulesContext();
+  const { discountType, channels } = useDiscountRulesContext();
+  const { locale } = useLocale();
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const [hasOverflow, setHasOverflow] = useState(false);
   const methods = useForm<Rule>({
@@ -41,6 +45,47 @@ export const RuleFormModal = ({
     values: initialFormValues || getDefaultValue(discountType),
     resolver: zodResolver(getValidationSchema(intl)),
   });
+  // Örninn FEAT-251: refuse a fixed amount that would take a product's whole price.
+  const checkFixedAmount = useFixedAmountGuard(channels);
+  // The price lookup runs before the save starts, so a second click in that window must not save
+  // the rule twice.
+  const submitting = useRef(false);
+  const submit = useCallback(
+    async (data: Rule): Promise<void> => {
+      if (submitting.current) {
+        return;
+      }
+
+      submitting.current = true;
+
+      try {
+        const wiped = await checkFixedAmount(data);
+        const first = wiped[0];
+
+        if (first) {
+          methods.setError("rewardValue", {
+            type: "manual",
+            message: intl.formatMessage(messages.fixedAmountTooHigh, {
+              amount: formatMoney(
+                { amount: data.rewardValue ?? 0, currency: first.currency },
+                locale,
+              ),
+              name: first.name,
+              price: formatMoney({ amount: first.amount, currency: first.currency }, locale),
+              more: wiped.length - 1,
+            }),
+          });
+
+          return;
+        }
+
+        await onSubmit(data);
+      } finally {
+        submitting.current = false;
+      }
+    },
+    [checkFixedAmount, intl, locale, methods, onSubmit],
+  );
   const updateOverflowState = useCallback((): void => {
     const scrollContainer = scrollContainerRef.current;
 
@@ -100,7 +145,7 @@ export const RuleFormModal = ({
         </Box>
         <FormProvider {...methods}>
           <form
-            onSubmit={methods.handleSubmit(onSubmit)}
+            onSubmit={methods.handleSubmit(submit)}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -134,7 +179,7 @@ export const RuleFormModal = ({
                 <ConfirmButton
                   data-test-id="saveRuleButton"
                   transitionState={confimButtonState}
-                  onClick={methods.handleSubmit(onSubmit)}
+                  onClick={methods.handleSubmit(submit)}
                 >
                   {intl.formatMessage(buttonMessages.save)}
                 </ConfirmButton>

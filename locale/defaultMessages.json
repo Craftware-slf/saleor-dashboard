@@ -3754,6 +3754,10 @@
     "context": "alert message",
     "string": "one of"
   },
+  "I1EqlW": {
+    "context": "fixed-amount catalogue rule would take a product's whole price",
+    "string": "Invalid amount: {amount} is at least the price of {name} ({price}){more, plural, =0 {} one { and # other product} other { and # other products}}. Lower the amount or use a percentage."
+  },
   "I1Mz7h": {
     "string": "Manage Collection Channel Availability"
   },
