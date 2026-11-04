@@ -8658,6 +8658,88 @@ export function usePromotionDetailsQueryLazyQuery(baseOptions?: ApolloReactHooks
 export type PromotionDetailsQueryQueryHookResult = ReturnType<typeof usePromotionDetailsQueryQuery>;
 export type PromotionDetailsQueryLazyQueryHookResult = ReturnType<typeof usePromotionDetailsQueryLazyQuery>;
 export type PromotionDetailsQueryQueryResult = Apollo.QueryResult<Types.PromotionDetailsQueryQuery, Types.PromotionDetailsQueryQueryVariables>;
+export const PromotionRuleFixedAmountPricesDocument = gql`
+    query PromotionRuleFixedAmountPrices($channel: String!, $productIds: [ID!]!, $variantIds: [ID!]!, $hasProducts: Boolean!, $hasVariants: Boolean!) {
+  products(first: 100, channel: $channel, where: {ids: $productIds}) @include(if: $hasProducts) {
+    edges {
+      node {
+        id
+        name
+        variants {
+          id
+          name
+          channelListings {
+            id
+            channel {
+              id
+              slug
+            }
+            price {
+              amount
+              currency
+            }
+          }
+        }
+      }
+    }
+  }
+  productVariants(first: 100, channel: $channel, ids: $variantIds) @include(if: $hasVariants) {
+    edges {
+      node {
+        id
+        name
+        product {
+          id
+          name
+        }
+        channelListings {
+          id
+          channel {
+            id
+            slug
+          }
+          price {
+            amount
+            currency
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __usePromotionRuleFixedAmountPricesQuery__
+ *
+ * To run a query within a React component, call `usePromotionRuleFixedAmountPricesQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePromotionRuleFixedAmountPricesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePromotionRuleFixedAmountPricesQuery({
+ *   variables: {
+ *      channel: // value for 'channel'
+ *      productIds: // value for 'productIds'
+ *      variantIds: // value for 'variantIds'
+ *      hasProducts: // value for 'hasProducts'
+ *      hasVariants: // value for 'hasVariants'
+ *   },
+ * });
+ */
+export function usePromotionRuleFixedAmountPricesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<Types.PromotionRuleFixedAmountPricesQuery, Types.PromotionRuleFixedAmountPricesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<Types.PromotionRuleFixedAmountPricesQuery, Types.PromotionRuleFixedAmountPricesQueryVariables>(PromotionRuleFixedAmountPricesDocument, options);
+      }
+export function usePromotionRuleFixedAmountPricesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<Types.PromotionRuleFixedAmountPricesQuery, Types.PromotionRuleFixedAmountPricesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<Types.PromotionRuleFixedAmountPricesQuery, Types.PromotionRuleFixedAmountPricesQueryVariables>(PromotionRuleFixedAmountPricesDocument, options);
+        }
+export type PromotionRuleFixedAmountPricesQueryHookResult = ReturnType<typeof usePromotionRuleFixedAmountPricesQuery>;
+export type PromotionRuleFixedAmountPricesLazyQueryHookResult = ReturnType<typeof usePromotionRuleFixedAmountPricesLazyQuery>;
+export type PromotionRuleFixedAmountPricesQueryResult = Apollo.QueryResult<Types.PromotionRuleFixedAmountPricesQuery, Types.PromotionRuleFixedAmountPricesQueryVariables>;
 export const AppFailedPendingWebhooksDocument = gql`
     query AppFailedPendingWebhooks($canFetchAppEvents: Boolean!) {
   apps(first: 50, filter: {type: THIRDPARTY}) {

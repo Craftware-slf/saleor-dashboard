@@ -11048,6 +11048,17 @@ export type PromotionDetailsQueryQueryVariables = Exact<{
 
 export type PromotionDetailsQueryQuery = { __typename: 'Query', promotion: { __typename: 'Promotion', id: string, name: string, description: unknown | null, startDate: any, endDate: any | null, type: PromotionTypeEnum | null, rules: Array<{ __typename: 'PromotionRule', id: string, name: string | null, description: unknown | null, giftIds: Array<string> | null, rewardType: RewardTypeEnum | null, rewardValueType: RewardValueTypeEnum | null, rewardValue: any | null, cataloguePredicate: unknown | null, orderPredicate: unknown | null, channels: Array<{ __typename: 'Channel', id: string, isActive: boolean, name: string, slug: string, currencyCode: string, defaultCountry: { __typename: 'CountryDisplay', code: string, country: string } }> | null }> | null } | null };
 
+export type PromotionRuleFixedAmountPricesQueryVariables = Exact<{
+  channel: Scalars['String'];
+  productIds: Array<Scalars['ID']> | Scalars['ID'];
+  variantIds: Array<Scalars['ID']> | Scalars['ID'];
+  hasProducts: Scalars['Boolean'];
+  hasVariants: Scalars['Boolean'];
+}>;
+
+
+export type PromotionRuleFixedAmountPricesQuery = { __typename: 'Query', products?: { __typename: 'ProductCountableConnection', edges: Array<{ __typename: 'ProductCountableEdge', node: { __typename: 'Product', id: string, name: string, variants: Array<{ __typename: 'ProductVariant', id: string, name: string, channelListings: Array<{ __typename: 'ProductVariantChannelListing', id: string, channel: { __typename: 'Channel', id: string, slug: string }, price: { __typename: 'Money', amount: number, currency: string } | null }> | null }> | null } }> } | null, productVariants?: { __typename: 'ProductVariantCountableConnection', edges: Array<{ __typename: 'ProductVariantCountableEdge', node: { __typename: 'ProductVariant', id: string, name: string, product: { __typename: 'Product', id: string, name: string }, channelListings: Array<{ __typename: 'ProductVariantChannelListing', id: string, channel: { __typename: 'Channel', id: string, slug: string }, price: { __typename: 'Money', amount: number, currency: string } | null }> | null } }> } | null };
+
 export type AppFailedPendingWebhooksQueryVariables = Exact<{
   canFetchAppEvents: Scalars['Boolean'];
 }>;

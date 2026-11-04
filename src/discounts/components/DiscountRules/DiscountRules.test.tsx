@@ -1,6 +1,6 @@
 import { MockedProvider } from "@apollo/client/testing";
 import { mockResizeObserver } from "@dashboard/components/Datagrid/testUtils";
-import { PromotionTypeEnum } from "@dashboard/graphql";
+import { PromotionRuleFixedAmountPricesDocument, PromotionTypeEnum } from "@dashboard/graphql";
 import { ThemeProvider } from "@saleor/macaw-ui-next";
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -44,6 +44,52 @@ jest.mock("./hooks/useGraphQLPlayground", () => ({
 }));
 jest.setTimeout(30000); // Timeout was increased because of error throw in update test when run all tests
 
+// Örninn FEAT-251: the price lookup a fixed-amount rule makes on save (Apple Juice at 100).
+const fixedAmountPricesMock = {
+  request: {
+    query: PromotionRuleFixedAmountPricesDocument,
+    variables: {
+      channel: "test",
+      productIds: ["UHJvZHVjdDo3Mg=="],
+      variantIds: [],
+      hasProducts: true,
+      hasVariants: false,
+    },
+  },
+  result: {
+    data: {
+      products: {
+        __typename: "ProductCountableConnection",
+        edges: [
+          {
+            __typename: "ProductCountableEdge",
+            node: {
+              __typename: "Product",
+              id: "UHJvZHVjdDo3Mg==",
+              name: "Apple Juice",
+              variants: [
+                {
+                  __typename: "ProductVariant",
+                  id: "UHJvZHVjdFZhcmlhbnQ6MjAy",
+                  name: "1l",
+                  channelListings: [
+                    {
+                      __typename: "ProductVariantChannelListing",
+                      id: "PVCL:1",
+                      channel: { __typename: "Channel", id: "Q2hhbm5lcDoy", slug: "test" },
+                      price: { __typename: "Money", amount: 100, currency: "USD" },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
 const Wrapper = ({ children }: { children: ReactNode }): JSX.Element => {
   return (
     <MemoryRouter>
@@ -55,6 +101,7 @@ const Wrapper = ({ children }: { children: ReactNode }): JSX.Element => {
           searchProductsMock,
           searchVariantsMock,
           variantsWithProductDataMock,
+          fixedAmountPricesMock,
         ]}
       >
         <ThemeProvider>{children}</ThemeProvider>
@@ -209,6 +256,7 @@ describe("DiscountRules", () => {
     await userEvent.type(screen.getByRole("input", { name: "Reward value" }), "22");
     await userEvent.click(screen.getByRole("button", { name: /save/i }));
     // Assert
+    await waitFor(() => expect(onRuleAdd).toHaveBeenCalled());
     expect(onRuleAdd).toHaveBeenCalledWith(
       {
         channel: {
@@ -278,6 +326,7 @@ describe("DiscountRules", () => {
     await userEvent.type(screen.getByRole("input", { name: "Reward value" }), "10");
     await userEvent.click(screen.getByRole("button", { name: /save/i }));
     // Assert
+    await waitFor(() => expect(onRuleAdd).toHaveBeenCalled());
     expect(onRuleAdd).toHaveBeenCalledWith(
       expect.objectContaining({
         conditions: [
@@ -373,6 +422,7 @@ describe("DiscountRules", () => {
     await userEvent.type(screen.getByRole("input", { name: "Reward value" }), "22");
     await userEvent.click(screen.getByRole("button", { name: /save/i }));
     // Assert
+    await waitFor(() => expect(onRuleAdd).toHaveBeenCalled());
     expect(onRuleAdd).toHaveBeenCalledWith(
       {
         channel: {
@@ -396,6 +446,50 @@ describe("DiscountRules", () => {
       },
       null,
     );
+  });
+  it("refuses a fixed amount that takes a product's whole price (Örninn FEAT-251)", async () => {
+    // Arrange
+    const onRuleAdd = jest.fn();
+
+    render(
+      <DiscountRules
+        promotionId={null}
+        discountType={PromotionTypeEnum.CATALOGUE}
+        channels={channels}
+        rules={[]}
+        errors={[]}
+        onRuleSubmit={onRuleAdd}
+        onRuleDelete={jest.fn()}
+        disabled={false}
+        deleteButtonState="default"
+        getRuleConfirmButtonState={jest.fn(() => "default")}
+      />,
+      { wrapper: Wrapper },
+    );
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /add rule/i })).toBeInTheDocument();
+    });
+    // Act
+    await act(async () => {
+      await userEvent.click(screen.getByRole("button", { name: /add rule/i }));
+    });
+    await userEvent.type(screen.getByRole("input", { name: "Name" }), "Too much");
+    await userEvent.click(screen.getByTestId("channel-dropdown"));
+    expect(await screen.findByText(/test/i)).toBeInTheDocument();
+    await act(async () => {
+      await userEvent.click(screen.getAllByTestId("select-option")[0]);
+    });
+    await userEvent.click(screen.getByRole("button", { name: /add condition/i }));
+    await userEvent.click(await screen.findByTestId(/condition-name-0/i));
+    await userEvent.click(screen.getAllByTestId("select-option")[0]);
+    await userEvent.click(await screen.findByTestId(/condition-value-0/i));
+    await userEvent.click(await screen.getAllByTestId("select-option")[0]);
+    await userEvent.type(screen.getByRole("input", { name: "Reward value" }), "150");
+    await userEvent.click(screen.getByRole("button", { name: /save/i }));
+    // Assert
+    // The test intl provider returns the raw message, so match its start.
+    expect(await screen.findByText(/Invalid amount/)).toBeInTheDocument();
+    expect(onRuleAdd).not.toHaveBeenCalled();
   });
   it("should allow to to handle update catalog rule", async () => {
     // Arrange
@@ -458,6 +552,7 @@ describe("DiscountRules", () => {
     await userEvent.type(discountValueField, "122");
     await userEvent.click(screen.getByRole("button", { name: /save/i }));
     // Assert
+    await waitFor(() => expect(onRuleEdit).toHaveBeenCalled());
     expect(onRuleEdit).toHaveBeenCalledWith(
       {
         id: "cat-1",
@@ -560,6 +655,7 @@ describe("DiscountRules", () => {
     await userEvent.click(screen.getAllByTestId("select-option")[3]);
     await userEvent.click(screen.getByRole("button", { name: /save/i }));
     // Assert
+    await waitFor(() => expect(onRuleEdit).toHaveBeenCalled());
     expect(onRuleEdit).toHaveBeenCalledWith(
       {
         id: "order-1",

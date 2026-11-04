@@ -244,3 +244,64 @@ export const PromotionDetailsQuery = /* GraphQL */ `
     }
   }
 `;
+
+// Örninn FEAT-251: the prices a fixed-amount catalogue rule would apply to, so the rule form can
+// refuse an amount that would take a product's whole price (Saleor floors it at 0 and sells it
+// free, or for a bundle the storefront drops the discount).
+export const promotionRuleFixedAmountPrices = gql`
+  query PromotionRuleFixedAmountPrices(
+    $channel: String!
+    $productIds: [ID!]!
+    $variantIds: [ID!]!
+    $hasProducts: Boolean!
+    $hasVariants: Boolean!
+  ) {
+    products(first: 100, channel: $channel, where: { ids: $productIds })
+      @include(if: $hasProducts) {
+      edges {
+        node {
+          id
+          name
+          variants {
+            id
+            name
+            channelListings {
+              id
+              channel {
+                id
+                slug
+              }
+              price {
+                amount
+                currency
+              }
+            }
+          }
+        }
+      }
+    }
+    productVariants(first: 100, channel: $channel, ids: $variantIds) @include(if: $hasVariants) {
+      edges {
+        node {
+          id
+          name
+          product {
+            id
+            name
+          }
+          channelListings {
+            id
+            channel {
+              id
+              slug
+            }
+            price {
+              amount
+              currency
+            }
+          }
+        }
+      }
+    }
+  }
+`;
