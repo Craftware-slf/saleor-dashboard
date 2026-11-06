@@ -147,6 +147,10 @@
     "context": "page header",
     "string": "Grant refund"
   },
+  "+pEhUg": {
+    "context": "conditional discount banner text input",
+    "string": "Icelandic"
+  },
   "+pGERa": {
     "string": "Provide details manually"
   },
@@ -222,6 +226,10 @@
     "context": "product export to csv file, header",
     "string": "Information exported"
   },
+  "/6XZVW": {
+    "context": "conditional discount validation",
+    "string": "Free is only available with Buy N, get M"
+  },
   "/6uK4C": {
     "context": "button",
     "string": "Assign collections"
@@ -256,6 +264,10 @@
   "/ILyIf": {
     "context": "tax classes menu header",
     "string": "Tax class label"
+  },
+  "/LIM2s": {
+    "context": "conditional discount reward kind",
+    "string": "Percentage"
   },
   "/Mcvt4": {
     "context": "section header",
@@ -468,6 +480,10 @@
     "context": "add country dialog header",
     "string": "Choose country you want to add"
   },
+  "0X6qUG": {
+    "context": "conditional discount reward kind select",
+    "string": "Discount"
+  },
   "0XHXTZ": {
     "context": "column header",
     "string": "Title"
@@ -483,6 +499,10 @@
   "0a0fLZ": {
     "context": "countries list menu label when no countries are assigned",
     "string": "There are no countries assigned"
+  },
+  "0b3ly7": {
+    "context": "conditional discount validation",
+    "string": "Enter a whole number of krónur above 0"
   },
   "0dCGBW": {
     "context": "button",
@@ -532,6 +552,10 @@
   },
   "0nLsyM": {
     "string": "No product types found"
+  },
+  "0odMGx": {
+    "context": "conditional discount banner text input",
+    "string": "English"
   },
   "0oo+BT": {
     "context": "section header",
@@ -628,6 +652,10 @@
   "1H0tqc": {
     "context": "Scheduled date for availability",
     "string": "scheduled {date}"
+  },
+  "1I5n03": {
+    "context": "conditional discount banner hint",
+    "string": "Shown on the product page and the cart line. Leave empty to use the automatic text shown in grey."
   },
   "1J/bhZ": {
     "context": "expiry date section header",
@@ -948,6 +976,10 @@
   "3Gkj+d": {
     "context": "button to reset cut-off date to saved value",
     "string": "Reset to saved value"
+  },
+  "3Oq+gO": {
+    "context": "conditional discount reward kind",
+    "string": "Free"
   },
   "3PVGWj": {
     "string": "Filter preset"
@@ -1466,6 +1498,10 @@
   "6D+yYX": {
     "string": "Payment status"
   },
+  "6D1r0W": {
+    "context": "conditional discount: reward only the first group",
+    "string": "Once per cart only"
+  },
   "6FLezz": {
     "string": "Are you sure you want to delete this discount?"
   },
@@ -1711,6 +1747,10 @@
     "context": "Health check subtitle when product cannot be purchased",
     "string": "Check the issues above to fix configuration"
   },
+  "7SR0yF": {
+    "context": "conditional discount metadata write failed",
+    "string": "Could not save the conditional discount rule"
+  },
   "7U/NPm": {
     "context": "tax class rates list label when no country is selected",
     "string": "Add country to access tax classes"
@@ -1938,6 +1978,14 @@
   "8maISA": {
     "context": "deactivate customer dialog, header",
     "string": "Deactivate customer"
+  },
+  "8mnbRW": {
+    "context": "conditional discount items hint",
+    "string": "A product counts when it matches any of the selected products, categories or collections."
+  },
+  "8nbrAR": {
+    "context": "conditional discount banner preview",
+    "string": "Preview (is)"
   },
   "8oIbMI": {
     "string": "Reached limit for this plan"
@@ -2506,6 +2554,10 @@
     "context": "no webhooks message",
     "string": "No webhooks found"
   },
+  "Bl+J5P": {
+    "context": "conditional discount: variant ids preserved from stored rule",
+    "string": "{count, plural, one {# variant} other {# variants}} selected outside the dashboard will be kept."
+  },
   "Bl6896": {
     "string": "Refund amount"
   },
@@ -2767,6 +2819,10 @@
   },
   "D3idYv": {
     "string": "Settings"
+  },
+  "D3xIKf": {
+    "context": "conditional discount tier list input",
+    "string": "Quantities"
   },
   "D4CsYK": {
     "context": "status filter label",
@@ -3098,6 +3154,10 @@
   },
   "F2kF9e": {
     "string": "You must select transaction that you want to refund"
+  },
+  "F3TXyu": {
+    "context": "card subtitle",
+    "string": "Applied in the cart by the storefront when the condition is met. Saleor rules are not used for this type."
   },
   "F3Upht": {
     "string": "Product type deleted"
@@ -3456,6 +3516,10 @@
   "Gg4+K7": {
     "string": "No Products"
   },
+  "GgW/NI": {
+    "context": "conditional discount reward kind",
+    "string": "Fixed amount (kr. per unit)"
+  },
   "GgvbdW": {
     "string": "Model types"
   },
@@ -3493,6 +3557,10 @@
   "Gkip05": {
     "context": "button",
     "string": "Unassign"
+  },
+  "GpFCu+": {
+    "context": "conditional discount collections picker",
+    "string": "Collections"
   },
   "GpqEl5": {
     "context": "shipping method description",
@@ -3577,6 +3645,10 @@
     "context": "attribute values list: name column header",
     "string": "Default Store View"
   },
+  "H6AuyB": {
+    "context": "conditional discount get-M input",
+    "string": "Get (M)"
+  },
   "H6SfJd": {
     "context": "draft created from replace event title",
     "string": "Draft was reissued from order"
@@ -3602,6 +3674,10 @@
   "HFo3Qe": {
     "context": "successfully created gift card alert title",
     "string": "Gift card created"
+  },
+  "HHrJ5a": {
+    "context": "conditional discount quantity rule option",
+    "string": "Quantity list (e.g. 8, 12, 16)"
   },
   "HLqWXA": {
     "context": "voucher value requirement",
@@ -3666,6 +3742,10 @@
   },
   "HYK65C": {
     "string": "Order rule"
+  },
+  "HZBS7E": {
+    "context": "conditional discount validation",
+    "string": "Enter a percentage above 0 and at most 100"
   },
   "Hc58JL": {
     "context": "card title",
@@ -3822,6 +3902,10 @@
     "context": "value input helper text",
     "string": "Invalid value"
   },
+  "INKNve": {
+    "context": "conditional discount channels field",
+    "string": "Channels"
+  },
   "INKsSL": {
     "context": "Transaction event status - success",
     "string": "Success"
@@ -3968,6 +4052,14 @@
     "context": "Number of shipping zones configured",
     "string": "{count, plural, one {# shipping zone} other {# shipping zones}}"
   },
+  "JBXjU6": {
+    "context": "conditional discount same-product switch on",
+    "string": "The units must all be the same product, e.g. 4 of the same ball."
+  },
+  "JCmqnB": {
+    "context": "conditional discount same-product switch off",
+    "string": "Any mix of the selected items counts."
+  },
   "JDvxO6": {
     "context": "search gift card placeholder",
     "string": "Search Gift Cards (e.g. by code, email, user name)"
@@ -3998,6 +4090,10 @@
   "JGm7E5": {
     "context": "option",
     "string": "Export stock for all warehouses"
+  },
+  "JHyduK": {
+    "context": "conditional discount every-N input",
+    "string": "N (units per group)"
   },
   "JI2Xwp": {
     "context": "dialog title",
@@ -4127,6 +4223,10 @@
     "context": "product type is digital or physical",
     "string": "Type"
   },
+  "JvR+YF": {
+    "context": "conditional discount validation",
+    "string": "Enter a whole number of 1 or more"
+  },
   "JwICkk": {
     "context": "warning dialog description when SKU and stock are not set",
     "string": "You haven't set a SKU prefix or initial stock. The variants will be created without these values. You can add them later by editing individual variants."
@@ -4156,6 +4256,10 @@
   "K1ycaD": {
     "context": "input label",
     "string": "Refund value"
+  },
+  "K31+Hx": {
+    "context": "conditional discount banner section title",
+    "string": "Banner text"
   },
   "K58C4r": {
     "string": "We are working on replacing plugins with apps. Use apps unless no other option. {learnMore}"
@@ -4280,6 +4384,10 @@
   },
   "Kxiige": {
     "string": "Generated Token"
+  },
+  "Kz/56/": {
+    "context": "conditional discount read-only notice",
+    "string": "Its stored rule is not valid JSON. It is shown read-only and saving keeps it unchanged."
   },
   "KzgcFV": {
     "context": "category attribute entity type",
@@ -4696,6 +4804,10 @@
     "context": "dialog header",
     "string": "Unassign attribute from model type"
   },
+  "N9f7ih": {
+    "context": "conditional discount validation",
+    "string": "Enter whole numbers of 1 or more, separated by commas"
+  },
   "NBP8uu": {
     "context": "page header",
     "string": "New Product"
@@ -4928,6 +5040,10 @@
   "OKGd/k": {
     "context": "order history message",
     "string": "Order was created from draft"
+  },
+  "OKwzXZ": {
+    "context": "conditional discount categories picker",
+    "string": "Categories"
   },
   "OPtrMg": {
     "context": "header",
@@ -5282,6 +5398,10 @@
   },
   "Q8Qw5B": {
     "string": "Description"
+  },
+  "Q8tfS+": {
+    "context": "conditional discount read-only notice title",
+    "string": "This rule can only be edited outside the dashboard"
   },
   "Q8wHwJ": {
     "string": "Deleted collection"
@@ -5733,6 +5853,10 @@
   "SUbxSK": {
     "context": "product weight",
     "string": "Weight"
+  },
+  "SUmaj7": {
+    "context": "conditional discount quantity rule select",
+    "string": "Quantity rule"
   },
   "SV0FRm": {
     "context": "attribute is filterable in storefront",
@@ -6316,6 +6440,10 @@
     "context": "Dialog warning text",
     "string": "Are you sure you want to {actionType} this transaction?"
   },
+  "VyrczI": {
+    "context": "conditional discount read-only notice",
+    "string": "It discounts every unit once the condition is met, which this form does not offer. It is shown read-only and saving keeps it unchanged."
+  },
   "VyzsWZ": {
     "string": "Default Billing Address"
   },
@@ -6867,6 +6995,10 @@
     "context": "dialog title",
     "string": "Delete collections"
   },
+  "YlXzCC": {
+    "context": "conditional discount validation",
+    "string": "Pick at least one product, category or collection"
+  },
   "Ynjq+C": {
     "string": "Fully charged"
   },
@@ -7054,6 +7186,10 @@
     "context": "note input subtitle",
     "string": "Why was this gift card issued. This note will not be shown to the customer. Note will be stored in gift card history"
   },
+  "Zva3Yw": {
+    "context": "conditional discount tier list hint",
+    "string": "Comma-separated. The discount covers the biggest quantity the cart reaches."
+  },
   "Zvo5iu": {
     "string": "API reference"
   },
@@ -7144,6 +7280,10 @@
   "aEc9Ar": {
     "context": "gift card history message",
     "string": "Gift card balance was reset by {resetBy}"
+  },
+  "aF6rhn": {
+    "context": "discount type: a cart condition evaluated by the storefront",
+    "string": "Conditional"
   },
   "aFVFeH": {
     "context": "submit button",
@@ -7842,6 +7982,10 @@
     "context": "error message",
     "string": "Cannot request an invoice for draft order"
   },
+  "dxNhg2": {
+    "context": "conditional discount buy-N input",
+    "string": "Buy (N)"
+  },
   "e+L+q3": {
     "string": "Remember this will also delete all products assigned to this category."
   },
@@ -7903,6 +8047,10 @@
   "eCA3n1": {
     "context": "Health check label for isAvailableForPurchase field",
     "string": "Can add to cart"
+  },
+  "eFIX88": {
+    "context": "conditional discount buy-N-get-M repeat checkbox",
+    "string": "Repeat for every full group"
   },
   "eIGXwJ": {
     "context": "Alert text",
@@ -8904,6 +9052,10 @@
   "k4brJy": {
     "string": "SKU"
   },
+  "k4c1F2": {
+    "context": "conditional discount validation",
+    "string": "Pick at least one channel"
+  },
   "k62BKw": {
     "context": "select label",
     "string": "Unset"
@@ -8983,6 +9135,10 @@
   "kJYa8Y": {
     "context": "grant refund, refund card calculated refund value",
     "string": "Selected refund value:"
+  },
+  "kKXgtm": {
+    "context": "conditional discount banner preview placeholder",
+    "string": "Complete the form to see the banner."
   },
   "kMziE/": {
     "string": "PSP Reference"
@@ -9078,6 +9234,10 @@
   "kkFOHD": {
     "context": "gift card history message",
     "string": "Gift card was refunded in an order"
+  },
+  "kmLzLR": {
+    "context": "conditional discount read-only notice",
+    "string": "Its reward goes to other products (cross-sell), which this form does not offer. It is shown read-only and saving keeps it unchanged."
   },
   "kn7jjd": {
     "context": "section header",
@@ -9769,6 +9929,10 @@
     "context": "order header date, older than yesterday",
     "string": "Created {date}"
   },
+  "oX0a5d": {
+    "context": "conditional discount quantity rule option",
+    "string": "Every N units"
+  },
   "oX2TAb": {
     "string": "Select gifts"
   },
@@ -9846,6 +10010,10 @@
   "p4X/0H": {
     "context": "button, assign variants to sale and save",
     "string": "Assign and save"
+  },
+  "p4nW6A": {
+    "context": "card title",
+    "string": "Conditional discount"
   },
   "p4zuQp": {
     "context": "product no longer exists error title",
@@ -9971,6 +10139,10 @@
     "context": "order status",
     "string": "Fulfilled"
   },
+  "pmUT9L": {
+    "context": "conditional discount items section",
+    "string": "Applies to"
+  },
   "ppLwx3": {
     "context": "number of categories",
     "string": "Categories ({quantity})"
@@ -10081,6 +10253,10 @@
   "qJedl0": {
     "context": "product label",
     "string": "Published"
+  },
+  "qK5kO/": {
+    "context": "conditional discount products picker",
+    "string": "Products"
   },
   "qKiqXs": {
     "context": "Date suffix for toggle controls",
@@ -10469,6 +10645,10 @@
   "sE7fI/": {
     "context": "allow legacy gift card use label",
     "string": "Allow legacy gift card use"
+  },
+  "sEmh/T": {
+    "context": "conditional discount reward value input",
+    "string": "Value"
   },
   "sFynTT": {
     "context": "grant refund, refund card title",
@@ -11445,6 +11625,10 @@
   "wn3di2": {
     "string": "This password is too commonly used"
   },
+  "wnYCiq": {
+    "context": "marks an optional section",
+    "string": "(optional)"
+  },
   "wo7tA9": {
     "context": "automatic completion cut-off date checkbox label",
     "string": "Custom cut-off date"
@@ -11547,6 +11731,10 @@
   },
   "xRkj2h": {
     "string": "Are you sure you want to delete {categoryName}?"
+  },
+  "xTFSAU": {
+    "context": "conditional discount same-product switch",
+    "string": "Same product only"
   },
   "xTyg+p": {
     "string": "No options to select"
@@ -11673,6 +11861,10 @@
   "yDkmX7": {
     "context": "dialog content",
     "string": "{counter,plural,one{Are you sure you want to delete this product?} other{Are you sure you want to delete {displayQuantity} products?}}"
+  },
+  "yH/8bV": {
+    "context": "conditional discount quantity rule option",
+    "string": "Buy N, get M"
   },
   "yH56V+": {
     "string": "Ooops!..."

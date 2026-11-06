@@ -704,6 +704,7 @@ export const discount: PromotionDetailsFragment = {
   startDate: "2019-01-03",
   endDate: null,
   type: PromotionTypeEnum.CATALOGUE,
+  metadata: [],
   rules: [
     {
       __typename: "PromotionRule",
@@ -743,6 +744,7 @@ export const orderDiscount: PromotionDetailsFragment = {
   startDate: "2019-01-03",
   endDate: null,
   type: PromotionTypeEnum.ORDER,
+  metadata: [],
   rules: [
     {
       __typename: "PromotionRule",

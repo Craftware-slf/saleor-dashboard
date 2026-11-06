@@ -1,6 +1,8 @@
 import { DashboardCard } from "@dashboard/components/Card";
 import RichTextEditor from "@dashboard/components/RichTextEditor";
 import { RichTextEditorLoading } from "@dashboard/components/RichTextEditor/RichTextEditorLoading";
+import { CONDITIONAL_DISCOUNT_TYPE } from "@dashboard/discounts/conditional/form";
+import { conditionalMessages } from "@dashboard/discounts/conditional/messages";
 import { type DiscoutFormData } from "@dashboard/discounts/types";
 import { PromotionTypeEnum } from "@dashboard/graphql";
 import { commonMessages } from "@dashboard/intl";
@@ -49,6 +51,10 @@ export const DiscountGeneralInfo = ({
           id: "XPruqs",
         }),
         value: PromotionTypeEnum.ORDER,
+      },
+      {
+        label: intl.formatMessage(conditionalMessages.typeLabel),
+        value: CONDITIONAL_DISCOUNT_TYPE,
       },
     ],
     [intl],

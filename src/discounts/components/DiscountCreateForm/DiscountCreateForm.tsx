@@ -1,6 +1,7 @@
+import { CONDITIONAL_DISCOUNT_TYPE } from "@dashboard/discounts/conditional/form";
 import { type Rule } from "@dashboard/discounts/models";
 import { type DiscoutFormData } from "@dashboard/discounts/types";
-import { type PromotionTypeEnum } from "@dashboard/graphql";
+import { PromotionTypeEnum } from "@dashboard/graphql";
 import { RichTextContext } from "@dashboard/utils/richText/context";
 import useRichText from "@dashboard/utils/richText/useRichText";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +16,8 @@ import { getValidationSchema } from "./validationSchema";
 interface CreateFormRenderProps {
   rules: Rule[];
   discountType: PromotionTypeEnum;
+  /** The UI-only "Conditional" type is picked: show its card instead of Rules. */
+  isConditional: boolean;
   onDeleteRule: (ruleDeleteIndex: number) => void;
   onRuleSubmit: (data: Rule, ruleEditIndex: number | null) => void;
   submitHandler: () => void;
@@ -32,7 +35,10 @@ export const DiscountCreateForm = ({ children, onSubmit }: DiscountCreateFormPro
     values: initialFormValues,
     resolver: zodResolver(getValidationSchema(intl)),
   });
-  const discountType = methods.watch("type");
+  const formType = methods.watch("type");
+  const isConditional = formType === CONDITIONAL_DISCOUNT_TYPE;
+  // A conditional discount is saved as an ORDER promotion with no rules.
+  const discountType = isConditional ? PromotionTypeEnum.ORDER : formType;
   const richText = useRichText({
     initial: "",
     loading: false,
@@ -42,7 +48,7 @@ export const DiscountCreateForm = ({ children, onSubmit }: DiscountCreateFormPro
   const handleSubmit: SubmitHandler<DiscoutFormData> = data => {
     onSubmit({
       ...data,
-      rules,
+      rules: isConditional ? [] : rules,
     });
   };
   const submitHandlerWithValidation = methods.handleSubmit(handleSubmit);
@@ -55,6 +61,7 @@ export const DiscountCreateForm = ({ children, onSubmit }: DiscountCreateFormPro
             onDeleteRule,
             onRuleSubmit,
             discountType,
+            isConditional,
             submitHandler: submitHandlerWithValidation,
             rules,
           })}

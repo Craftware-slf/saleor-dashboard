@@ -18,6 +18,7 @@ import { getFormErrors } from "@dashboard/utils/errors";
 import { type CommonError, getCommonFormFieldErrorMessage } from "@dashboard/utils/errors/common";
 import { useIntl } from "react-intl";
 
+import { ConditionalDiscountCard } from "../ConditionalDiscountCard";
 import { DiscountDatesWithController } from "../DiscountDates";
 import { DiscountDetailsForm } from "../DiscountDetailsForm";
 import { DiscountGeneralInfo } from "../DiscountGeneralInfo";
@@ -78,7 +79,15 @@ export const DiscountDetailsPage = ({
       onRuleDeleteSubmit={onRuleDeleteSubmit}
       onRuleUpdateSubmit={onRuleUpdateSubmit}
     >
-      {({ rulesErrors, rules, discountType, onDeleteRule, onRuleSubmit, onSubmit }) => (
+      {({
+        rulesErrors,
+        rules,
+        discountType,
+        isConditional,
+        onDeleteRule,
+        onRuleSubmit,
+        onSubmit,
+      }) => (
         <DetailPageLayout testId="discount-form">
           <TopNav href={backLinkHref} title={<DiscountDetailsTitle data={data} />}>
             {extensionMenuItems.length > 0 && (
@@ -95,20 +104,24 @@ export const DiscountDetailsPage = ({
 
             <CardSpacer />
 
-            <DiscountRules
-              promotionId={data?.id ?? null}
-              discountType={discountType}
-              errors={rulesErrors}
-              rules={rules}
-              getRuleConfirmButtonState={ruleEditIndex =>
-                ruleEditIndex !== null ? ruleUpdateButtonState : ruleCreateButtonState
-              }
-              deleteButtonState={ruleDeleteButtonState}
-              onRuleDelete={onDeleteRule}
-              onRuleSubmit={onRuleSubmit}
-              channels={channels}
-              disabled={disabled}
-            />
+            {isConditional ? (
+              <ConditionalDiscountCard channels={channels} disabled={disabled} />
+            ) : (
+              <DiscountRules
+                promotionId={data?.id ?? null}
+                discountType={discountType}
+                errors={rulesErrors}
+                rules={rules}
+                getRuleConfirmButtonState={ruleEditIndex =>
+                  ruleEditIndex !== null ? ruleUpdateButtonState : ruleCreateButtonState
+                }
+                deleteButtonState={ruleDeleteButtonState}
+                onRuleDelete={onDeleteRule}
+                onRuleSubmit={onRuleSubmit}
+                channels={channels}
+                disabled={disabled}
+              />
+            )}
           </DetailPageLayout.Content>
 
           <DetailPageLayout.RightSidebar>

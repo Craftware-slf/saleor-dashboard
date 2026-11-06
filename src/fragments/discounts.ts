@@ -307,6 +307,11 @@ export const promotionDetailsFragments = gql`
     description
     startDate
     endDate
+    # Örninn conditional discounts (FEAT-246) keep their rule here, key "orninn_conditional".
+    metadata {
+      key
+      value
+    }
     rules {
       ...PromotionRuleDetails
     }

@@ -1,3 +1,9 @@
+import {
+  CONDITIONAL_DISCOUNT_TYPE,
+  conditionalFormFromStored,
+  emptyConditionalForm,
+  getStoredConditionalValue,
+} from "@dashboard/discounts/conditional/form";
 import { type Rule } from "@dashboard/discounts/models";
 import { type DiscoutFormData } from "@dashboard/discounts/types";
 import { useLabelMapsContext } from "@dashboard/discounts/views/DiscountDetails/context/context";
@@ -23,6 +29,8 @@ interface DiscountDetailsFormRenderProps {
   rulesErrors: Array<CommonError<any>>;
   rules: Rule[];
   discountType: PromotionTypeEnum;
+  /** The promotion carries an Örninn conditional rule: show its card instead of Rules. */
+  isConditional: boolean;
   onSubmit: () => void;
   onRuleSubmit: (rule: Rule, ruleEditIndex: number | null) => Promise<void>;
   onDeleteRule: (ruleDeleteIndex: number) => Promise<void>;
@@ -48,10 +56,18 @@ export const DiscountDetailsForm = ({
   onRuleUpdateSubmit,
 }: DiscountDetailsFormProps) => {
   const intl = useIntl();
+  const storedConditional = getStoredConditionalValue(data?.metadata);
   const methods = useForm<DiscoutFormData>({
     mode: "onBlur",
     values: {
-      type: data?.type ?? PromotionTypeEnum.CATALOGUE,
+      type:
+        storedConditional !== undefined
+          ? CONDITIONAL_DISCOUNT_TYPE
+          : (data?.type ?? PromotionTypeEnum.CATALOGUE),
+      conditional:
+        storedConditional !== undefined
+          ? conditionalFormFromStored(storedConditional)
+          : emptyConditionalForm(),
       dates: {
         startDate: splitDateTime(data?.startDate ?? "").date,
         startTime: splitDateTime(data?.startDate ?? "").time,
@@ -65,7 +81,9 @@ export const DiscountDetailsForm = ({
     },
     resolver: zodResolver(getValidationSchema(intl)),
   });
-  const discountType = methods.watch("type");
+  const formType = methods.watch("type");
+  const isConditional = formType === CONDITIONAL_DISCOUNT_TYPE;
+  const discountType = isConditional ? PromotionTypeEnum.ORDER : formType;
   const richText = useRichText({
     initial: JSON.stringify(data?.description),
     loading: disabled,
@@ -91,6 +109,7 @@ export const DiscountDetailsForm = ({
             rulesErrors,
             rules,
             discountType,
+            isConditional,
             onSubmit: handleSubmit,
             onRuleSubmit,
             onDeleteRule,
