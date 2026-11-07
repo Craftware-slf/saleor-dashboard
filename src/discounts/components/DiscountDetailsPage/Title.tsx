@@ -1,4 +1,6 @@
 import { Pill } from "@dashboard/components/Pill";
+import { getStoredConditionalValue } from "@dashboard/discounts/conditional/form";
+import { conditionalMessages } from "@dashboard/discounts/conditional/messages";
 import { getPromotionStatus, getRelativePromotionTimeParts } from "@dashboard/discounts/utils";
 import { type PromotionDetailsFragment, PromotionTypeEnum } from "@dashboard/graphql";
 import { type PillStatusType } from "@dashboard/misc";
@@ -21,9 +23,11 @@ export const DiscountDetailsTitle = ({ data }: DiscountDetailsTitleProps) => {
   }
 
   const typeLabel =
-    data.type === PromotionTypeEnum.CATALOGUE
-      ? intl.formatMessage({ defaultMessage: "Catalog", id: "GOdq5V" })
-      : intl.formatMessage({ defaultMessage: "Order", id: "XPruqs" });
+    getStoredConditionalValue(data.metadata) !== undefined
+      ? intl.formatMessage(conditionalMessages.typeLabel)
+      : data.type === PromotionTypeEnum.CATALOGUE
+        ? intl.formatMessage({ defaultMessage: "Catalog", id: "GOdq5V" })
+        : intl.formatMessage({ defaultMessage: "Order", id: "XPruqs" });
   const promotionStatus = getPromotionStatus({ startDate: data.startDate, endDate: data.endDate });
   const statusLabel = intl.formatMessage(
     promotionStatus === "scheduled"

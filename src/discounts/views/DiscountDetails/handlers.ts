@@ -15,17 +15,36 @@ import { getMutationErrors, joinDateTime } from "@dashboard/misc";
 import { type CommonError } from "@dashboard/utils/errors/common";
 import difference from "lodash/difference";
 
+import { CONDITIONAL_DISCOUNT_TYPE } from "../../conditional/form";
 import { type DiscoutFormData } from "../../types";
+import { storedConditionalValue } from "../conditionalSave";
 
 export const createUpdateHandler = (
   promotion: PromotionDetailsFragment | undefined | null,
   update: (
     varaibles: PromotionUpdateMutationVariables,
   ) => Promise<FetchResult<PromotionUpdateMutation>>,
+  /** Writes `orninn_conditional`; resolves to the number of errors. */
+  writeConditionalMetadata?: (promotionId: string, value: string) => Promise<number>,
 ) => {
   return async (data: DiscoutFormData) => {
     if (!promotion) {
       return;
+    }
+
+    // Conditional discount: the rule's metadata first, so the promotionUpdate below fires
+    // PROMOTION_UPDATED once the new rule is already stored (a bare updateMetadata fires
+    // no promotion webhook). A read-only (unsupported) rule is left exactly as stored.
+    if (
+      data.type === CONDITIONAL_DISCOUNT_TYPE &&
+      !data.conditional.unsupported &&
+      writeConditionalMetadata
+    ) {
+      const value = storedConditionalValue(data.conditional);
+
+      if (value === null || (await writeConditionalMetadata(promotion.id, value)) > 0) {
+        return { errors: [], conditionalSaved: false };
+      }
     }
 
     const updateResponse = await update({

@@ -1,3 +1,4 @@
+import { emptyConditionalForm } from "@dashboard/discounts/conditional/form";
 import { type DiscoutFormData } from "@dashboard/discounts/types";
 import { PromotionTypeEnum } from "@dashboard/graphql";
 
@@ -13,4 +14,5 @@ export const initialFormValues: DiscoutFormData = {
     startTime: "",
   },
   rules: [],
+  conditional: emptyConditionalForm(),
 };

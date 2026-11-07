@@ -2,12 +2,17 @@ import useAppChannel from "@dashboard/components/AppLayout/AppChannelContext";
 import { WindowTitle } from "@dashboard/components/WindowTitle";
 import { DiscountDeleteModal } from "@dashboard/discounts/components/DiscountDeleteModal";
 import { DiscountDetailsPage } from "@dashboard/discounts/components/DiscountDetailsPage";
+import { CONDITIONAL_RULE_KEY } from "@dashboard/discounts/conditional/conditionalRule";
+import { conditionalMessages } from "@dashboard/discounts/conditional/messages";
 import {
   discountSalesListPath,
   type DiscountUrlQueryParams,
 } from "@dashboard/discounts/discountsUrls";
+import { type DiscoutFormData } from "@dashboard/discounts/types";
+import { useUpdateMetadataMutation } from "@dashboard/graphql";
 import { useBackLinkWithState } from "@dashboard/hooks/useBackLinkWithState";
 import useNavigator from "@dashboard/hooks/useNavigator";
+import { useNotifier } from "@dashboard/hooks/useNotifier";
 import { commonMessages } from "@dashboard/intl";
 import { getMutationErrors } from "@dashboard/misc";
 import { useState } from "react";
@@ -31,6 +36,7 @@ export const DiscountDetails = ({ id }: DiscountDetailsProps) => {
   const { availableChannels } = useAppChannel(false);
   const [openModal, setOpenModal] = useState(false);
   const navigate = useNavigator();
+  const notify = useNotifier();
   const intl = useIntl();
   const { promotionData, loading } = usePromotionData(id);
   const { promotionUpdate, promotionUpdateOpts } = usePromotionUpdate(id);
@@ -41,9 +47,29 @@ export const DiscountDetails = ({ id }: DiscountDetailsProps) => {
   const discountListBackLink = useBackLinkWithState({
     path: discountSalesListPath,
   });
-  const onSubmit = createUpdateHandler(promotionData?.promotion, variables =>
-    promotionUpdate({ variables }),
+  const [updateMetadata, updateMetadataOpts] = useUpdateMetadataMutation({});
+  const submitUpdate = createUpdateHandler(
+    promotionData?.promotion,
+    variables => promotionUpdate({ variables }),
+    async (promotionId, value) => {
+      const result = await updateMetadata({
+        variables: {
+          id: promotionId,
+          input: [{ key: CONDITIONAL_RULE_KEY, value }],
+          keysToDelete: [],
+        },
+      });
+
+      return result.data?.updateMetadata?.errors.length ?? 1;
+    },
   );
+  const onSubmit = async (data: DiscoutFormData): Promise<void> => {
+    const result = await submitUpdate(data);
+
+    if (result && "conditionalSaved" in result && !result.conditionalSaved) {
+      notify({ status: "error", text: intl.formatMessage(conditionalMessages.saveFailed) });
+    }
+  };
   const onRuleUpdateSubmit = createRuleUpdateHandler(promotionData?.promotion, variables =>
     promotionRuleUpdate({ variables }),
   );
@@ -74,6 +100,7 @@ export const DiscountDetails = ({ id }: DiscountDetailsProps) => {
           errors={getMutationErrors(promotionUpdateOpts)}
           disabled={
             loading ||
+            updateMetadataOpts.loading ||
             promotionUpdateOpts.loading ||
             promotionDeleteOpts.loading ||
             promotionRuleUpdateOpts.loading ||

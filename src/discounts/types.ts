@@ -3,6 +3,7 @@ import { type useCategoryWithTotalProductsSearch } from "@dashboard/searches/use
 import { type useCollectionWithTotalProductsSearch } from "@dashboard/searches/useCollectionSearch";
 import type useProductSearch from "@dashboard/searches/useProductSearch";
 
+import { type CONDITIONAL_DISCOUNT_TYPE, type ConditionalFormValues } from "./conditional/form";
 import { type Rule } from "./models";
 
 export enum RequirementsPicker {
@@ -23,8 +24,11 @@ export type SearchCollectionOpts = ReturnType<
 >["result"];
 export type SearchProductsOpts = ReturnType<typeof useProductSearch>["result"];
 
+/** The promotion type, or the UI-only "Conditional" type (an ORDER promotion with no rules). */
+export type DiscountFormType = PromotionTypeEnum | typeof CONDITIONAL_DISCOUNT_TYPE;
+
 export interface DiscoutFormData {
-  type: PromotionTypeEnum;
+  type: DiscountFormType;
   name: string;
   description: string;
   dates: {
@@ -35,6 +39,8 @@ export interface DiscoutFormData {
     startTime: string;
   };
   rules: Rule[];
+  /** Only read when `type` is CONDITIONAL_DISCOUNT_TYPE. */
+  conditional: ConditionalFormValues;
 }
 
 // "brand" is a UI-only condition: it is saved as a collectionPredicate over brand

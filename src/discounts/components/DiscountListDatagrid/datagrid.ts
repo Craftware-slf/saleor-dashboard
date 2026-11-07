@@ -5,6 +5,8 @@ import {
   readonlyTextCell,
 } from "@dashboard/components/Datagrid/customCells/cells";
 import { type AvailableColumn } from "@dashboard/components/Datagrid/types";
+import { getStoredConditionalValue } from "@dashboard/discounts/conditional/form";
+import { conditionalMessages } from "@dashboard/discounts/conditional/messages";
 import { type DiscountListUrlSortField } from "@dashboard/discounts/discountsUrls";
 import { getPromotionStatus, type PromotionStatus } from "@dashboard/discounts/utils";
 import { type PromotionFragment, PromotionTypeEnum } from "@dashboard/graphql";
@@ -126,6 +128,10 @@ function getStatusCellContent(
 }
 
 function getDiscountType(promotion: PromotionFragment, intl: IntlShape) {
+  if (getStoredConditionalValue(promotion.metadata) !== undefined) {
+    return intl.formatMessage(conditionalMessages.typeLabel);
+  }
+
   switch (promotion.type) {
     case PromotionTypeEnum.CATALOGUE:
       return intl.formatMessage({ defaultMessage: "Catalog", id: "GOdq5V" });

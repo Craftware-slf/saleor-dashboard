@@ -834,6 +834,10 @@ export const PromotionDetailsFragmentDoc = gql`
   description
   startDate
   endDate
+  metadata {
+    key
+    value
+  }
   rules {
     ...PromotionRuleDetails
   }

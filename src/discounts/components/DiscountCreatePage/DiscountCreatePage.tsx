@@ -14,6 +14,7 @@ import { getFormErrors } from "@dashboard/utils/errors";
 import { getCommonFormFieldErrorMessage } from "@dashboard/utils/errors/common";
 import { useIntl } from "react-intl";
 
+import { ConditionalDiscountCard } from "../ConditionalDiscountCard";
 import { DiscountCreateForm } from "../DiscountCreateForm";
 import { DiscountDatesWithController } from "../DiscountDates";
 import { DiscountGeneralInfo } from "../DiscountGeneralInfo";
@@ -41,7 +42,7 @@ export const DiscountCreatePage = ({
 
   return (
     <DiscountCreateForm onSubmit={onSubmit}>
-      {({ rules, discountType, onDeleteRule, onRuleSubmit, submitHandler }) => (
+      {({ rules, discountType, isConditional, onDeleteRule, onRuleSubmit, submitHandler }) => (
         <DetailPageLayout gridTemplateColumns={1} testId="discount-form">
           <TopNav
             href={discountListUrl()}
@@ -65,18 +66,22 @@ export const DiscountCreatePage = ({
 
             <CardSpacer />
 
-            <DiscountRules
-              promotionId={null}
-              discountType={discountType}
-              errors={errors as DiscountRulesErrors<PromotionCreateErrorCode>}
-              channels={channels}
-              disabled={disabled}
-              rules={rules}
-              onRuleDelete={onDeleteRule}
-              onRuleSubmit={onRuleSubmit}
-              getRuleConfirmButtonState={() => "default"}
-              deleteButtonState="default"
-            />
+            {isConditional ? (
+              <ConditionalDiscountCard channels={channels} disabled={disabled} />
+            ) : (
+              <DiscountRules
+                promotionId={null}
+                discountType={discountType}
+                errors={errors as DiscountRulesErrors<PromotionCreateErrorCode>}
+                channels={channels}
+                disabled={disabled}
+                rules={rules}
+                onRuleDelete={onDeleteRule}
+                onRuleSubmit={onRuleSubmit}
+                getRuleConfirmButtonState={() => "default"}
+                deleteButtonState="default"
+              />
+            )}
           </DetailPageLayout.Content>
 
           <Savebar>
