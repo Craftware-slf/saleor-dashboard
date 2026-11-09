@@ -29,8 +29,8 @@ export const conditionalMessages = defineMessages({
   },
   appliesToHint: {
     defaultMessage:
-      "A product counts when it matches any of the selected products, categories or collections.",
-    id: "8mnbRW",
+      "A product counts when it matches any of the selected products, categories, collections or brands.",
+    id: "gs/l0/",
     description: "conditional discount items hint",
   },
   products: {
@@ -47,6 +47,11 @@ export const conditionalMessages = defineMessages({
     defaultMessage: "Collections",
     id: "GpFCu+",
     description: "conditional discount collections picker",
+  },
+  brands: {
+    defaultMessage: "Brands",
+    id: "hzcwaR",
+    description: "conditional discount brands picker",
   },
   variantsKept: {
     defaultMessage:

@@ -19,6 +19,8 @@ export interface ItemSet {
   variants: string[];
   categories: string[];
   collections: string[];
+  /** Brand Page ids — what a product's `brand` reference attribute points at (FEAT-257). */
+  brands: string[];
 }
 
 export type ConditionalReward =
@@ -70,9 +72,14 @@ function parseItemSet(raw: unknown): ItemSet | null {
     variants: idList(raw.variants),
     categories: idList(raw.categories),
     collections: idList(raw.collections),
+    brands: idList(raw.brands),
   };
   const size =
-    set.products.length + set.variants.length + set.categories.length + set.collections.length;
+    set.products.length +
+    set.variants.length +
+    set.categories.length +
+    set.collections.length +
+    set.brands.length;
 
   return size === 0 ? null : set;
 }

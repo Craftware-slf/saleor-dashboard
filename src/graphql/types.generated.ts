@@ -11024,6 +11024,13 @@ export type PromotionDetailsQueryVariables = Exact<{
 
 export type PromotionDetailsQuery = { __typename: 'Query', promotion: { __typename: 'Promotion', id: string, name: string, type: PromotionTypeEnum | null, description: unknown | null, startDate: any, endDate: any | null, metadata: Array<{ __typename: 'MetadataItem', key: string, value: string }>, rules: Array<{ __typename: 'PromotionRule', id: string, name: string | null, description: unknown | null, giftIds: Array<string> | null, rewardType: RewardTypeEnum | null, rewardValueType: RewardValueTypeEnum | null, rewardValue: any | null, cataloguePredicate: unknown | null, orderPredicate: unknown | null, channels: Array<{ __typename: 'Channel', id: string, isActive: boolean, name: string, slug: string, currencyCode: string, defaultCountry: { __typename: 'CountryDisplay', code: string, country: string } }> | null }> | null } | null };
 
+export type ConditionalBrandNamesQueryVariables = Exact<{
+  ids?: InputMaybe<Array<Scalars['ID']> | Scalars['ID']>;
+}>;
+
+
+export type ConditionalBrandNamesQuery = { __typename: 'Query', pages: { __typename: 'PageCountableConnection', edges: Array<{ __typename: 'PageCountableEdge', node: { __typename: 'Page', id: string, title: string } }> } | null };
+
 export type RuleConditionsSelectedOptionsDetailsQueryVariables = Exact<{
   categoriesIds?: InputMaybe<Array<Scalars['ID']> | Scalars['ID']>;
   collectionsIds?: InputMaybe<Array<Scalars['ID']> | Scalars['ID']>;

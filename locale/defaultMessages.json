@@ -1979,10 +1979,6 @@
     "context": "deactivate customer dialog, header",
     "string": "Deactivate customer"
   },
-  "8mnbRW": {
-    "context": "conditional discount items hint",
-    "string": "A product counts when it matches any of the selected products, categories or collections."
-  },
   "8nbrAR": {
     "context": "conditional discount banner preview",
     "string": "Preview (is)"
@@ -8465,6 +8461,10 @@
   "grkY2V": {
     "string": "You don't have access to any channels"
   },
+  "gs/l0/": {
+    "context": "conditional discount items hint",
+    "string": "A product counts when it matches any of the selected products, categories, collections or brands."
+  },
   "gt05TH": {
     "context": "tooltip message",
     "string": "You don't have permission to manage staff"
@@ -8670,6 +8670,10 @@
   },
   "hzSNj4": {
     "string": "Dashboard"
+  },
+  "hzcwaR": {
+    "context": "conditional discount brands picker",
+    "string": "Brands"
   },
   "i+Vox0": {
     "context": "invoice generating has finished, header",

@@ -152,6 +152,24 @@ export const promotionDetails = gql`
   }
 `;
 
+/**
+ * Names for the brand Page ids a conditional discount stores (FEAT-257) — the Brands
+ * picker offers brands through their brand collections, but the rule keeps the page id
+ * the product's `brand` attribute references.
+ */
+export const conditionalBrandNames = gql`
+  query ConditionalBrandNames($ids: [ID!]) {
+    pages(first: 100, where: { ids: $ids }) {
+      edges {
+        node {
+          id
+          title
+        }
+      }
+    }
+  }
+`;
+
 export const ruleConditionsSelectedOptionsDetails = gql`
   query RuleConditionsSelectedOptionsDetails(
     $categoriesIds: [ID!]

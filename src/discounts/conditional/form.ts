@@ -24,6 +24,8 @@ export interface ConditionalFormValues {
   products: string[];
   categories: string[];
   collections: string[];
+  /** Brand Page ids (FEAT-257) — picked through the brand collections, stored as the page ids. */
+  brands: string[];
   sameProduct: boolean;
   mode: QuantityMode;
   /** N of "every N" and "buy N". Strings, as typed. */
@@ -67,6 +69,7 @@ export const emptyConditionalForm = (): ConditionalFormValues => ({
   products: [],
   categories: [],
   collections: [],
+  brands: [],
   sameProduct: true,
   mode: "every",
   minQuantity: "",
@@ -141,6 +144,7 @@ export function conditionalFormFromStored(raw: string): ConditionalFormValues {
     products: idList(items.products),
     categories: idList(items.categories),
     collections: idList(items.collections),
+    brands: idList(items.brands),
     sameProduct: condition.sameProduct === true,
     mode,
     minQuantity: numberText(condition.minQuantity),
@@ -220,7 +224,11 @@ export function validateConditionalForm(form: ConditionalFormValues): Conditiona
 
   const variants = idList(record(record(form.original?.condition).items).variants);
   const itemCount =
-    form.products.length + form.categories.length + form.collections.length + variants.length;
+    form.products.length +
+    form.categories.length +
+    form.collections.length +
+    form.brands.length +
+    variants.length;
 
   if (itemCount === 0) {
     errors.items = "noItems";
@@ -271,6 +279,8 @@ export function conditionalFormToStored(form: ConditionalFormValues): Record<str
       variants: idList(items.variants),
       categories: form.categories,
       collections: form.collections,
+      // Written only once used, so a rule saved before brands existed round-trips unchanged.
+      ...(form.brands.length > 0 || "brands" in items ? { brands: form.brands } : {}),
     },
     minQuantity,
     sameProduct: form.sameProduct,
