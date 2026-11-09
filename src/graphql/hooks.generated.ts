@@ -8494,6 +8494,46 @@ export function usePromotionDetailsLazyQuery(baseOptions?: ApolloReactHooks.Lazy
 export type PromotionDetailsQueryHookResult = ReturnType<typeof usePromotionDetailsQuery>;
 export type PromotionDetailsLazyQueryHookResult = ReturnType<typeof usePromotionDetailsLazyQuery>;
 export type PromotionDetailsQueryResult = Apollo.QueryResult<Types.PromotionDetailsQuery, Types.PromotionDetailsQueryVariables>;
+export const ConditionalBrandNamesDocument = gql`
+    query ConditionalBrandNames($ids: [ID!]) {
+  pages(first: 100, where: {ids: $ids}) {
+    edges {
+      node {
+        id
+        title
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useConditionalBrandNamesQuery__
+ *
+ * To run a query within a React component, call `useConditionalBrandNamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useConditionalBrandNamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useConditionalBrandNamesQuery({
+ *   variables: {
+ *      ids: // value for 'ids'
+ *   },
+ * });
+ */
+export function useConditionalBrandNamesQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<Types.ConditionalBrandNamesQuery, Types.ConditionalBrandNamesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<Types.ConditionalBrandNamesQuery, Types.ConditionalBrandNamesQueryVariables>(ConditionalBrandNamesDocument, options);
+      }
+export function useConditionalBrandNamesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<Types.ConditionalBrandNamesQuery, Types.ConditionalBrandNamesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<Types.ConditionalBrandNamesQuery, Types.ConditionalBrandNamesQueryVariables>(ConditionalBrandNamesDocument, options);
+        }
+export type ConditionalBrandNamesQueryHookResult = ReturnType<typeof useConditionalBrandNamesQuery>;
+export type ConditionalBrandNamesLazyQueryHookResult = ReturnType<typeof useConditionalBrandNamesLazyQuery>;
+export type ConditionalBrandNamesQueryResult = Apollo.QueryResult<Types.ConditionalBrandNamesQuery, Types.ConditionalBrandNamesQueryVariables>;
 export const RuleConditionsSelectedOptionsDetailsDocument = gql`
     query RuleConditionsSelectedOptionsDetails($categoriesIds: [ID!], $collectionsIds: [ID!], $productsIds: [ID!], $variantsIds: [ID!]) {
   categories(first: 100, where: {ids: $categoriesIds}) {

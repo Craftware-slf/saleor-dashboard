@@ -13,9 +13,11 @@ import {
   type QuantityMode,
 } from "@dashboard/discounts/conditional/form";
 import { conditionalMessages as messages } from "@dashboard/discounts/conditional/messages";
+import { useBrandPageOptions } from "@dashboard/discounts/conditional/useBrandPageOptions";
 import { type DiscoutFormData } from "@dashboard/discounts/types";
 import {
   type ChannelFragment,
+  useConditionalBrandNamesQuery,
   useRuleConditionsSelectedOptionsDetailsQuery,
 } from "@dashboard/graphql";
 import { mapEdgesToItems } from "@dashboard/utils/maps";
@@ -30,7 +32,7 @@ interface ConditionalDiscountCardProps {
   disabled: boolean;
 }
 
-type ItemKey = "products" | "categories" | "collections";
+type ItemKey = "products" | "categories" | "collections" | "brands";
 
 const noop = (): void => undefined;
 
@@ -96,6 +98,11 @@ export const ConditionalDiscountCard = ({
         storedIds.collectionsIds.length ===
       0,
   });
+  const storedBrandIds = idList(storedItems?.brands);
+  const { data: storedBrandLabels } = useConditionalBrandNamesQuery({
+    variables: { ids: storedBrandIds },
+    skip: storedBrandIds.length === 0,
+  });
   const [pickedLabels, setPickedLabels] = useState<Record<string, string>>({});
   const labels = useMemo(() => {
     const out: Record<string, string> = {};
@@ -109,13 +116,18 @@ export const ConditionalDiscountCard = ({
       out[node.id] = node.name;
     }
 
+    for (const page of mapEdgesToItems(storedBrandLabels?.pages) ?? []) {
+      out[page.id] = page.title;
+    }
+
     return { ...out, ...pickedLabels };
-  }, [storedLabels, pickedLabels]);
+  }, [storedLabels, storedBrandLabels, pickedLabels]);
 
   const searchChannel = form.channels[0] ?? channels[0]?.slug ?? null;
   const productOptions = useProductOptions(searchChannel, "product");
   const categoryOptions = useCategorieOptions(searchChannel, "category");
   const collectionOptions = useCollectionOptions(searchChannel, "collection");
+  const brandOptions = useBrandPageOptions(searchChannel);
   const pickers: Array<{ key: ItemKey; label: string; fetch: typeof productOptions }> = [
     { key: "products", label: intl.formatMessage(messages.products), fetch: productOptions },
     { key: "categories", label: intl.formatMessage(messages.categories), fetch: categoryOptions },
@@ -124,6 +136,7 @@ export const ConditionalDiscountCard = ({
       label: intl.formatMessage(messages.collections),
       fetch: collectionOptions,
     },
+    { key: "brands", label: intl.formatMessage(messages.brands), fetch: brandOptions },
   ];
 
   // The pickers re-emit onChange whenever their `value` changes identity, so the values are
@@ -134,8 +147,9 @@ export const ConditionalDiscountCard = ({
       products: form.products.map(id => ({ value: id, label: labels[id] ?? id })),
       categories: form.categories.map(id => ({ value: id, label: labels[id] ?? id })),
       collections: form.collections.map(id => ({ value: id, label: labels[id] ?? id })),
+      brands: form.brands.map(id => ({ value: id, label: labels[id] ?? id })),
     }),
-    [form.products, form.categories, form.collections, labels],
+    [form.products, form.categories, form.collections, form.brands, labels],
   );
 
   const onItemsChange = (key: ItemKey, options: Option[]): void => {

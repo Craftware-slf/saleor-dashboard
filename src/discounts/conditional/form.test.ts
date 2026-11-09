@@ -82,6 +82,42 @@ describe("conditional discount form ⇄ stored JSON", () => {
     expect(JSON.stringify(stored)).toBe(storedGolfBalls);
   });
 
+  it("loads, writes and validates a brand-only rule (FEAT-257)", () => {
+    const TITLEIST = "UGFnZTo0OTU=";
+    const loaded = conditionalFormFromStored(
+      JSON.stringify({
+        ...JSON.parse(storedGolfBalls),
+        condition: {
+          ...JSON.parse(storedGolfBalls).condition,
+          items: {
+            products: [],
+            variants: [],
+            categories: [],
+            collections: [],
+            brands: [TITLEIST],
+          },
+        },
+      }),
+    );
+
+    expect(loaded.brands).toEqual([TITLEIST]);
+    expect(validateConditionalForm(loaded)).toEqual({});
+
+    const stored = conditionalFormToStored(loaded) as any;
+
+    expect(stored.condition.items.brands).toEqual([TITLEIST]);
+    expect(
+      parseConditionalRule({ ...stored, id: "p", startDate: null, endDate: null })?.condition.items
+        .brands,
+    ).toEqual([TITLEIST]);
+  });
+
+  it("does not add a brands key to a rule that never had one", () => {
+    const stored = conditionalFormToStored(conditionalFormFromStored(storedGolfBalls)) as any;
+
+    expect("brands" in stored.condition.items).toBe(false);
+  });
+
   it("keeps unknown keys and variant ids it does not show", () => {
     const raw = JSON.stringify({
       ...JSON.parse(storedGolfBalls),
