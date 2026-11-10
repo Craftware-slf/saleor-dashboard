@@ -118,6 +118,48 @@ describe("conditional discount form ⇄ stored JSON", () => {
     expect("brands" in stored.condition.items).toBe(false);
   });
 
+  it("loads and writes excluded products, and the storefront parser keeps them (FEAT-260)", () => {
+    const TRISPEED = "UHJvZHVjdDoxMTQ1MA==";
+    const loaded = conditionalFormFromStored(
+      JSON.stringify({ ...JSON.parse(storedGolfBalls), excludedProducts: [TRISPEED] }),
+    );
+
+    expect(loaded.excludedProducts).toEqual([TRISPEED]);
+
+    const stored = conditionalFormToStored(loaded) as any;
+
+    expect(stored.excludedProducts).toEqual([TRISPEED]);
+    expect(
+      parseConditionalRule({ ...stored, id: "p", startDate: null, endDate: null })
+        ?.excludedProducts,
+    ).toEqual([TRISPEED]);
+  });
+
+  it("does not add an excludedProducts key to a rule that never had one", () => {
+    const stored = conditionalFormToStored(conditionalFormFromStored(storedGolfBalls));
+
+    expect("excludedProducts" in stored).toBe(false);
+  });
+
+  it("clears excluded products when they are all removed", () => {
+    const loaded = conditionalFormFromStored(
+      JSON.stringify({ ...JSON.parse(storedGolfBalls), excludedProducts: ["x"] }),
+    );
+    const stored = conditionalFormToStored({ ...loaded, excludedProducts: [] }) as any;
+
+    expect(stored.excludedProducts).toEqual([]);
+    expect(
+      parseConditionalRule({ ...stored, id: "p", startDate: null, endDate: null })
+        ?.excludedProducts,
+    ).toBeUndefined();
+  });
+
+  it("does not count excluded products as items", () => {
+    expect(validateConditionalForm(form({ categories: [], excludedProducts: ["x"] })).items).toBe(
+      "noItems",
+    );
+  });
+
   it("keeps unknown keys and variant ids it does not show", () => {
     const raw = JSON.stringify({
       ...JSON.parse(storedGolfBalls),

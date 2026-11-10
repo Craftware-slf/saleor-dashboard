@@ -8407,6 +8407,10 @@
   "gVqSnA": {
     "string": "Assign and save"
   },
+  "gY/i2o": {
+    "context": "conditional discount excluded products hint",
+    "string": "These products never get this discount and don't count towards the quantity, even when they match the selection above."
+  },
   "gaOXvo": {
     "context": "notification, form submitted",
     "string": "Refund grant for order #{orderNumber} was updated"
@@ -10532,6 +10536,10 @@
   "rccigC": {
     "context": "option label prefix for using a typed email address",
     "string": "Use email:"
+  },
+  "rdtPtw": {
+    "context": "conditional discount excluded products picker",
+    "string": "Excluded products"
   },
   "reogdY": {
     "context": "Message when no errors or warnings, but more than one info-level advisory exists",

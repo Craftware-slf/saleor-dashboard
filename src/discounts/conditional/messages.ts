@@ -53,6 +53,17 @@ export const conditionalMessages = defineMessages({
     id: "hzcwaR",
     description: "conditional discount brands picker",
   },
+  excludedProducts: {
+    defaultMessage: "Excluded products",
+    id: "rdtPtw",
+    description: "conditional discount excluded products picker",
+  },
+  excludedProductsHint: {
+    defaultMessage:
+      "These products never get this discount and don't count towards the quantity, even when they match the selection above.",
+    id: "gY/i2o",
+    description: "conditional discount excluded products hint",
+  },
   variantsKept: {
     defaultMessage:
       "{count, plural, one {# variant} other {# variants}} selected outside the dashboard will be kept.",
