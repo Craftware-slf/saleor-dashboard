@@ -312,6 +312,11 @@ export const ConditionalDiscountCard = ({
               {errors.items.message}
             </Text>
           )}
+          {variantCount > 0 && (
+            <Text size={2} color="default2">
+              <FormattedMessage {...messages.variantsKept} values={{ count: variantCount }} />
+            </Text>
+          )}
           <Box display="grid" gap={1} marginTop={2}>
             <Multiselect
               size="medium"
@@ -328,11 +333,6 @@ export const ConditionalDiscountCard = ({
               <FormattedMessage {...messages.excludedProductsHint} />
             </Text>
           </Box>
-          {variantCount > 0 && (
-            <Text size={2} color="default2">
-              <FormattedMessage {...messages.variantsKept} values={{ count: variantCount }} />
-            </Text>
-          )}
           <Box display="flex" alignItems="center" gap={2}>
             <Toggle
               data-test-id="conditional-same-product"
