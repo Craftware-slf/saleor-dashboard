@@ -85,7 +85,10 @@ export const ConditionalDiscountCard = ({
   const storedItems = (form.original?.condition as { items?: Record<string, unknown> } | undefined)
     ?.items;
   const storedIds = {
-    productsIds: idList(storedItems?.products),
+    // Excluded products (FEAT-260) take their labels from the same query.
+    productsIds: [
+      ...new Set([...idList(storedItems?.products), ...idList(form.original?.excludedProducts)]),
+    ],
     categoriesIds: idList(storedItems?.categories),
     collectionsIds: idList(storedItems?.collections),
     variantsIds: [] as string[],
@@ -128,6 +131,7 @@ export const ConditionalDiscountCard = ({
   const categoryOptions = useCategorieOptions(searchChannel, "category");
   const collectionOptions = useCollectionOptions(searchChannel, "collection");
   const brandOptions = useBrandPageOptions(searchChannel);
+  const excludedOptions = useProductOptions(searchChannel, "product");
   const pickers: Array<{ key: ItemKey; label: string; fetch: typeof productOptions }> = [
     { key: "products", label: intl.formatMessage(messages.products), fetch: productOptions },
     { key: "categories", label: intl.formatMessage(messages.categories), fetch: categoryOptions },
@@ -148,11 +152,12 @@ export const ConditionalDiscountCard = ({
       categories: form.categories.map(id => ({ value: id, label: labels[id] ?? id })),
       collections: form.collections.map(id => ({ value: id, label: labels[id] ?? id })),
       brands: form.brands.map(id => ({ value: id, label: labels[id] ?? id })),
+      excludedProducts: form.excludedProducts.map(id => ({ value: id, label: labels[id] ?? id })),
     }),
-    [form.products, form.categories, form.collections, form.brands, labels],
+    [form.products, form.categories, form.collections, form.brands, form.excludedProducts, labels],
   );
 
-  const onItemsChange = (key: ItemKey, options: Option[]): void => {
+  const onItemsChange = (key: ItemKey | "excludedProducts", options: Option[]): void => {
     const ids = options.map(o => o.value);
 
     if (sameIds(ids, form[key])) {
@@ -312,6 +317,22 @@ export const ConditionalDiscountCard = ({
               <FormattedMessage {...messages.variantsKept} values={{ count: variantCount }} />
             </Text>
           )}
+          <Box display="grid" gap={1} marginTop={2}>
+            <Multiselect
+              size="medium"
+              data-test-id="conditional-excluded-products"
+              label={intl.formatMessage(messages.excludedProducts)}
+              value={itemValues.excludedProducts}
+              options={excludedOptions.options}
+              fetchOptions={excludedOptions.fetch}
+              fetchMore={excludedOptions.fetchMoreProps}
+              onChange={event => onItemsChange("excludedProducts", optionsOf(event))}
+              disabled={readOnly}
+            />
+            <Text size={2} color="default2">
+              <FormattedMessage {...messages.excludedProductsHint} />
+            </Text>
+          </Box>
           <Box display="flex" alignItems="center" gap={2}>
             <Toggle
               data-test-id="conditional-same-product"

@@ -26,6 +26,11 @@ export interface ConditionalFormValues {
   collections: string[];
   /** Brand Page ids (FEAT-257) — picked through the brand collections, stored as the page ids. */
   brands: string[];
+  /**
+   * Product ids the rule never covers, even when a product, category, collection or brand
+   * above matches them (FEAT-260) — "every Srixon ball except the Trispeed dozen".
+   */
+  excludedProducts: string[];
   sameProduct: boolean;
   mode: QuantityMode;
   /** N of "every N" and "buy N". Strings, as typed. */
@@ -70,6 +75,7 @@ export const emptyConditionalForm = (): ConditionalFormValues => ({
   categories: [],
   collections: [],
   brands: [],
+  excludedProducts: [],
   sameProduct: true,
   mode: "every",
   minQuantity: "",
@@ -145,6 +151,7 @@ export function conditionalFormFromStored(raw: string): ConditionalFormValues {
     categories: idList(items.categories),
     collections: idList(items.collections),
     brands: idList(items.brands),
+    excludedProducts: idList(parsed.excludedProducts),
     sameProduct: condition.sameProduct === true,
     mode,
     minQuantity: numberText(condition.minQuantity),
@@ -304,11 +311,15 @@ export function conditionalFormToStored(form: ConditionalFormValues): Record<str
     ...(labelIs ? { is: labelIs } : {}),
     ...(labelEn ? { en: labelEn } : {}),
   };
-  const { label: _droppedLabel, ...rest } = original;
+  const { label: _droppedLabel, excludedProducts: _droppedExcluded, ...rest } = original;
 
   return {
     ...rest,
     channels: form.channels,
+    // Written only once used, so a rule saved before exclusions existed round-trips unchanged.
+    ...(form.excludedProducts.length > 0 || "excludedProducts" in original
+      ? { excludedProducts: form.excludedProducts }
+      : {}),
     condition: nextCondition,
     reward: nextReward,
     ...(labelIs || labelEn ? { label } : {}),

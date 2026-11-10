@@ -35,6 +35,8 @@ export interface ConditionalRule {
   startDate: string | null;
   endDate: string | null;
   label?: { is?: string; en?: string };
+  /** Product ids the rule never covers, whatever its item sets match (FEAT-260). */
+  excludedProducts?: string[];
   condition: {
     items: ItemSet;
     minQuantity: number;
@@ -235,6 +237,7 @@ export function parseConditionalRule(raw: unknown): ConditionalRule | null {
   }
 
   const label = parseLabel(raw.label);
+  const excludedProducts = idList(raw.excludedProducts);
 
   return {
     id,
@@ -243,6 +246,7 @@ export function parseConditionalRule(raw: unknown): ConditionalRule | null {
     startDate,
     endDate,
     ...(label ? { label } : {}),
+    ...(excludedProducts.length > 0 ? { excludedProducts } : {}),
     condition: {
       items,
       minQuantity,
