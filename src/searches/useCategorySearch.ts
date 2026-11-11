@@ -35,6 +35,8 @@ export const searchCategoriesWithTotalProducts = gql`
       edges {
         node {
           ...CategoryWithTotalProducts
+          # Craftware (Örninn FEAT-263): full path in the voucher "Assign categories" picker
+          ...CategoryPath
         }
       }
       pageInfo {

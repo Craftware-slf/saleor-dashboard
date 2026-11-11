@@ -1,6 +1,7 @@
 // @ts-strict-ignore
 import { hasPermission } from "@dashboard/auth/misc";
 import { useUser } from "@dashboard/auth/useUser";
+import { useCategoryPathLabels } from "@dashboard/categories/utils/useCategoryPathLabels";
 import ActionDialog from "@dashboard/components/ActionDialog";
 import {
   PermissionEnum,
@@ -15,6 +16,7 @@ import { useNotifier } from "@dashboard/hooks/useNotifier";
 import { pageUrl } from "@dashboard/modeling/urls";
 import { languageEntityUrl, TranslatableEntities } from "@dashboard/translations/urls";
 import { useCachedLocales } from "@dashboard/translations/useCachedLocales";
+import { useMemo } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
 
 import { categoryUrl } from "../../../categories/urls";
@@ -118,6 +120,13 @@ const MenuDetails = ({ id, params }: MenuDetailsProps) => {
       }),
     );
   const menuItem = maybe(() => getNode(data.menu.items, findNode(data.menu.items, params.id)));
+  // Craftware (Örninn FEAT-263): show a linked category as its full path when editing the item.
+  const menuItemCategoryId = menuItem?.category?.id;
+  const menuItemCategoryIds = useMemo(
+    () => (menuItemCategoryId ? [menuItemCategoryId] : []),
+    [menuItemCategoryId],
+  );
+  const menuItemCategoryLabels = useCategoryPathLabels(menuItemCategoryIds);
   const initialMenuItemUpdateFormData: MenuItemDialogFormData = {
     id: maybe(() => getItemId(menuItem)),
     name: maybe(() => menuItem.name, "..."),
@@ -225,7 +234,10 @@ const MenuDetails = ({ id, params }: MenuDetailsProps) => {
         open={params.action === "edit-item"}
         errors={maybe(() => menuItemUpdateOpts.data.menuItemUpdate.errors, [])}
         initial={initialMenuItemUpdateFormData}
-        initialDisplayValue={getInitialMenuItemLabel(menuItem)}
+        initialDisplayValue={
+          (menuItemCategoryId && menuItemCategoryLabels[menuItemCategoryId]) ||
+          getInitialMenuItemLabel(menuItem)
+        }
         confirmButtonState={menuItemUpdateOpts.status}
         disabled={menuItemUpdateOpts.loading}
         onClose={closeModal}

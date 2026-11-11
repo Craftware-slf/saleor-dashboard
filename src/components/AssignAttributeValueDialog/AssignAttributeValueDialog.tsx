@@ -1,3 +1,4 @@
+import { getCategoryPathLabel } from "@dashboard/categories/utils/categoryPath";
 import {
   AttributeEntityTypeEnum,
   AttributeInputTypeEnum,
@@ -144,6 +145,19 @@ const AssignAttributeValueDialog = (props: AssignAttributeValueDialogProps) => {
           onFilterChange={categoryFilterChange}
           {...getSingleOrMultipleDialogProps(attribute)}
           {...rest}
+          // Craftware (Örninn FEAT-263): hand the full path back as the name, so the chip the page
+          // builds from it reads "Örninn Golf Shop / Men's Golf Apparel / Shirts", not "Shirts".
+          onSubmit={selected =>
+            rest.onSubmit(
+              selected.map(container => {
+                // A ticked row may have left the current search results (staff searched again
+                // before submitting); the selected object is the category itself, so fall back to it.
+                const category = categories?.find(({ id }) => id === container.id) ?? container;
+
+                return { ...container, name: getCategoryPathLabel(category) };
+              }),
+            )
+          }
         />
       );
   }

@@ -121,6 +121,7 @@ interface ProductUpdatePageProps {
   referencePages?: RelayToFlat<SearchPagesQuery["search"]>;
   referenceProducts?: RelayToFlat<SearchProductsQuery["search"]>;
   referenceCategories?: RelayToFlat<SearchCategoriesQuery["search"]>;
+  referenceCategoryLabels?: Record<string, string>;
   referenceCollections?: RelayToFlat<SearchCollectionsQuery["search"]>;
   assignReferencesAttributeId?: string;
   fetchMoreReferencePages?: FetchMoreProps;
@@ -181,6 +182,7 @@ const ProductUpdatePage = ({
   referencePages = [],
   referenceProducts = [],
   referenceCategories = [],
+  referenceCategoryLabels,
   referenceCollections = [],
   onDelete,
   onShowMetadata,
@@ -439,6 +441,7 @@ const ProductUpdatePage = ({
       referencePages={referencePages}
       referenceProducts={referenceProducts}
       referenceCategories={referenceCategories}
+      referenceCategoryLabels={referenceCategoryLabels}
       referenceCollections={referenceCollections}
       fetchReferencePages={fetchReferencePages}
       fetchMoreReferencePages={fetchMoreReferencePages}

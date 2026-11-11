@@ -1,4 +1,8 @@
 import {
+  CATEGORY_PATH_SEPARATOR,
+  getCategoryAncestorNames,
+} from "@dashboard/categories/utils/categoryPath";
+import {
   type GlobalSearchQuery,
   OrderChargeStatusEnum,
   type PaymentChargeStatusEnum,
@@ -41,6 +45,11 @@ export const getPaymentLabel = (
 type CategoryNode = NonNullable<GlobalSearchQuery["categories"]>["edges"][number]["node"];
 
 export const getCategoryHierarchyLabel = (choice: CategoryNode): string => {
+  // Craftware (Örninn FEAT-263): the full path when the query fetched it (no "...").
+  if (choice.fullPath) {
+    return getCategoryAncestorNames(choice).join(CATEGORY_PATH_SEPARATOR);
+  }
+
   const { parent, level, ancestors } = choice;
 
   if (level === 0) {

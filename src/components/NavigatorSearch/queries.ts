@@ -47,6 +47,8 @@ export const navigatorSearch = gql`
               }
             }
           }
+          # Craftware (Örninn FEAT-263): full path in search results
+          ...CategoryPath
         }
       }
     }

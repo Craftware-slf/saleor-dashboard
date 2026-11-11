@@ -74,6 +74,8 @@ export const initialDynamicOperands = gql`
           id
           name
           slug
+          # Craftware (Örninn FEAT-263): full path in the category filter
+          ...CategoryPath
         }
       }
     }
@@ -163,6 +165,8 @@ export const dynamicOperandsQueries = gql`
           id
           name
           slug
+          # Craftware (Örninn FEAT-263): full path in the category filter
+          ...CategoryPath
         }
       }
     }

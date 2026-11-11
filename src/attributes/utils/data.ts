@@ -469,6 +469,9 @@ export interface ReferenceEntitiesSearch {
   products?: RelayToFlat<NonNullable<SearchProductsQuery["search"]>>;
   collections?: RelayToFlat<NonNullable<SearchCollectionsQuery["search"]>>;
   categories?: RelayToFlat<NonNullable<SearchCategoriesQuery["search"]>>;
+  // Craftware (Örninn FEAT-263): category id → full path label, for saved category references whose
+  // values only carry the bare name. Wins over every other label source for CATEGORY attributes.
+  categoryLabels?: Record<string, string>;
 }
 
 const findPageReference = (
@@ -596,6 +599,15 @@ export const getReferenceAttributeDisplayData = (
       references:
         attribute.value && attribute.value.length > 0
           ? attribute.value.map(valueId => {
+              const categoryPathLabel =
+                attribute.data.entityType === AttributeEntityTypeEnum.CATEGORY
+                  ? referencesEntitiesSearchResult.categoryLabels?.[valueId]
+                  : undefined;
+
+              if (categoryPathLabel) {
+                return { label: categoryPathLabel, value: valueId };
+              }
+
               /* "additionalData" is the cache for newly selected values from useFormset hook.
                * It is populated from the initial GraphQL payload
                * and whenever the user assigns references in the dialog into useFormset data. */

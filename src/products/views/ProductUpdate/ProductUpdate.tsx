@@ -1,4 +1,5 @@
 // @ts-strict-ignore
+import { useSavedCategoryReferenceLabels } from "@dashboard/categories/utils/useCategoryPathLabels";
 import ActionDialog from "@dashboard/components/ActionDialog";
 import useAppChannel from "@dashboard/components/AppLayout/AppChannelContext";
 import { type AttributeInput } from "@dashboard/components/Attributes";
@@ -231,6 +232,8 @@ const ProductUpdate = ({ id, params }: ProductUpdateProps) => {
     },
   });
   const product = data?.product;
+  // Craftware (Örninn FEAT-263): saved "Additional categories" chips read as full paths.
+  const referenceCategoryLabels = useSavedCategoryReferenceLabels(product?.attributes);
   const [deleteMediaType, setDeleteMediaType] = useState<ProductMediaType | null>(null);
 
   useEffect(() => {
@@ -534,6 +537,7 @@ const ProductUpdate = ({ id, params }: ProductUpdateProps) => {
         referencePages={mapEdgesToItems(searchPagesOpts?.data?.search) || []}
         referenceProducts={mapEdgesToItems(searchProductsOpts?.data?.search) || []}
         referenceCategories={referenceCategories}
+        referenceCategoryLabels={referenceCategoryLabels}
         referenceCollections={mapEdgesToItems(searchCollectionsOpts?.data?.search) || []}
         fetchReferencePages={searchPages}
         fetchMoreReferencePages={fetchMoreReferencePages}

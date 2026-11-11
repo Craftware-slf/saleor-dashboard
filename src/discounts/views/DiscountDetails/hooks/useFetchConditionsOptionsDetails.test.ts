@@ -129,6 +129,31 @@ describe("getRuleConditionsOptionsDetailsMap", () => {
       "2222": "variant 2",
     });
   });
+
+  // Craftware (Örninn FEAT-263)
+  it("labels saved categories with their full path, ordered by level", () => {
+    expect(
+      getRuleConditionsOptionsDetailsMap({
+        categories: {
+          edges: [
+            {
+              node: {
+                id: "11",
+                name: "Shoes",
+                fullPath: {
+                  edges: [
+                    { node: { id: "a", name: "Men's Golf Apparel", level: 2 } },
+                    { node: { id: "b", name: "Örninn Golf Shop", level: 0 } },
+                    { node: { id: "c", name: "Clothing", level: 1 } },
+                  ],
+                },
+              },
+            },
+          ],
+        },
+      } as unknown as RuleConditionsSelectedOptionsDetailsQuery),
+    ).toEqual({ "11": "Örninn Golf Shop / Clothing / Men's Golf Apparel / Shoes" });
+  });
 });
 
 describe("getAllConditionsOptionsIdsToFetch - accumulator", () => {

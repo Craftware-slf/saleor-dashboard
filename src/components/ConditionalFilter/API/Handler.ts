@@ -1,4 +1,8 @@
 import { type ApolloClient } from "@apollo/client";
+import {
+  type CategoryWithPath,
+  getCategoryPathLabel,
+} from "@dashboard/categories/utils/categoryPath";
 import { createBooleanOptions } from "@dashboard/components/ConditionalFilter/constants";
 import {
   _GetAttributeChoicesDocument,
@@ -71,6 +75,26 @@ export const createOptionsFromAPI = (
     value: node.id,
     slug: node.slug,
     originalSlug: node.originalSlug,
+  }));
+
+/**
+ * Craftware (Örninn FEAT-263): category options labelled with the full path
+ * ("Örninn Golf Shop / Clothing / Men's Golf Apparel / Shoes"). Names repeat across the three
+ * shops, so the bare name (and FEAT-083's "name · slug") can't tell them apart.
+ */
+export const createCategoryOptionsFromAPI = (
+  data: Array<{
+    node: CategoryWithPath & {
+      name: string;
+      id: string;
+      slug: string;
+    };
+  }>,
+): ItemOption[] =>
+  data.map(({ node }) => ({
+    label: getCategoryPathLabel(node),
+    value: node.id,
+    slug: node.slug,
   }));
 
 export const createCustomerOptionsFromAPI = (
@@ -222,16 +246,10 @@ export class CategoryHandler implements Handler {
       },
     });
 
-    // Not createOptionsFromAPI: that helper is shared with the collection,
-    // product-type and product handlers, and only categories need the slug in the
-    // label. Category names repeat across brands — three "Fatnaður", five "Kids" —
-    // and the slug (`golf-fatnadur`) is the only thing that tells them apart.
-    // Sorting by name makes those duplicates adjacent, so this has to ship with it.
-    return (data.categories?.edges ?? []).map(({ node }) => ({
-      label: node.name ? `${node.name} · ${node.slug}` : node.slug,
-      value: node.id,
-      slug: node.slug,
-    }));
+    // Not createOptionsFromAPI: category names repeat across brands — three "Fatnaður", five
+    // "Kids" — so the label is the full path (FEAT-263; FEAT-083 used "name · slug"). Sorting by
+    // name keeps the duplicates adjacent, where their different paths are easy to compare.
+    return createCategoryOptionsFromAPI(data.categories?.edges ?? []);
   };
 }
 

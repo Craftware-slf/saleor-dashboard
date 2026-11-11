@@ -45,13 +45,11 @@ Object {
   "category": Array [
     Object {
       "label": "Category 1",
-      "originalSlug": undefined,
       "slug": "category-1",
       "value": "1",
     },
     Object {
       "label": "Category 2",
-      "originalSlug": undefined,
       "slug": "category-2",
       "value": "2",
     },

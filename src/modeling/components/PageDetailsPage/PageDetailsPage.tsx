@@ -57,6 +57,7 @@ interface PageDetailsPageProps {
   referenceProducts?: RelayToFlat<SearchProductsQuery["search"]>;
   referenceCollections?: RelayToFlat<SearchCollectionsQuery["search"]>;
   referenceCategories?: RelayToFlat<SearchCategoriesQuery["search"]>;
+  referenceCategoryLabels?: Record<string, string>;
   allowEmptySlug?: boolean;
   saveButtonBarState: ConfirmButtonTransitionState;
   selectedPageType?: PageDetailsFragment["pageType"];
@@ -92,6 +93,7 @@ const PageDetailsPage = ({
   referenceProducts,
   referenceCollections,
   referenceCategories,
+  referenceCategoryLabels,
   saveButtonBarState,
   selectedPageType,
   attributeValues,
@@ -158,6 +160,7 @@ const PageDetailsPage = ({
       referenceProducts={referenceProducts}
       referenceCollections={referenceCollections}
       referenceCategories={referenceCategories}
+      referenceCategoryLabels={referenceCategoryLabels}
       fetchReferencePages={fetchReferencePages}
       fetchMoreReferencePages={fetchMoreReferencePages}
       fetchReferenceProducts={fetchReferenceProducts}

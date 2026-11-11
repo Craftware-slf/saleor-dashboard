@@ -10,6 +10,7 @@ import {
   handleUploadMultipleFiles,
   prepareAttributesInput,
 } from "@dashboard/attributes/utils/handlers";
+import { useSavedCategoryReferenceLabels } from "@dashboard/categories/utils/useCategoryPathLabels";
 import { createVariantChannels } from "@dashboard/channels/utils";
 import { type AttributeInput } from "@dashboard/components/Attributes";
 import NotFoundPage from "@dashboard/components/NotFoundPage";
@@ -128,6 +129,8 @@ const ProductVariant = ({ variantId, params }: ProductUpdateProps) => {
   const { handleSubmitChannels, updateChannelsOpts } = useSubmitChannels();
 
   const variant = data?.productVariant;
+  // Craftware (Örninn FEAT-263): saved category reference chips read as full paths.
+  const referenceCategoryLabels = useSavedCategoryReferenceLabels(variant?.nonSelectionAttributes);
   const channels = createVariantChannels(variant);
 
   const {
@@ -339,6 +342,7 @@ const ProductVariant = ({ variantId, params }: ProductUpdateProps) => {
         referencePages={mapEdgesToItems(searchPagesOpts?.data?.search) || []}
         referenceProducts={mapEdgesToItems(searchProductsOpts?.data?.search) || []}
         referenceCategories={mapEdgesToItems(searchCategoriesOpts?.data?.search) || []}
+        referenceCategoryLabels={referenceCategoryLabels}
         referenceCollections={mapEdgesToItems(searchCollectionsOpts?.data?.search) || []}
         fetchReferencePages={searchPages}
         fetchMoreReferencePages={fetchMoreReferencePages}
