@@ -150,11 +150,11 @@ const AssignAttributeValueDialog = (props: AssignAttributeValueDialogProps) => {
           onSubmit={selected =>
             rest.onSubmit(
               selected.map(container => {
-                const category = categories?.find(({ id }) => id === container.id);
+                // A ticked row may have left the current search results (staff searched again
+                // before submitting); the selected object is the category itself, so fall back to it.
+                const category = categories?.find(({ id }) => id === container.id) ?? container;
 
-                return category
-                  ? { ...container, name: getCategoryPathLabel(category) }
-                  : container;
+                return { ...container, name: getCategoryPathLabel(category) };
               }),
             )
           }

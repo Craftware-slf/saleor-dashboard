@@ -15,7 +15,7 @@ const MAX_IDS = 100;
 export const useCategoryPathLabels = (ids: string[]): Record<string, string> => {
   const uniqueIds = useMemo(() => [...new Set(ids)].slice(0, MAX_IDS), [ids]);
 
-  const { data } = useSearchCategoriesQuery({
+  const { data, previousData } = useSearchCategoriesQuery({
     variables: { first: MAX_IDS, filter: { ids: uniqueIds } },
     skip: uniqueIds.length === 0,
   });
@@ -23,12 +23,14 @@ export const useCategoryPathLabels = (ids: string[]): Record<string, string> => 
   return useMemo(
     () =>
       Object.fromEntries(
-        (mapEdgesToItems(data?.search) ?? []).map(category => [
+        // previousData: keep the last labels while a changed id list is looked up, so saved chips
+        // don't flash back to bare names after an assign or a save.
+        (mapEdgesToItems((data ?? previousData)?.search) ?? []).map(category => [
           category.id,
           getCategoryPathLabel(category),
         ]),
       ),
-    [data],
+    [data, previousData],
   );
 };
 
