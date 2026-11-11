@@ -116,6 +116,7 @@ interface ProductVariantPageProps {
   referencePages?: RelayToFlat<SearchPagesQuery["search"]>;
   referenceProducts?: RelayToFlat<SearchProductsQuery["search"]>;
   referenceCategories?: RelayToFlat<SearchCategoriesQuery["search"]>;
+  referenceCategoryLabels?: Record<string, string>;
   referenceCollections?: RelayToFlat<SearchCollectionsQuery["search"]>;
   attributeValues: RelayToFlat<SearchAttributeValuesQuery["attribute"]["choices"]>;
   fetchMoreReferencePages?: FetchMoreProps;
@@ -161,6 +162,7 @@ export const ProductVariantPage = ({
   referencePages = [],
   referenceProducts = [],
   referenceCategories = [],
+  referenceCategoryLabels,
   referenceCollections = [],
   attributeValues,
   onDelete,
@@ -275,6 +277,7 @@ export const ProductVariantPage = ({
           referencePages={referencePages}
           referenceProducts={referenceProducts}
           referenceCategories={referenceCategories}
+          referenceCategoryLabels={referenceCategoryLabels}
           referenceCollections={referenceCollections}
           fetchReferencePages={fetchReferencePages}
           fetchMoreReferencePages={fetchMoreReferencePages}

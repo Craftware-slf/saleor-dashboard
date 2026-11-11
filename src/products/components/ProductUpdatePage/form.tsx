@@ -193,6 +193,7 @@ export function useProductUpdateForm(
       products: opts.referenceProducts,
       collections: opts.referenceCollections,
       categories: opts.referenceCategories,
+      categoryLabels: opts.referenceCategoryLabels,
     }),
     channels,
     description: null,

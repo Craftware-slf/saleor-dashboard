@@ -182,6 +182,8 @@ export const ruleConditionsSelectedOptionsDetails = gql`
         node {
           id
           name
+          # Craftware (Örninn FEAT-263): saved category conditions read as full paths
+          ...CategoryPath
         }
       }
     }

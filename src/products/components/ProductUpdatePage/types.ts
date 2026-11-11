@@ -112,6 +112,8 @@ export interface UseProductUpdateFormOpts
   referencePages: RelayToFlat<SearchPagesQuery["search"]>;
   referenceProducts: RelayToFlat<SearchProductsQuery["search"]>;
   referenceCategories?: RelayToFlat<SearchCategoriesQuery["search"]>;
+  // Craftware (Örninn FEAT-263): category id → "Root / Parent / Name" for saved category references.
+  referenceCategoryLabels?: Record<string, string>;
   referenceCollections?: RelayToFlat<SearchCollectionsQuery["search"]>;
   fetchReferencePages?: (data: string) => void;
   fetchMoreReferencePages?: FetchMoreProps;

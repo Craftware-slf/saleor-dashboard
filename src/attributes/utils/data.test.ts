@@ -80,6 +80,8 @@ const createMockReferenceData = (data: {
       level: 0,
       parent: null,
       ancestors: null,
+      // Craftware: SearchCategories carries the full path since Örninn FEAT-263.
+      fullPath: null,
     }));
   }
 
@@ -329,6 +331,66 @@ describe("attributes/utils/data", () => {
   describe("getReferenceAttributeDisplayData", () => {
     beforeEach(() => {
       jest.clearAllMocks();
+    });
+
+    // Craftware (Örninn FEAT-263)
+    const categoryAttribute = (entityType: AttributeEntityTypeEnum) => ({
+      id: "attr-category-path",
+      value: ["cat-1", "cat-2"],
+      label: "Additional categories",
+      data: {
+        inputType: AttributeInputTypeEnum.REFERENCE,
+        entityType,
+        isRequired: false,
+        values: [],
+        references: [],
+      },
+      // What a saved product carries: the bare category names.
+      additionalData: [
+        { value: "cat-1", label: "Shirts" },
+        { value: "cat-2", label: "Shirts" },
+      ],
+    });
+
+    it("prefers the full category path over the saved bare name for CATEGORY references", () => {
+      const result = getReferenceAttributeDisplayData(
+        categoryAttribute(AttributeEntityTypeEnum.CATEGORY),
+        {
+          categoryLabels: {
+            "cat-1": "Örninn Hjól / Clothing / Men / Shirts",
+            "cat-2": "Örninn Hjól / Outlet / Men / Shirts",
+          },
+        },
+      );
+
+      expect(result.data.references).toEqual([
+        { value: "cat-1", label: "Örninn Hjól / Clothing / Men / Shirts" },
+        { value: "cat-2", label: "Örninn Hjól / Outlet / Men / Shirts" },
+      ]);
+    });
+
+    it("keeps the saved label when a category's path is not (yet) loaded", () => {
+      const result = getReferenceAttributeDisplayData(
+        categoryAttribute(AttributeEntityTypeEnum.CATEGORY),
+        { categoryLabels: { "cat-1": "Örninn Hjól / Clothing / Men / Shirts" } },
+      );
+
+      expect(result.data.references).toEqual([
+        { value: "cat-1", label: "Örninn Hjól / Clothing / Men / Shirts" },
+        { value: "cat-2", label: "Shirts" },
+      ]);
+    });
+
+    it("ignores category path labels for non-category references", () => {
+      const result = getReferenceAttributeDisplayData(
+        categoryAttribute(AttributeEntityTypeEnum.COLLECTION),
+        { categoryLabels: { "cat-1": "Örninn Hjól / Clothing / Men / Shirts" } },
+      );
+
+      expect(result.data.references).toEqual([
+        { value: "cat-1", label: "Shirts" },
+        { value: "cat-2", label: "Shirts" },
+      ]);
     });
 
     it("should use display data from useFormset metadata when available", () => {

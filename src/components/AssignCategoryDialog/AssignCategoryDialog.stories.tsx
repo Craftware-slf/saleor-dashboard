@@ -186,3 +186,53 @@ export const Empty: Story = {
 export const HasMore: Story = {
   args: { hasMore: true },
 };
+
+// Craftware (Örninn FEAT-263): same-named categories under different trees are told apart by their
+// full path, with ancestors ordered by level even when the API returns them out of order.
+const pathNode = (
+  id: string,
+  name: string,
+  level: number,
+): { node: { __typename: "Category"; id: string; name: string; level: number } } => ({
+  node: { __typename: "Category" as const, id, name, level },
+});
+
+export const WithCategoryPath: Story = {
+  args: {
+    categories: [
+      {
+        id: "cat-shirts-clothing",
+        name: "Shirts",
+        fullPath: {
+          edges: [
+            pathNode("men-1", "Men", 2),
+            pathNode("root-hjol", "Örninn Hjól", 0),
+            pathNode("clothing", "Clothing", 1),
+          ],
+        },
+      },
+      {
+        id: "cat-shirts-outlet",
+        name: "Shirts",
+        fullPath: {
+          edges: [
+            pathNode("root-hjol", "Örninn Hjól", 0),
+            pathNode("outlet", "Outlet", 1),
+            pathNode("men-2", "Men", 2),
+          ],
+        },
+      },
+      { id: "root-golf", name: "Örninn Golf Shop", fullPath: { edges: [] } },
+    ],
+  },
+  play: async () => {
+    const dialog = await findDialog();
+    const rows = await dialog.findAllByTestId("dialog-row");
+
+    await expect(rows).toHaveLength(3);
+    await expect(rows[0]).toHaveTextContent("Örninn Hjól / Clothing / Men / Shirts");
+    await expect(rows[1]).toHaveTextContent("Örninn Hjól / Outlet / Men / Shirts");
+    // A root category has no path prefix.
+    await expect(within(rows[2]).queryByTestId("category-path-prefix")).toBeNull();
+  },
+};

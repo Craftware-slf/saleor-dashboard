@@ -1,7 +1,13 @@
+import {
+  type CategoryWithPath,
+  getCategoryPathPrefix,
+} from "@dashboard/categories/utils/categoryPath";
 import { type ConfirmButtonTransitionState } from "@dashboard/components/ConfirmButton";
 import { type CategoryFilterInput } from "@dashboard/graphql";
 import { useModalSearchWithFilters } from "@dashboard/hooks/useModalSearchWithFilters";
 import { type Container, type DialogProps, type FetchMoreProps } from "@dashboard/types";
+import { Text } from "@saleor/macaw-ui-next";
+import { type ReactNode, useMemo } from "react";
 import { useIntl } from "react-intl";
 
 import AssignContainerDialog, { type AssignContainerDialogProps } from "../AssignContainerDialog";
@@ -12,10 +18,13 @@ import {
 import { ModalFilters } from "../ModalFilters/ModalFilters";
 import { messages } from "./messages";
 
-type Categories = {
-  id: string;
-  name: string;
-}[];
+// Craftware (Örninn FEAT-263): `fullPath` (CategoryPath fragment) is optional — when present the row
+// shows the category's full path, muted, before its name; callers without it get the bare name.
+type Categories = Array<
+  CategoryWithPath & {
+    id: string;
+  }
+>;
 
 interface AssignCategoryDialogProps extends FetchMoreProps, DialogProps {
   confirmButtonState: ConfirmButtonTransitionState;
@@ -55,6 +64,26 @@ const AssignCategoryDialogInner = ({
     },
   });
 
+  const categoriesById = useMemo(
+    () => new Map((categories ?? []).map(category => [category.id, category])),
+    [categories],
+  );
+  const renderLabel = (container: Container): ReactNode => {
+    const category = categoriesById.get(container.id);
+    const prefix = category ? getCategoryPathPrefix(category) : "";
+
+    return (
+      <>
+        {prefix && (
+          <Text color="default2" data-test-id="category-path-prefix">
+            {prefix}
+          </Text>
+        )}
+        <Text>{container.name}</Text>
+      </>
+    );
+  };
+
   const labels: AssignContainerDialogProps["labels"] = {
     title: intl.formatMessage(messages.assignCategoryDialogHeader),
     label: intl.formatMessage(messages.assignCategoryDialogLabel),
@@ -75,6 +104,7 @@ const AssignCategoryDialogInner = ({
       search={{ query, onQueryChange, resetQuery }}
       filtersSlot={<ModalFilters />}
       onResetFilters={clearFilters}
+      renderLabel={renderLabel}
     />
   );
 };

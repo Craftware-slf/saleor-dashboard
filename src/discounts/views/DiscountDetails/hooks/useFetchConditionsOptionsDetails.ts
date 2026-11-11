@@ -1,3 +1,4 @@
+import { getCategoryPathLabel } from "@dashboard/categories/utils/categoryPath";
 import { isBrandCollection } from "@dashboard/discounts/brandCollections";
 import { type CataloguePredicateAPI } from "@dashboard/discounts/types";
 import {
@@ -113,7 +114,7 @@ export function getRuleConditionsOptionsDetailsMap(
     return {};
   }
 
-  return Object.values(data).reduce<Record<string, string>>((acc, value) => {
+  const labels = Object.values(data).reduce<Record<string, string>>((acc, value) => {
     const items =
       mapEdgesToItems(value as RuleConditionsSelectedOptionsDetailsQuery["productVariants"]) ?? [];
 
@@ -127,6 +128,13 @@ export function getRuleConditionsOptionsDetailsMap(
 
     return acc;
   }, {});
+
+  // Craftware (Örninn FEAT-263): saved category conditions read as full paths.
+  for (const category of mapEdgesToItems(data.categories) ?? []) {
+    labels[category.id] = getCategoryPathLabel(category);
+  }
+
+  return labels;
 }
 
 /**

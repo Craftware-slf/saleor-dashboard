@@ -328,6 +328,22 @@ export const CategoryDetailsFragmentDoc = gql`
   }
 }
     ${MetadataFragmentDoc}`;
+export const CategoryPathFragmentDoc = gql`
+    fragment CategoryPath on Category {
+  id
+  name
+  level
+  fullPath: ancestors(first: 50) {
+    edges {
+      node {
+        id
+        name
+        level
+      }
+    }
+  }
+}
+    `;
 export const CategoryWithAncestorsFragmentDoc = gql`
     fragment CategoryWithAncestors on Category {
   id
@@ -346,8 +362,9 @@ export const CategoryWithAncestorsFragmentDoc = gql`
       }
     }
   }
+  ...CategoryPath
 }
-    `;
+    ${CategoryPathFragmentDoc}`;
 export const CategoryWithTotalProductsFragmentDoc = gql`
     fragment CategoryWithTotalProducts on Category {
   id
@@ -5747,11 +5764,12 @@ export const _SearchCategoriesOperandsDocument = gql`
         id
         name
         slug
+        ...CategoryPath
       }
     }
   }
 }
-    `;
+    ${CategoryPathFragmentDoc}`;
 
 /**
  * __use_SearchCategoriesOperandsQuery__
@@ -6022,11 +6040,12 @@ export const _GetCategoriesChoicesDocument = gql`
         id
         name
         slug
+        ...CategoryPath
       }
     }
   }
 }
-    `;
+    ${CategoryPathFragmentDoc}`;
 
 /**
  * __use_GetCategoriesChoicesQuery__
@@ -6783,6 +6802,7 @@ export const NavigatorSearchDocument = gql`
             }
           }
         }
+        ...CategoryPath
       }
     }
   }
@@ -6859,7 +6879,7 @@ export const NavigatorSearchDocument = gql`
     }
   }
 }
-    `;
+    ${CategoryPathFragmentDoc}`;
 
 /**
  * __useNavigatorSearchQuery__
@@ -8541,6 +8561,7 @@ export const RuleConditionsSelectedOptionsDetailsDocument = gql`
       node {
         id
         name
+        ...CategoryPath
       }
     }
   }
@@ -8573,7 +8594,7 @@ export const RuleConditionsSelectedOptionsDetailsDocument = gql`
     }
   }
 }
-    `;
+    ${CategoryPathFragmentDoc}`;
 
 /**
  * __useRuleConditionsSelectedOptionsDetailsQuery__
@@ -16891,6 +16912,7 @@ export const GlobalSearchDocument = gql`
             }
           }
         }
+        ...CategoryPath
       }
     }
   }
@@ -16967,7 +16989,7 @@ export const GlobalSearchDocument = gql`
     }
   }
 }
-    `;
+    ${CategoryPathFragmentDoc}`;
 
 /**
  * __useGlobalSearchQuery__
@@ -17296,6 +17318,7 @@ export const SearchCategoriesWithTotalProductsDocument = gql`
     edges {
       node {
         ...CategoryWithTotalProducts
+        ...CategoryPath
       }
     }
     pageInfo {
@@ -17304,6 +17327,7 @@ export const SearchCategoriesWithTotalProductsDocument = gql`
   }
 }
     ${CategoryWithTotalProductsFragmentDoc}
+${CategoryPathFragmentDoc}
 ${PageInfoFragmentDoc}`;
 
 /**

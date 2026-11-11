@@ -9,6 +9,7 @@ import {
   handleUploadMultipleFiles,
   prepareAttributesInput,
 } from "@dashboard/attributes/utils/handlers";
+import { useSavedCategoryReferenceLabels } from "@dashboard/categories/utils/useCategoryPathLabels";
 import ActionDialog from "@dashboard/components/ActionDialog";
 import { type AttributeInput } from "@dashboard/components/Attributes";
 import { WindowTitle } from "@dashboard/components/WindowTitle";
@@ -87,6 +88,10 @@ const PageDetails = ({ id, params }: PageDetailsProps) => {
       firstValues: VALUES_PAGINATE_BY,
     },
   });
+  // Craftware (Örninn FEAT-263): saved category reference chips read as full paths.
+  const referenceCategoryLabels = useSavedCategoryReferenceLabels(
+    pageDetails.data?.page?.attributes,
+  );
   const [uploadFile, uploadFileOpts] = useFileUploadMutation({});
   const [pageUpdate, pageUpdateOpts] = usePageUpdateMutation({});
   const [deleteAttributeValue, deleteAttributeValueOpts] = useAttributeValueDeleteMutation({});
@@ -247,6 +252,7 @@ const PageDetails = ({ id, params }: PageDetailsProps) => {
         referencePages={mapEdgesToItems(searchPagesOpts?.data?.search) || []}
         referenceProducts={mapEdgesToItems(searchProductsOpts?.data?.search) || []}
         referenceCategories={mapEdgesToItems(searchCategoriesOpts?.data?.search) || []}
+        referenceCategoryLabels={referenceCategoryLabels}
         referenceCollections={mapEdgesToItems(searchCollectionsOpts?.data?.search) || []}
         fetchReferencePages={searchPages}
         fetchMoreReferencePages={fetchMoreReferencePages}

@@ -1,3 +1,4 @@
+import { getCategoryPathLabel } from "@dashboard/categories/utils/categoryPath";
 import { DEFAULT_INITIAL_SEARCH_DATA } from "@dashboard/config";
 import useCategorySearch from "@dashboard/searches/useCategorySearch";
 import useCollectionSearch from "@dashboard/searches/useCollectionSearch";
@@ -49,9 +50,10 @@ export const useLinkValue = (linkType: MenuItemTypeWithOptions) => {
   const collections = mapEdgesToItems(collectionSearch?.result?.data?.search) || [];
   const pages = mapEdgesToItems(pageSearch?.result?.data?.search) || [];
 
+  // Craftware (Örninn FEAT-263): full path, so same-named categories in different shops differ.
   const categoriesOptions = categories?.map(category => ({
     value: category.id,
-    label: category.name,
+    label: getCategoryPathLabel(category),
   }));
   const collectionsOptions = collections?.map(collection => ({
     value: collection.id,

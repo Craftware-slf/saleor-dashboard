@@ -105,6 +105,8 @@ interface UsePageFormOpts {
   referencePages: RelayToFlat<SearchPagesQuery["search"]>;
   referenceProducts: RelayToFlat<SearchProductsQuery["search"]>;
   referenceCategories: RelayToFlat<SearchCategoriesQuery["search"]>;
+  // Craftware (Örninn FEAT-263): category id → "Root / Parent / Name" for saved category references.
+  referenceCategoryLabels?: Record<string, string>;
   referenceCollections: RelayToFlat<SearchCollectionsQuery["search"]>;
   fetchReferencePages?: (data: string) => void;
   fetchMoreReferencePages?: FetchMoreProps;
@@ -231,6 +233,7 @@ function usePageForm(
       products: opts.referenceProducts,
       collections: opts.referenceCollections,
       categories: opts.referenceCategories,
+      categoryLabels: opts.referenceCategoryLabels,
     }),
     content: null,
     pageType: pageExists ? page?.pageType : opts.selectedPageType,

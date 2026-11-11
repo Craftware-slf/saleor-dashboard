@@ -1,3 +1,4 @@
+import { getCategoryPathLabel } from "@dashboard/categories/utils/categoryPath";
 import { DEFAULT_INITIAL_SEARCH_DATA } from "@dashboard/config";
 import { type CommonSearchOpts } from "@dashboard/hooks/makeTopLevelSearch/types";
 import { getSearchFetchMoreProps } from "@dashboard/hooks/makeTopLevelSearch/utils";
@@ -25,9 +26,10 @@ export const useCategorieOptions = (channel: string | null, conditionId: string 
   return {
     fetch: searchCategories,
     fetchMoreProps: fetchMoreCategories,
-    options: (mapEdgesToItems(searchCategoriesOpts?.data?.search) ?? []).map(({ name, id }) => ({
-      label: name,
-      value: id,
+    // Craftware (Örninn FEAT-263): full path, so same-named categories in different shops differ.
+    options: (mapEdgesToItems(searchCategoriesOpts?.data?.search) ?? []).map(category => ({
+      label: getCategoryPathLabel(category),
+      value: category.id,
     })),
   };
 };

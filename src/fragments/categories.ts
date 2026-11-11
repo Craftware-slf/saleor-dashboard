@@ -57,6 +57,29 @@ export const categoryWithAncestorFragment = gql`
         }
       }
     }
+    # Craftware (Örninn FEAT-263): full path for every category picker
+    ...CategoryPath
+  }
+`;
+
+// Craftware (Örninn FEAT-263): every ancestor, with its level, so every category picker can show
+// the full path ("Root / Parent / Name", no "..."). Aliased so it can sit next to the
+// `ancestors(first: 1)` some selection sets already have without changing that field.
+// `level` is fetched because Saleor can return ancestors in ID order after a re-parent; callers sort.
+export const categoryPathFragment = gql`
+  fragment CategoryPath on Category {
+    id
+    name
+    level
+    fullPath: ancestors(first: 50) {
+      edges {
+        node {
+          id
+          name
+          level
+        }
+      }
+    }
   }
 `;
 

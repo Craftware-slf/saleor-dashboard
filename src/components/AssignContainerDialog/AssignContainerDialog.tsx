@@ -12,7 +12,11 @@ import { Text } from "@saleor/macaw-ui-next";
 import { type ChangeEvent, type ReactNode } from "react";
 
 import BackButton from "../BackButton";
-import { MultiSelectionRows, SingleSelectionRows } from "./AssignContainerRows";
+import {
+  type ContainerLabelRenderer,
+  MultiSelectionRows,
+  SingleSelectionRows,
+} from "./AssignContainerRows";
 import { useAssignContainerSearch } from "./useAssignContainerSearch";
 import { useAssignDialogMultiSelection } from "./useAssignDialogMultiSelection";
 import { useAssignDialogSingleSelection } from "./useAssignDialogSingleSelection";
@@ -36,6 +40,8 @@ export interface AssignContainerDialogProps extends FetchMoreProps, DialogProps 
     resetQuery: () => void;
   };
   onResetFilters?: () => void;
+  // Craftware (Örninn FEAT-263): custom row label, e.g. the category path. Defaults to the name.
+  renderLabel?: ContainerLabelRenderer;
 }
 
 const scrollableTargetId = "assignDialogScrollableTarget";
@@ -57,6 +63,7 @@ const AssignContainerDialog = ({
   filtersSlot,
   search: externalSearch,
   onResetFilters,
+  renderLabel,
 }: AssignContainerDialogProps) => {
   const { query, onQueryChange, handleClose } = useAssignContainerSearch({
     onFetch,
@@ -122,12 +129,14 @@ const AssignContainerDialog = ({
                   containers={containers}
                   selectedItemId={singleSelection.selectedItemId}
                   onSelect={singleSelection.handleSelect}
+                  renderLabel={renderLabel}
                 />
               ) : (
                 <MultiSelectionRows
                   containers={containers}
                   isSelected={multiSelection.isSelected}
                   onToggle={multiSelection.handleToggle}
+                  renderLabel={renderLabel}
                 />
               )}
             </TableBody>

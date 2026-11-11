@@ -29,11 +29,14 @@ export const CategoryItem = ({
         <LinkCell href={categoryUrl(node.id)}>
           <Box display="flex" alignItems="center" gap={5}>
             <Thumbnail url={node?.backgroundImage?.url} name={node?.name} />
+            {/* Craftware (Örninn FEAT-263): "Root / Parent / Name", path muted, like every picker. */}
             <Text size={2} fontWeight="medium">
+              {ancestorsLabel && (
+                <Text size={2} fontWeight="medium" color="default2">
+                  {`${ancestorsLabel} / `}
+                </Text>
+              )}
               {node?.name}
-            </Text>
-            <Text size={2} fontWeight="medium" color="default2">
-              {ancestorsLabel}
             </Text>
           </Box>
         </LinkCell>

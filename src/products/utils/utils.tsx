@@ -1,3 +1,7 @@
+import {
+  type CategoryWithPath,
+  getCategoryPathPrefix,
+} from "@dashboard/categories/utils/categoryPath";
 import { mapEdgesToItems } from "@dashboard/utils/maps";
 import { type Option, Text } from "@saleor/macaw-ui-next";
 
@@ -17,9 +21,16 @@ export type ChoiceWithAncestors = Choice & {
     id: string;
     name: string;
   } | null;
+  // Craftware (Örninn FEAT-263): every ancestor (CategoryPath fragment). When present the label is
+  // the full path; without it, the old root / ... / parent shortening below still applies.
+  fullPath?: CategoryWithPath["fullPath"];
 };
 
 const getAncestorsLabel = (choice: ChoiceWithAncestors): string => {
+  if (choice.fullPath) {
+    return getCategoryPathPrefix(choice);
+  }
+
   const { parent, level, ancestors } = choice;
 
   if (level === 0) {

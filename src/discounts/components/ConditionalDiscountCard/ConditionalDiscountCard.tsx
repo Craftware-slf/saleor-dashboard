@@ -1,3 +1,4 @@
+import { getCategoryPathLabel } from "@dashboard/categories/utils/categoryPath";
 import { DashboardCard } from "@dashboard/components/Card";
 import { Multiselect } from "@dashboard/components/Combobox";
 import { useCategorieOptions } from "@dashboard/discounts/components/DiscountRules/componenets/RuleForm/components/RuleConditionValues/hooks/options/useCategorieOptions";
@@ -117,6 +118,11 @@ export const ConditionalDiscountCard = ({
 
     for (const node of nodes) {
       out[node.id] = node.name;
+    }
+
+    // Craftware (Örninn FEAT-263): saved categories read as full paths.
+    for (const category of mapEdgesToItems(storedLabels?.categories) ?? []) {
+      out[category.id] = getCategoryPathLabel(category);
     }
 
     for (const page of mapEdgesToItems(storedBrandLabels?.pages) ?? []) {
