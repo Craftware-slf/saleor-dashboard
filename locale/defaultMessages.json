@@ -2865,6 +2865,10 @@
   "DJatYh": {
     "string": "Generate multiple codes at once"
   },
+  "DJcksY": {
+    "context": "home sidebar, month-to-date sales row",
+    "string": "Sales"
+  },
   "DK+8PB": {
     "string": "This channel has already been created"
   },
@@ -2961,6 +2965,10 @@
   },
   "DovGIa": {
     "string": "Permission Group Deleted"
+  },
+  "DqzLQv": {
+    "context": "home sidebar, month-to-date order count row",
+    "string": "Orders"
   },
   "Duik8x": {
     "context": "Link to publish the product immediately instead of scheduling",
@@ -3069,6 +3077,10 @@
     "context": "checkbox label",
     "string": "Charge taxes for this channel"
   },
+  "Ea5zpf": {
+    "context": "home sidebar, month-to-date average order value row",
+    "string": "Average order value"
+  },
   "Eau5AV": {
     "string": "Manage Products Channel Availability"
   },
@@ -3112,6 +3124,10 @@
   },
   "Eq3GFh": {
     "string": "Is giftcard"
+  },
+  "EqTwcs": {
+    "context": "home sidebar, header of the best sellers list",
+    "string": "Top products this month"
   },
   "ErvPaM": {
     "context": "header",
@@ -3781,6 +3797,10 @@
   "HlEpii": {
     "string": "Search Engine Title"
   },
+  "HlRbR9": {
+    "context": "home sidebar, title of the month-to-date sales card",
+    "string": "This month"
+  },
   "HnVtSS": {
     "context": "search",
     "string": "No results"
@@ -3941,6 +3961,10 @@
   "IW4YT7": {
     "context": "delete app",
     "string": "By deleting this extension, you will remove installation of the extension. If you are paying for extension's subscription, remember to unsubscribe from the extension in Saleor Marketplace."
+  },
+  "IW84jX": {
+    "context": "home sidebar, best sellers list is empty",
+    "string": "No sales yet this month"
   },
   "IWP25U": {
     "string": "You cannot issue a granted refund for this order. None of your transactions have authorized or charged amount."
@@ -6850,6 +6874,10 @@
   "Y0EpoG": {
     "string": "Rule deleted"
   },
+  "Y0Jsjr": {
+    "context": "home sidebar, count of unfulfilled and partially fulfilled orders",
+    "string": "Awaiting shipment"
+  },
   "Y0NwOq": {
     "context": "dialog subtitle",
     "string": "Select refund method:"
@@ -6911,6 +6939,10 @@
   "YI6Fhj": {
     "context": "no address is set in draft order",
     "string": "Not set"
+  },
+  "YIOYfX": {
+    "context": "home sidebar, best sellers were computed from a partial order list",
+    "string": "Based on the first {count} orders"
   },
   "YIT1XP": {
     "string": "Create voucher"
@@ -7243,6 +7275,10 @@
     "context": "section header",
     "string": "Data privacy"
   },
+  "a5AhAe": {
+    "context": "home sidebar, caption under the month-to-date card explaining the percentages",
+    "string": "% change vs. the same days last month"
+  },
   "a5msuh": {
     "string": "Yes"
   },
@@ -7402,6 +7438,10 @@
   "aq5ZiN": {
     "context": "order history message",
     "string": "Fulfillment confirmation was sent to customer"
+  },
+  "aqxrSG": {
+    "context": "home sidebar, units sold of one product this month",
+    "string": "{quantity} sold"
   },
   "arT1bu": {
     "string": "Warehouse updated"
@@ -11464,6 +11504,10 @@
   },
   "vz3yxp": {
     "string": "Channels permissions"
+  },
+  "vzThU2": {
+    "context": "home sidebar, subtitle of the awaiting shipment card",
+    "string": "Unfulfilled orders"
   },
   "vzgZ3U": {
     "context": "card header",

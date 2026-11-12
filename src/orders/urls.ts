@@ -196,6 +196,40 @@ export const orderListUrlWithChannel = (
   return urlJoin(orderListPath, "?" + stringify(queryParams));
 };
 
+/**
+ * Creates an order status filter element ("Order Status" in [..]) — the values are the raw
+ * `OrderStatus` enum names, which is also what the filter's URL entry stores.
+ */
+const createStatusFilterElement = (statuses: string[]) => {
+  const expressionValue = new ExpressionValue("status", "Order Status", "status");
+  const conditionOptions = ConditionOptions.fromName("status");
+  const conditionItem: ConditionItem = { type: "multiselect", label: "in", value: "input-2" };
+  const conditionSelected = ConditionSelected.fromConditionItemAndValue(
+    conditionItem,
+    // The list re-derives the localized labels from the URL values on load.
+    statuses.map(value => ({ label: value, value, slug: value })),
+  );
+  const condition = new Condition(conditionOptions, conditionSelected, false);
+
+  return new FilterElement(expressionValue, condition, false);
+};
+
+/**
+ * Builds the order list URL pre-filtered by a channel and a set of order statuses.
+ */
+export const orderListUrlWithChannelAndStatuses = (
+  channel: Pick<ChannelFragment, "id" | "name" | "slug"> | undefined,
+  statuses: string[],
+) => {
+  const filterContainer = [
+    ...(channel ? [createChannelsFilterElement(channel), "AND"] : []),
+    createStatusFilterElement(statuses),
+  ];
+  const queryParams = prepareStructure(filterContainer);
+
+  return urlJoin(orderListPath, "?" + stringify(queryParams));
+};
+
 export const orderDraftListPath = urlJoin(orderSectionUrl, "drafts");
 export enum OrderDraftListUrlFiltersEnum {
   createdFrom = "createdFrom",

@@ -2,6 +2,7 @@ import {
   orderListPath,
   orderListUrl,
   orderListUrlWithChannel,
+  orderListUrlWithChannelAndStatuses,
   orderListUrlWithCustomerEmail,
   orderListUrlWithCustomerId,
 } from "./urls";
@@ -64,6 +65,38 @@ describe("Order URLs", () => {
       expect(result).toContain("/orders?");
       expect(result).toContain("customer");
       expect(result).toContain(encodeURIComponent(userId));
+    });
+  });
+
+  describe("orderListUrlWithChannelAndStatuses", () => {
+    it("serializes the channel and every status into the URL", () => {
+      // Arrange
+      const channel = { id: "Q2hhbm5lbDox", name: "Fífa", slug: "fifa" };
+
+      // Act
+      const result = orderListUrlWithChannelAndStatuses(channel, [
+        "UNFULFILLED",
+        "PARTIALLY_FULFILLED",
+      ]);
+      const query = decodeURIComponent(result.split("?")[1]);
+
+      // Assert
+      expect(result.startsWith("/orders?")).toBe(true);
+      expect(query).toContain("fifa");
+      expect(query).toContain("AND");
+      expect(query).toContain("UNFULFILLED");
+      expect(query).toContain("PARTIALLY_FULFILLED");
+      expect(query.indexOf("fifa")).toBeLessThan(query.indexOf("UNFULFILLED"));
+    });
+
+    it("omits the channel filter when there is no channel", () => {
+      // Act
+      const result = orderListUrlWithChannelAndStatuses(undefined, ["UNFULFILLED"]);
+      const query = decodeURIComponent(result.split("?")[1]);
+
+      // Assert
+      expect(query).toContain("UNFULFILLED");
+      expect(query).not.toContain("AND");
     });
   });
 

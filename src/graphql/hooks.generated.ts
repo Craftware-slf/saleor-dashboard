@@ -22144,3 +22144,128 @@ export function useWelcomePageNotificationsLazyQuery(baseOptions?: ApolloReactHo
 export type WelcomePageNotificationsQueryHookResult = ReturnType<typeof useWelcomePageNotificationsQuery>;
 export type WelcomePageNotificationsLazyQueryHookResult = ReturnType<typeof useWelcomePageNotificationsLazyQuery>;
 export type WelcomePageNotificationsQueryResult = Apollo.QueryResult<Types.WelcomePageNotificationsQuery, Types.WelcomePageNotificationsQueryVariables>;
+export const WelcomePageMonthAnalyticsDocument = gql`
+    query WelcomePageMonthAnalytics($channel: String!, $channelId: ID!, $monthStart: DateTime!, $countedStatuses: [OrderStatus!]!, $awaitingShipmentStatuses: [OrderStatus!]!) {
+  salesThisMonth: ordersTotal(period: THIS_MONTH, channel: $channel) {
+    gross {
+      amount
+      currency
+    }
+  }
+  ordersThisMonth: orders(
+    first: 1
+    where: {channelId: {eq: $channelId}, createdAt: {gte: $monthStart}, status: {oneOf: $countedStatuses}}
+  ) {
+    totalCount
+  }
+  awaitingShipment: orders(
+    first: 1
+    where: {channelId: {eq: $channelId}, status: {oneOf: $awaitingShipmentStatuses}}
+  ) {
+    totalCount
+  }
+}
+    `;
+
+/**
+ * __useWelcomePageMonthAnalyticsQuery__
+ *
+ * To run a query within a React component, call `useWelcomePageMonthAnalyticsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWelcomePageMonthAnalyticsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWelcomePageMonthAnalyticsQuery({
+ *   variables: {
+ *      channel: // value for 'channel'
+ *      channelId: // value for 'channelId'
+ *      monthStart: // value for 'monthStart'
+ *      countedStatuses: // value for 'countedStatuses'
+ *      awaitingShipmentStatuses: // value for 'awaitingShipmentStatuses'
+ *   },
+ * });
+ */
+export function useWelcomePageMonthAnalyticsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<Types.WelcomePageMonthAnalyticsQuery, Types.WelcomePageMonthAnalyticsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<Types.WelcomePageMonthAnalyticsQuery, Types.WelcomePageMonthAnalyticsQueryVariables>(WelcomePageMonthAnalyticsDocument, options);
+      }
+export function useWelcomePageMonthAnalyticsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<Types.WelcomePageMonthAnalyticsQuery, Types.WelcomePageMonthAnalyticsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<Types.WelcomePageMonthAnalyticsQuery, Types.WelcomePageMonthAnalyticsQueryVariables>(WelcomePageMonthAnalyticsDocument, options);
+        }
+export type WelcomePageMonthAnalyticsQueryHookResult = ReturnType<typeof useWelcomePageMonthAnalyticsQuery>;
+export type WelcomePageMonthAnalyticsLazyQueryHookResult = ReturnType<typeof useWelcomePageMonthAnalyticsLazyQuery>;
+export type WelcomePageMonthAnalyticsQueryResult = Apollo.QueryResult<Types.WelcomePageMonthAnalyticsQuery, Types.WelcomePageMonthAnalyticsQueryVariables>;
+export const WelcomePageOrdersInPeriodDocument = gql`
+    query WelcomePageOrdersInPeriod($channelId: ID!, $from: DateTime!, $to: DateTime, $countedStatuses: [OrderStatus!]!, $after: String, $withLines: Boolean!) {
+  orders(
+    first: 100
+    after: $after
+    where: {channelId: {eq: $channelId}, createdAt: {gte: $from, lte: $to}, status: {oneOf: $countedStatuses}}
+  ) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    edges {
+      node {
+        id
+        total {
+          gross {
+            amount
+            currency
+          }
+        }
+        lines @include(if: $withLines) {
+          id
+          quantity
+          productName
+          productSku
+          variant {
+            id
+            product {
+              id
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useWelcomePageOrdersInPeriodQuery__
+ *
+ * To run a query within a React component, call `useWelcomePageOrdersInPeriodQuery` and pass it any options that fit your needs.
+ * When your component renders, `useWelcomePageOrdersInPeriodQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useWelcomePageOrdersInPeriodQuery({
+ *   variables: {
+ *      channelId: // value for 'channelId'
+ *      from: // value for 'from'
+ *      to: // value for 'to'
+ *      countedStatuses: // value for 'countedStatuses'
+ *      after: // value for 'after'
+ *      withLines: // value for 'withLines'
+ *   },
+ * });
+ */
+export function useWelcomePageOrdersInPeriodQuery(baseOptions: ApolloReactHooks.QueryHookOptions<Types.WelcomePageOrdersInPeriodQuery, Types.WelcomePageOrdersInPeriodQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return ApolloReactHooks.useQuery<Types.WelcomePageOrdersInPeriodQuery, Types.WelcomePageOrdersInPeriodQueryVariables>(WelcomePageOrdersInPeriodDocument, options);
+      }
+export function useWelcomePageOrdersInPeriodLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<Types.WelcomePageOrdersInPeriodQuery, Types.WelcomePageOrdersInPeriodQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<Types.WelcomePageOrdersInPeriodQuery, Types.WelcomePageOrdersInPeriodQueryVariables>(WelcomePageOrdersInPeriodDocument, options);
+        }
+export type WelcomePageOrdersInPeriodQueryHookResult = ReturnType<typeof useWelcomePageOrdersInPeriodQuery>;
+export type WelcomePageOrdersInPeriodLazyQueryHookResult = ReturnType<typeof useWelcomePageOrdersInPeriodLazyQuery>;
+export type WelcomePageOrdersInPeriodQueryResult = Apollo.QueryResult<Types.WelcomePageOrdersInPeriodQuery, Types.WelcomePageOrdersInPeriodQueryVariables>;

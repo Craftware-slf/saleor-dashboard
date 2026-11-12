@@ -14125,3 +14125,26 @@ export type WelcomePageNotificationsQueryVariables = Exact<{
 
 
 export type WelcomePageNotificationsQuery = { __typename: 'Query', productsOutOfStock: { __typename: 'ProductCountableConnection', totalCount: number | null } | null };
+
+export type WelcomePageMonthAnalyticsQueryVariables = Exact<{
+  channel: Scalars['String'];
+  channelId: Scalars['ID'];
+  monthStart: Scalars['DateTime'];
+  countedStatuses: Array<OrderStatus> | OrderStatus;
+  awaitingShipmentStatuses: Array<OrderStatus> | OrderStatus;
+}>;
+
+
+export type WelcomePageMonthAnalyticsQuery = { __typename: 'Query', salesThisMonth: { __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string } } | null, ordersThisMonth: { __typename: 'OrderCountableConnection', totalCount: number | null } | null, awaitingShipment: { __typename: 'OrderCountableConnection', totalCount: number | null } | null };
+
+export type WelcomePageOrdersInPeriodQueryVariables = Exact<{
+  channelId: Scalars['ID'];
+  from: Scalars['DateTime'];
+  to?: InputMaybe<Scalars['DateTime']>;
+  countedStatuses: Array<OrderStatus> | OrderStatus;
+  after?: InputMaybe<Scalars['String']>;
+  withLines: Scalars['Boolean'];
+}>;
+
+
+export type WelcomePageOrdersInPeriodQuery = { __typename: 'Query', orders: { __typename: 'OrderCountableConnection', pageInfo: { __typename: 'PageInfo', hasNextPage: boolean, endCursor: string | null }, edges: Array<{ __typename: 'OrderCountableEdge', node: { __typename: 'Order', id: string, total: { __typename: 'TaxedMoney', gross: { __typename: 'Money', amount: number, currency: string } }, lines?: Array<{ __typename: 'OrderLine', id: string, quantity: number, productName: string, productSku: string | null, variant: { __typename: 'ProductVariant', id: string, product: { __typename: 'Product', id: string, name: string } } | null }> } }> } | null };
