@@ -38,6 +38,8 @@ const initialResult: OrdersInPeriodResult = {
   lines: [],
 };
 
+const skippedResult: OrdersInPeriodResult = { ...initialResult, loading: false };
+
 /**
  * Pages through a channel's orders in a date range and sums them client-side. Saleor's reporting
  * API only offers TODAY / THIS_MONTH totals, so anything else (last month, per-product units)
@@ -51,19 +53,22 @@ export const useOrdersInPeriod = ({
   skip,
 }: OrdersInPeriodParams): OrdersInPeriodResult => {
   const client = useApolloClient();
-  const [result, setResult] = useState<OrdersInPeriodResult>(initialResult);
+  // Tagged with the request it answers, so a channel switch never shows the previous channel's
+  // sums for the render before the effect below resets them.
+  const requestKey = skip || !channelId ? null : `${channelId}|${from}|${to}|${withLines}`;
+  const [state, setState] = useState<{ key: string | null; result: OrdersInPeriodResult }>({
+    key: null,
+    result: initialResult,
+  });
 
   useEffect(
     function fetchOrdersInPeriod() {
-      if (skip || !channelId) {
-        setResult({ ...initialResult, loading: false });
-
+      if (requestKey === null || !channelId) {
         return;
       }
 
       let cancelled = false;
-
-      setResult(initialResult);
+      const setResult = (result: OrdersInPeriodResult) => setState({ key: requestKey, result });
 
       const run = async () => {
         let after: string | null = null;
@@ -127,8 +132,12 @@ export const useOrdersInPeriod = ({
         cancelled = true;
       };
     },
-    [client, channelId, from, to, withLines, skip],
+    [client, requestKey, channelId, from, to, withLines],
   );
 
-  return result;
+  if (requestKey === null) {
+    return skippedResult;
+  }
+
+  return state.key === requestKey ? state.result : initialResult;
 };

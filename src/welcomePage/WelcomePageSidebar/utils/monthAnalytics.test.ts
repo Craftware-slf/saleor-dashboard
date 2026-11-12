@@ -114,15 +114,15 @@ describe("getTopProducts", () => {
     ]);
   });
 
-  it("keeps lines of deleted variants, grouped by SKU", () => {
+  it("groups lines without a variant by product name, across variant SKUs", () => {
     // Arrange
-    const lines = [line(null, "Old shoe", 1, "SKU-1"), line(null, "Old shoe", 2, "SKU-1")];
+    const lines = [line(null, "Old shoe", 1, "SKU-40"), line(null, "Old shoe", 2, "SKU-42")];
 
     // Act
     const top = getTopProducts(lines, 5);
 
     // Assert
-    expect(top).toEqual([{ id: "deleted:SKU-1", name: "Old shoe", quantity: 3 }]);
+    expect(top).toEqual([{ id: "unlinked:Old shoe", name: "Old shoe", quantity: 3 }]);
   });
 
   it("breaks ties by name", () => {

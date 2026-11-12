@@ -59,6 +59,11 @@ export const welcomePageMessages = defineMessages({
     id: "IW84jX",
     description: "home sidebar, best sellers list is empty",
   },
+  topProductsError: {
+    defaultMessage: "Couldn't load this month's best sellers",
+    id: "6dlj/l",
+    description: "home sidebar, best sellers list failed to load",
+  },
   topProductsTruncated: {
     defaultMessage: "Based on the first {count} orders",
     id: "YIOYfX",

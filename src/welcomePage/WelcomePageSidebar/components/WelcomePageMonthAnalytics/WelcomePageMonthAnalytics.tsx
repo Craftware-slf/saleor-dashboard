@@ -151,10 +151,17 @@ interface TopProductsProps {
   products: TopProduct[];
   loading: boolean;
   unavailable: boolean;
+  hasError: boolean;
   truncatedAt: number | null;
 }
 
-const TopProductsList = ({ products, loading, unavailable, truncatedAt }: TopProductsProps) => {
+const TopProductsList = ({
+  products,
+  loading,
+  unavailable,
+  hasError,
+  truncatedAt,
+}: TopProductsProps) => {
   const intl = useIntl();
 
   return (
@@ -162,6 +169,11 @@ const TopProductsList = ({ products, loading, unavailable, truncatedAt }: TopPro
       <Text size={5}>{intl.formatMessage(welcomePageMessages.topProductsTitle)}</Text>
       {loading && !unavailable ? (
         <Skeleton height={3} />
+      ) : hasError ? (
+        // Not "no sales": the order lines failed to load, the month may well have sales.
+        <Text size={3} color="default2">
+          {intl.formatMessage(welcomePageMessages.topProductsError)}
+        </Text>
       ) : products.length === 0 ? (
         <Text size={3} color="default2">
           {intl.formatMessage(welcomePageMessages.topProductsEmpty)}
@@ -207,8 +219,14 @@ const TopProductsList = ({ products, loading, unavailable, truncatedAt }: TopPro
  */
 export const WelcomePageMonthAnalytics = () => {
   const { hasNoChannels } = useWelcomePageSidebarContext();
-  const { analytics, loading, hasError, topProductsLoading, topProductsTruncatedAt } =
-    useWelcomePageMonthAnalytics();
+  const {
+    analytics,
+    loading,
+    hasError,
+    topProductsLoading,
+    topProductsHasError,
+    topProductsTruncatedAt,
+  } = useWelcomePageMonthAnalytics();
   const unavailable = hasNoChannels || hasError;
 
   return (
@@ -219,6 +237,7 @@ export const WelcomePageMonthAnalytics = () => {
         products={unavailable ? [] : analytics.topProducts}
         loading={topProductsLoading}
         unavailable={unavailable}
+        hasError={!unavailable && topProductsHasError}
         truncatedAt={topProductsTruncatedAt}
       />
     </>

@@ -47,6 +47,7 @@ jest.mock("./components/WelcomePageMonthAnalytics/useWelcomePageMonthAnalytics",
     loading: false,
     hasError: false,
     topProductsLoading: false,
+    topProductsHasError: false,
     topProductsTruncatedAt: null,
   })),
 }));

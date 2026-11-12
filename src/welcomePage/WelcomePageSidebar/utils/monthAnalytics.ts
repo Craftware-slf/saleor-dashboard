@@ -81,14 +81,15 @@ export interface TopProduct {
 }
 
 /**
- * Ranks products by units sold. Variants roll up into their product; lines whose variant has
- * since been deleted fall back to the name/SKU stored on the order line.
+ * Ranks products by units sold. Variants roll up into their product; lines without a variant
+ * (deleted, or not visible to this staff member) fall back to the product name stored on the
+ * order line — not the SKU, which would split one product into a row per variant.
  */
 export const getTopProducts = (lines: OrderLineForRanking[], limit: number): TopProduct[] => {
   const byProduct = new Map<string, TopProduct>();
 
   for (const line of lines) {
-    const id = line.variant?.product.id ?? `deleted:${line.productSku ?? line.productName}`;
+    const id = line.variant?.product.id ?? `unlinked:${line.productName}`;
     const name = line.variant?.product.name ?? line.productName;
     const existing = byProduct.get(id);
 

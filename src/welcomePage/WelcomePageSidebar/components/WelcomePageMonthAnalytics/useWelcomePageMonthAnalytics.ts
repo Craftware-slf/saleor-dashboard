@@ -37,6 +37,8 @@ export const useWelcomePageMonthAnalytics = () => {
   // Fixed for the lifetime of the page so the queries below keep stable variables.
   const [periods] = useState(() => getMonthPeriods(new Date()));
   const skip = hasNoChannels || !selectedChannel || !hasPermissionToManageOrders;
+  // The channel context is still resolving: show skeletons, not zeros.
+  const channelPending = !hasNoChannels && !selectedChannel;
   const monthStart = periods.monthStart.toISOString();
 
   const { data, loading, error } = useWelcomePageMonthAnalyticsQuery({
@@ -99,8 +101,9 @@ export const useWelcomePageMonthAnalytics = () => {
 
   return {
     analytics,
-    loading: loading && !data,
-    topProductsLoading: thisMonth.loading,
+    loading: channelPending || (loading && !data),
+    topProductsLoading: channelPending || thisMonth.loading,
+    topProductsHasError: thisMonth.hasError,
     /** Order count the best sellers were computed from, when the order list was cut short. */
     topProductsTruncatedAt: thisMonth.truncated ? thisMonth.orderCount : null,
     hasError: !!error,
