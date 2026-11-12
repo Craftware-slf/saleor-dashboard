@@ -6,6 +6,7 @@ import { Box, Text } from "@saleor/macaw-ui-next";
 import { FormattedMessage } from "react-intl";
 
 import { WelcomePageActivities } from "./components/WelcomePageActivities";
+import { WelcomePageMonthAnalytics } from "./components/WelcomePageMonthAnalytics";
 import { WelcomePageSalesAnalytics } from "./components/WelcomePageSalesAnalytics";
 import { WelcomePageStocksAnalytics } from "./components/WelcomePageStocksAnalytics";
 import { WelcomePageSidebarContextProvider } from "./context/WelcomePageSidebarContextProvider";
@@ -43,6 +44,7 @@ export const WelcomePageSidebar = (props: HomeSidebarProps) => {
             <Box display="grid" gap={5} marginBottom={7}>
               <WelcomePageSalesAnalytics />
               <WelcomePageStocksAnalytics />
+              <WelcomePageMonthAnalytics />
             </Box>
           </RequirePermissions>
           <WelcomePageActivities />
